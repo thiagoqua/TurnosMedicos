@@ -17,7 +17,7 @@ namespace AppEscritorio {
         private Medico whoAmI;
         private Afiliado whoAmIAsAfiliado;
         private TablesDataContext db;
-        private IList<TextBox> boxes = new List<TextBox>();
+        private IList<TextBox> boxes; 
         private string[,] descripcionTurno;
 
         private MedicalHome previousState;
@@ -32,6 +32,7 @@ namespace AppEscritorio {
                                     on af.AfiliadoID equals user.IDAfiliado
                                 where user.UsuarioID == whoAmI.IDUsuario
                                 select af).First();
+            boxes = new List<TextBox>();
         }
 
         private void makeBoxes(int cant) {

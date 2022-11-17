@@ -125,7 +125,8 @@ namespace AppEscritorio {
 
         private void makeABM1_Click(object sender, EventArgs e) {
             string msg, caption;
-            setNewValues();
+            if(!setNewValues())
+                return;
             try {
                 db.SubmitChanges();
                 caption = "Operación realizada con éxito";
@@ -141,24 +142,44 @@ namespace AppEscritorio {
             }
         }
 
-        private void setNewValues() {
+        private bool setNewValues() {
             int hora, minutos, segundos;
-            string[] stringTime = new string[3];
+            string[] stringTime;
+            TimeSpan horaInicio, horaFin;
             stringTime = abmInicio.Text.Split(':');
             hora = Convert.ToInt32(stringTime[0]);
             minutos = Convert.ToInt32(stringTime[1]);
-            segundos = Convert.ToInt32(stringTime[2]);
+            if(stringTime.Length < 3)
+                segundos = 0;
+            else 
+                segundos = Convert.ToInt32(stringTime[2]);
 
-            tempDM.HorarioInicio = new TimeSpan(hora, minutos, segundos);
+            horaInicio = new TimeSpan(hora, minutos, segundos);
 
             stringTime = abmFin.Text.Split(':');
             hora = Convert.ToInt32(stringTime[0]);
             minutos = Convert.ToInt32(stringTime[1]);
-            segundos = Convert.ToInt32(stringTime[2]);
+            if(stringTime.Length < 3)
+                segundos = 0;
+            else
+                segundos = Convert.ToInt32(stringTime[2]);
 
-            tempDM.HorarioFin = new TimeSpan(hora, minutos, segundos);
+            horaFin = new TimeSpan(hora, minutos, segundos);
+
+            if(horaInicio > horaFin) {
+                string msg, caption;
+                caption = "La hora de finalización es inválida";
+                msg = "Usted ha ingresado un rango horario que excede las 23:59 del día en cuestión. " +
+                      "Para solucionar ésto, registre una nueva disponibilidad que abarque desde las " +
+                      "00:00 del día siguiente, hasta las " + horaFin.ToString() + " del mismo día";
+                MessageBox.Show(msg, caption, MessageBoxButtons.OK);
+                return false;
+            }
+            tempDM.HorarioFin = horaFin;
+            tempDM.HorarioInicio = horaInicio;
 
             tempDM.Consultorio = Convert.ToInt32(abmConsultorio.Text);
+            return true;
         }
 
         private void abmDyS_Click_1(object sender, EventArgs e) {
@@ -394,7 +415,8 @@ namespace AppEscritorio {
             try {
                 db.SubmitChanges();
                 caption = "Operación realizada con éxito";
-                msg = "El nuevo día ha sido registrado exitosamente. Ahora proceda a editar los horarios y el consultorio en 'Modificar disponibilidad'.";
+                msg = "El nuevo día ha sido registrado exitosamente. Ahora proceda a editar los horarios y el consultorio en el apartado 'Modificar disponibilidad'. " + 
+                      "Dichos valores están en 0 de manera predeterminada hasta que usted los modifique.";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
                 Application.Restart();
             }

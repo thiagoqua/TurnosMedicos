@@ -117,20 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="turnoBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>166, 17</value>
-  </metadata>
-  <metadata name="aplicacionDataSet.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btnCerrar.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wgAADsIBFShKgAAAANpJREFUSEvdld0NwyAQgxkki2SsLtJBMkgW6SD03PM1QeGf8tB8ElI42/iJ4O6P
+        9/4p68FtEXiR4bYMC4xiETxq/VAuEtOm3oBkEJpaAtJFIu7qiXIJYqZSlJ22AwxVy/ItwreOsoRFMlh1
+        XgSH1xSAlccfYKjaMC9Z1wJDxIWmXpBdeFwamGhupa7AgJmhWtoKDIQYLjG9wGgrgpmhVuqKYKK5l3yR
+        iLgnIwVnhi5i/42Xwfx/F8BQtSjjf2FDxFgw+T5AU0vARjmNmM7B37+MBsyy5r3xf4hzb/NgtKdO6wCZ
+        AAAAAElFTkSuQmCC
+</value>
+  </data>
   <metadata name="logo.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="logo.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAASwAAADICAYAAABS39xVAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wAAADsABataJCQAAC5tJREFUeF7t3V2W3EYVAODAQiD7gF0EFpFkCyTHC0hYgZ0FkLzGPIJfwW/AI8yj
+        wgAADsIBFShKgAAAC5tJREFUeF7t3V2W3EYVAODAQiD7gF0EFpFkCyTHC0hYgZ0FkLzGPIJfwW/AI8yj
         YU483WPPK5hbGvVYra5Sl/5menq+75x7bLcldemqdLukltSfAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         AAAAAAAA8Ihsr67+sN1s/hfxoRM/fPjw4WftJITNZvO3Xo7kidNxvdn8Ljrk99FR/xF/XnQ6aTcumv/f
@@ -183,17 +187,4 @@
         RK5CYII=
 </value>
   </data>
-  <data name="btnCerrar.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wAAADsABataJCQAAANpJREFUSEvdld0NwyAQgxkki2SsLtJBMkgW6SD03PM1QeGf8tB8ElI42/iJ4O6P
-        9/4p68FtEXiR4bYMC4xiETxq/VAuEtOm3oBkEJpaAtJFIu7qiXIJYqZSlJ22AwxVy/ItwreOsoRFMlh1
-        XgSH1xSAlccfYKjaMC9Z1wJDxIWmXpBdeFwamGhupa7AgJmhWtoKDIQYLjG9wGgrgpmhVuqKYKK5l3yR
-        iLgnIwVnhi5i/42Xwfx/F8BQtSjjf2FDxFgw+T5AU0vARjmNmM7B37+MBsyy5r3xf4hzb/NgtKdO6wCZ
-        AAAAAElFTkSuQmCC
-</value>
-  </data>
-  <metadata name="turnoTableAdapter.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>326, 17</value>
-  </metadata>
 </root>

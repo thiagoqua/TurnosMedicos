@@ -1,7 +1,6 @@
-﻿namespace AppEscritorio
-{
-    partial class Home
-    {
+﻿
+namespace AppEscritorio {
+    partial class Home {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -11,10 +10,8 @@
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
+        protected override void Dispose(bool disposing) {
+            if(disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -26,67 +23,25 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Home));
-            this.SolicitarTurno = new System.Windows.Forms.Button();
-            this.VerTurnos = new System.Windows.Forms.Button();
-            this.OtrasOpciones = new System.Windows.Forms.Button();
-            this.BarraTitulo = new System.Windows.Forms.Panel();
             this.PanelMenu = new System.Windows.Forms.Panel();
-            this.PanelContenedor = new System.Windows.Forms.Panel();
-            this.btnCerrar = new System.Windows.Forms.PictureBox();
             this.logo = new System.Windows.Forms.PictureBox();
-            this.BarraTitulo.SuspendLayout();
+            this.VerTurnos = new System.Windows.Forms.Button();
+            this.SolicitarTurno = new System.Windows.Forms.Button();
+            this.OtrasOpciones = new System.Windows.Forms.Button();
+            this.PanelContenedor = new System.Windows.Forms.Panel();
+            this.textBoxTurno1 = new System.Windows.Forms.TextBox();
+            this.textBoxTurno0 = new System.Windows.Forms.TextBox();
+            this.generatePDF = new System.Windows.Forms.Button();
+            this.BarraTitulo = new System.Windows.Forms.Panel();
+            this.btnCerrar = new System.Windows.Forms.PictureBox();
             this.PanelMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.btnCerrar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.logo)).BeginInit();
+            this.PanelContenedor.SuspendLayout();
+            this.BarraTitulo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.btnCerrar)).BeginInit();
             this.SuspendLayout();
-            // 
-            // SolicitarTurno
-            // 
-            this.SolicitarTurno.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.SolicitarTurno.Location = new System.Drawing.Point(37, 203);
-            this.SolicitarTurno.Name = "SolicitarTurno";
-            this.SolicitarTurno.Size = new System.Drawing.Size(107, 23);
-            this.SolicitarTurno.TabIndex = 1;
-            this.SolicitarTurno.Text = "Solicitar Turnos";
-            this.SolicitarTurno.UseVisualStyleBackColor = false;
-            this.SolicitarTurno.Click += new System.EventHandler(this.SolicitarTurno_Click);
-            // 
-            // VerTurnos
-            // 
-            this.VerTurnos.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.VerTurnos.Location = new System.Drawing.Point(37, 159);
-            this.VerTurnos.Name = "VerTurnos";
-            this.VerTurnos.Size = new System.Drawing.Size(75, 23);
-            this.VerTurnos.TabIndex = 2;
-            this.VerTurnos.Text = "Turnos";
-            this.VerTurnos.UseVisualStyleBackColor = false;
-            this.VerTurnos.Click += new System.EventHandler(this.VerTurnos_Click);
-            // 
-            // OtrasOpciones
-            // 
-            this.OtrasOpciones.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.OtrasOpciones.Location = new System.Drawing.Point(35, 243);
-            this.OtrasOpciones.Name = "OtrasOpciones";
-            this.OtrasOpciones.Size = new System.Drawing.Size(159, 23);
-            this.OtrasOpciones.TabIndex = 3;
-            this.OtrasOpciones.Text = "Otras opciones de Contacto";
-            this.OtrasOpciones.UseVisualStyleBackColor = false;
-            this.OtrasOpciones.Click += new System.EventHandler(this.OtrasOpciones_Click);
-            // 
-            // BarraTitulo
-            // 
-            this.BarraTitulo.BackColor = System.Drawing.Color.Navy;
-            this.BarraTitulo.Controls.Add(this.btnCerrar);
-            this.BarraTitulo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.BarraTitulo.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.BarraTitulo.Location = new System.Drawing.Point(0, 0);
-            this.BarraTitulo.Name = "BarraTitulo";
-            this.BarraTitulo.Size = new System.Drawing.Size(800, 37);
-            this.BarraTitulo.TabIndex = 4;
-            this.BarraTitulo.Paint += new System.Windows.Forms.PaintEventHandler(this.BarraTitulo_Paint);
             // 
             // PanelMenu
             // 
@@ -96,69 +51,148 @@
             this.PanelMenu.Controls.Add(this.SolicitarTurno);
             this.PanelMenu.Controls.Add(this.OtrasOpciones);
             this.PanelMenu.Dock = System.Windows.Forms.DockStyle.Left;
-            this.PanelMenu.Location = new System.Drawing.Point(0, 37);
+            this.PanelMenu.Location = new System.Drawing.Point(0, 0);
             this.PanelMenu.Name = "PanelMenu";
-            this.PanelMenu.Size = new System.Drawing.Size(200, 413);
-            this.PanelMenu.TabIndex = 5;
-            // 
-            // PanelContenedor
-            // 
-            this.PanelContenedor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PanelContenedor.Location = new System.Drawing.Point(200, 37);
-            this.PanelContenedor.Name = "PanelContenedor";
-            this.PanelContenedor.Size = new System.Drawing.Size(600, 413);
-            this.PanelContenedor.TabIndex = 6;
-            // 
-            // btnCerrar
-            // 
-            this.btnCerrar.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnCerrar.BackgroundImage")));
-            this.btnCerrar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnCerrar.Location = new System.Drawing.Point(763, 6);
-            this.btnCerrar.Name = "btnCerrar";
-            this.btnCerrar.Size = new System.Drawing.Size(25, 25);
-            this.btnCerrar.TabIndex = 0;
-            this.btnCerrar.TabStop = false;
-            this.btnCerrar.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.PanelMenu.Size = new System.Drawing.Size(200, 504);
+            this.PanelMenu.TabIndex = 8;
             // 
             // logo
             // 
             this.logo.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("logo.BackgroundImage")));
             this.logo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.logo.Location = new System.Drawing.Point(35, 28);
+            this.logo.Location = new System.Drawing.Point(25, 27);
             this.logo.Name = "logo";
             this.logo.Size = new System.Drawing.Size(157, 101);
             this.logo.TabIndex = 4;
             this.logo.TabStop = false;
             // 
+            // VerTurnos
+            // 
+            this.VerTurnos.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.VerTurnos.Location = new System.Drawing.Point(25, 171);
+            this.VerTurnos.Name = "VerTurnos";
+            this.VerTurnos.Size = new System.Drawing.Size(95, 23);
+            this.VerTurnos.TabIndex = 2;
+            this.VerTurnos.Text = "Ver mis turnos";
+            this.VerTurnos.UseVisualStyleBackColor = false;
+            this.VerTurnos.Click += new System.EventHandler(this.VerTurnos_Click);
+            // 
+            // SolicitarTurno
+            // 
+            this.SolicitarTurno.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.SolicitarTurno.Location = new System.Drawing.Point(25, 248);
+            this.SolicitarTurno.Name = "SolicitarTurno";
+            this.SolicitarTurno.Size = new System.Drawing.Size(156, 23);
+            this.SolicitarTurno.TabIndex = 1;
+            this.SolicitarTurno.Text = "Solicitar/Eliminar Turnos";
+            this.SolicitarTurno.UseVisualStyleBackColor = false;
+            this.SolicitarTurno.Click += new System.EventHandler(this.SolicitarTurno_Click);
+            // 
+            // OtrasOpciones
+            // 
+            this.OtrasOpciones.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.OtrasOpciones.Location = new System.Drawing.Point(22, 328);
+            this.OtrasOpciones.Name = "OtrasOpciones";
+            this.OtrasOpciones.Size = new System.Drawing.Size(159, 23);
+            this.OtrasOpciones.TabIndex = 3;
+            this.OtrasOpciones.Text = "Otras opciones de Contacto";
+            this.OtrasOpciones.UseVisualStyleBackColor = false;
+            // 
+            // PanelContenedor
+            // 
+            this.PanelContenedor.Controls.Add(this.textBoxTurno1);
+            this.PanelContenedor.Controls.Add(this.textBoxTurno0);
+            this.PanelContenedor.Controls.Add(this.generatePDF);
+            this.PanelContenedor.Location = new System.Drawing.Point(200, 37);
+            this.PanelContenedor.Name = "PanelContenedor";
+            this.PanelContenedor.Size = new System.Drawing.Size(774, 467);
+            this.PanelContenedor.TabIndex = 9;
+            // 
+            // textBoxTurno1
+            // 
+            this.textBoxTurno1.Location = new System.Drawing.Point(447, 99);
+            this.textBoxTurno1.Multiline = true;
+            this.textBoxTurno1.Name = "textBoxTurno1";
+            this.textBoxTurno1.Size = new System.Drawing.Size(291, 108);
+            this.textBoxTurno1.TabIndex = 21;
+            this.textBoxTurno1.Visible = false;
+            // 
+            // textBoxTurno0
+            // 
+            this.textBoxTurno0.Location = new System.Drawing.Point(39, 99);
+            this.textBoxTurno0.Multiline = true;
+            this.textBoxTurno0.Name = "textBoxTurno0";
+            this.textBoxTurno0.Size = new System.Drawing.Size(291, 108);
+            this.textBoxTurno0.TabIndex = 20;
+            this.textBoxTurno0.Visible = false;
+            // 
+            // generatePDF
+            // 
+            this.generatePDF.Image = global::AppEscritorio.Properties.Resources.PDF_IMAGE_L;
+            this.generatePDF.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.generatePDF.Location = new System.Drawing.Point(305, 22);
+            this.generatePDF.Name = "generatePDF";
+            this.generatePDF.Size = new System.Drawing.Size(161, 53);
+            this.generatePDF.TabIndex = 19;
+            this.generatePDF.Text = "Generar Reporte";
+            this.generatePDF.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.generatePDF.UseVisualStyleBackColor = true;
+            this.generatePDF.Visible = false;
+            this.generatePDF.Click += new System.EventHandler(this.generatePDF_Click);
+            // 
+            // BarraTitulo
+            // 
+            this.BarraTitulo.BackColor = System.Drawing.Color.Navy;
+            this.BarraTitulo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.BarraTitulo.Controls.Add(this.btnCerrar);
+            this.BarraTitulo.ImeMode = System.Windows.Forms.ImeMode.Off;
+            this.BarraTitulo.Location = new System.Drawing.Point(0, 0);
+            this.BarraTitulo.Name = "BarraTitulo";
+            this.BarraTitulo.Size = new System.Drawing.Size(974, 37);
+            this.BarraTitulo.TabIndex = 7;
+            // 
+            // btnCerrar
+            // 
+            this.btnCerrar.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnCerrar.BackgroundImage")));
+            this.btnCerrar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnCerrar.Location = new System.Drawing.Point(936, 7);
+            this.btnCerrar.Name = "btnCerrar";
+            this.btnCerrar.Size = new System.Drawing.Size(25, 25);
+            this.btnCerrar.TabIndex = 0;
+            this.btnCerrar.TabStop = false;
+            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.PanelContenedor);
+            this.ClientSize = new System.Drawing.Size(974, 504);
             this.Controls.Add(this.PanelMenu);
+            this.Controls.Add(this.PanelContenedor);
             this.Controls.Add(this.BarraTitulo);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Home";
             this.Text = "Home";
-            this.Load += new System.EventHandler(this.Home_Load);
-            this.BarraTitulo.ResumeLayout(false);
             this.PanelMenu.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.btnCerrar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.logo)).EndInit();
+            this.PanelContenedor.ResumeLayout(false);
+            this.PanelContenedor.PerformLayout();
+            this.BarraTitulo.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.btnCerrar)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button SolicitarTurno;
+        private System.Windows.Forms.PictureBox logo;
+        private System.Windows.Forms.Panel PanelMenu;
         private System.Windows.Forms.Button VerTurnos;
+        private System.Windows.Forms.Button SolicitarTurno;
         private System.Windows.Forms.Button OtrasOpciones;
+        private System.Windows.Forms.Panel PanelContenedor;
+        private System.Windows.Forms.Button generatePDF;
         private System.Windows.Forms.Panel BarraTitulo;
         private System.Windows.Forms.PictureBox btnCerrar;
-        private System.Windows.Forms.Panel PanelMenu;
-        private System.Windows.Forms.Panel PanelContenedor;
-        private System.Windows.Forms.PictureBox logo;
+        private System.Windows.Forms.TextBox textBoxTurno1;
+        private System.Windows.Forms.TextBox textBoxTurno0;
     }
 }

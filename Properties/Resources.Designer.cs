@@ -63,6 +63,26 @@ namespace AppEscritorio.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap BACK_ARROW {
+            get {
+                object obj = ResourceManager.GetObject("BACK_ARROW", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap NEXT_ARROW {
+            get {
+                object obj = ResourceManager.GetObject("NEXT_ARROW", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap PDF_IMAGE_L {
             get {
                 object obj = ResourceManager.GetObject("PDF_IMAGE_L", resourceCulture);

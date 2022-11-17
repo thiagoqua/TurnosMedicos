@@ -34,7 +34,7 @@ namespace AppEscritorio{
                                                      where af.AfiliadoID == logged.IDAfiliado
                                                      select af;
                 Afiliado aLogged = queryAfiliado.First();
-                MessageBox.Show("Bienvenido al sistema " + aLogged.Nombre + " " + aLogged.Apellido);
+                MessageBox.Show("Bienvenido al sistema " + aLogged.Nombre.Trim() + " " + aLogged.Apellido.Trim());
                 if(logged.isMedico) {
                     Medico mLogged = new Medico();
                     var getMLogged = from medico in db.Medico
