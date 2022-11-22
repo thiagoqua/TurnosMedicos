@@ -24,9 +24,11 @@ namespace AppEscritorio{
 
         private void button1_Click(object sender, EventArgs e) {
             TablesDataContext db = new TablesDataContext();
+            
+            string ePass = Registro.GetSHA256(ContraseñaTxt.Text);
             var checkUser = from user in db.Usuario
                             where user.UsuarioEmail == UsuarioTxt.Text &&
-                                  user.UsuarioContraseña == ContraseñaTxt.Text
+                                  user.UsuarioContraseña == ePass
                             select user;
             if(checkUser.Count() == 1){
                 Usuario logged = checkUser.First();

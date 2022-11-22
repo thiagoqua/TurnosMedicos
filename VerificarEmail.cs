@@ -18,7 +18,7 @@ namespace AppEscritorio
         private string pass;
         private int IDAfiliado = -1;
         private int nroVerif = 0;
-        TablesDataContext db = new TablesDataContext(); 
+        TablesDataContext db = new TablesDataContext();
 
         public VerificarEmail(int id)
         {
@@ -58,7 +58,7 @@ namespace AppEscritorio
             var mail = from e in db.Usuario
                        where email == e.UsuarioEmail
                        select e;
-            if(mail.Count() >= 1)
+            if (mail.Count() >= 1)
             {
                 return true;
             }
@@ -82,14 +82,14 @@ namespace AppEscritorio
             {
 
                 var servidor = from m in db.ServidorMail
-                        select m;
+                               select m;
                 emisor = servidor.FirstOrDefault().Mail;
                 pass = servidor.FirstOrDefault().Pass;
 
                 EnviarMail email = new EnviarMail();
                 setNroVerif(email.Enviar(emisor, pass, textBox1.Text));
                 MessageBox.Show("Hemos enviado un mensaje a su correo. Siga las instrucciones.");
-                
+
             }
 
         }
@@ -134,13 +134,13 @@ namespace AppEscritorio
 
         private void button2_Click(object sender, EventArgs e)
         {
-            
-            if(textBox2.Text.Trim() == "")
+
+            if (textBox2.Text.Trim() == "")
             {
                 MessageBox.Show("Ingrese el codigo.");
                 return;
             }
-            
+
             bool verificacion = false;
 
             verificacion = Verificacion(textBox2);
