@@ -78,10 +78,13 @@ namespace AppEscritorio {
                                              where ms.IDSucursal == SucursalId
                                              select medico.IDEspecialidad;
 
-            var queryEspecialidades = from esp in db.Especialidad
-                                      join ID in queryMedicosEspecialidades
-                                          on esp.EspecialidadId equals ID
-                                      select esp;
+            List<Especialidad> queryEspecialidades = (from esp in db.Especialidad
+                                                      join ID in queryMedicosEspecialidades
+                                                          on esp.EspecialidadId equals ID
+                                                      select esp)
+                                                      .ToList()
+                                                      .Distinct()
+                                                      .ToList();
 
             comboEspecialidades.ResetText();
             comboEspecialidades.DisplayMember = "EspecialidadDescripcion";
@@ -506,6 +509,10 @@ namespace AppEscritorio {
             MEDICOSELECTED,FECHASELECTED,HORASELECTED,
             
             ONLYTURNOTODELETE, LASTTURNOTODELETE, FIRSTTURNOTODELETE, INCORRECTDAY,
+        }
+
+        private void btnCerrar_Click(object sender, EventArgs e) {
+            Application.Exit();
         }
     }
 }

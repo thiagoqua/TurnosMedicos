@@ -119,7 +119,7 @@ namespace AppEscritorio {
             // 
             // textBoxTurno0
             // 
-            this.textBoxTurno0.Location = new System.Drawing.Point(39, 99);
+            this.textBoxTurno0.Location = new System.Drawing.Point(46, 99);
             this.textBoxTurno0.Multiline = true;
             this.textBoxTurno0.Name = "textBoxTurno0";
             this.textBoxTurno0.Size = new System.Drawing.Size(291, 108);
@@ -160,6 +160,7 @@ namespace AppEscritorio {
             this.btnCerrar.Size = new System.Drawing.Size(25, 25);
             this.btnCerrar.TabIndex = 0;
             this.btnCerrar.TabStop = false;
+            this.btnCerrar.Click += new System.EventHandler(this.btnCerrar_Click);
             // 
             // Home
             // 

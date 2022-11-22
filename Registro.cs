@@ -73,32 +73,6 @@ namespace AppEscritorio
             return sb.ToString();
         }
 
-        //DESENCRIPTAR CONTRASEÑA PARA LOGUEARSE (PARA TIKI)
-        public void login(string user, string pass) //el usuario ingresa su usuario y contraseña
-        {
-            /*
-                la contraseña que ingresa el usuario para loguearse se encripta
-                 y la cadena que genera es la misma que la cadena de la contraseña encriptada
-                  que se generó cuando el usuario hizo el registro
-             */
-            string ePass = GetSHA256(pass);
-
-            /*
-             CONSULTA SUPUESTA A LA BASE DE DATOS PARA CORROBORAR USUARIO Y CONTRASEÑA (SE PUEDE ADAPTAR EN BASE A TU CODIGO)
-             */
-            var query = from u in db.Usuario
-                       where u.UsuarioEmail == user && u.UsuarioContraseña == ePass
-                       select u;
-            if(query != null)
-            {
-                //la contraseña existe
-            }
-            else
-            {
-                //los datos son incorrectos (no ingresó bien la contraseña)
-            }
-        }
-
         private void insertarUsuario(string email, string pass)
         {
             Usuario user = new Usuario();
