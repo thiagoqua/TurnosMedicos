@@ -17,8 +17,8 @@ namespace AppEscritorio
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new MedicalHome(initMedico()));
-            Application.Run(new Home(init()));
-            //Application.Run(new Ingreso());
+            //Application.Run(new Home(init()));
+            Application.Run(new Ingreso());
         }
 
         /*
