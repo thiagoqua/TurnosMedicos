@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Classes", "Classes\Classes.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppWeb", "AppWeb\AppWeb.csproj", "{192A034D-4E4C-45D8-9EC1-C49D6490E842}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Clases", "Clases\Clases.csproj", "{936A6ECC-F05A-487B-8723-7742605B7A05}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{192A034D-4E4C-45D8-9EC1-C49D6490E842}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{192A034D-4E4C-45D8-9EC1-C49D6490E842}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{192A034D-4E4C-45D8-9EC1-C49D6490E842}.Release|Any CPU.Build.0 = Release|Any CPU
-		{936A6ECC-F05A-487B-8723-7742605B7A05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{936A6ECC-F05A-487B-8723-7742605B7A05}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{936A6ECC-F05A-487B-8723-7742605B7A05}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{936A6ECC-F05A-487B-8723-7742605B7A05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

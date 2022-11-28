@@ -123,10 +123,6 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Clases\Clases.csproj">
-      <Project>{936A6ECC-F05A-487B-8723-7742605B7A05}</Project>
-      <Name>Clases</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Classes\Classes.csproj">
       <Project>{8D4F8FB3-EEC0-4002-84EF-2B21A0CFAD2A}</Project>
       <Name>Classes</Name>
