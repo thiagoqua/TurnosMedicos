@@ -7,22 +7,34 @@ using System.Net;
 using System.Net.Mail;
 using System.Windows.Forms;
 
-namespace AppEscritorio
+namespace Classes
 {
     public class EnviarMail
     {
-        public int Enviar(string emisor, string password, string receptor)  //'PASSWORD' SERÁ LA CONTRASEÑA DE APLICACION GENERADA PARA LAS APPS MENOS SEGURAS
+        public static int Enviar(string emisor, string password, string receptor, bool bit)  //'PASSWORD' SERÁ LA CONTRASEÑA DE APLICACION GENERADA PARA LAS APPS MENOS SEGURAS
         {
+            int nro = 0;
 
-            Random r = new Random();
-            int nro = r.Next(100000, 1000000);      //GENERO UN NRO ALEATORIO PARA LA VERIFICACION
-            
+            if(bit == false)
+            {
+                Random r = new Random();
+                nro = r.Next(100000, 1000000);      //GENERO UN NRO ALEATORIO PARA LA VERIFICACION
+            }
+
             MailMessage msg = new MailMessage();    //CREO EL OBJETO PARA GENERAR EL CORREO
             msg.To.Add(receptor);                   //AGREGO EL MAIL DEL RECEPTOR
             msg.Subject = "Correo de verificacion"; //AGREGO UN ASUNTO (TE LO PIDE A LA FUERZA)
             msg.SubjectEncoding = Encoding.UTF8;    //AGREGO UNA CODIFICACION MEDIANTE UTF8
-            msg.Body = "Su codigo de verificacion es '" + nro + "'.\nPor favor, ingrese este numero en la casilla designada en la aplicacion.";
-            //msg.Body = "Hola tiki, te estoy mandando un mail desde la app de escritorio. En este mensaje deberia poner el codigo para que el usuario valide el email, asi que el tema de la verificacion del correo anda, con muchos bugs, pero anda jajaj";
+
+            if (bit)
+            {
+                msg.Body = "Ha solicitado un cambio de contraseña. Por favor, haga click en el siguiente link para crear una nueva contraseña: https://localhost:44332/ChangePass.aspx";
+            }
+            else
+            {
+                msg.Body = "Su codigo de verificacion es '" + nro + "'.\nPor favor, ingrese este numero en la casilla designada en la aplicacion.";
+            }
+            
             msg.BodyEncoding = Encoding.UTF8;
             msg.IsBodyHtml = true;                  //PARA QUE PUEDA SER ENTENDIDO USAMOS EL FORMATO HTML
             msg.From = new MailAddress(emisor);     //EL QUE ENVIA EL MSJ ES EL EMISOR

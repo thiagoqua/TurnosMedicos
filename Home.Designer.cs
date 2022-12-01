@@ -65,6 +65,7 @@ namespace AppEscritorio {
             this.logo.Size = new System.Drawing.Size(157, 101);
             this.logo.TabIndex = 4;
             this.logo.TabStop = false;
+            this.logo.Click += new System.EventHandler(this.logo_Click);
             // 
             // VerTurnos
             // 
@@ -97,6 +98,7 @@ namespace AppEscritorio {
             this.OtrasOpciones.TabIndex = 3;
             this.OtrasOpciones.Text = "Otras opciones de Contacto";
             this.OtrasOpciones.UseVisualStyleBackColor = false;
+            this.OtrasOpciones.Click += new System.EventHandler(this.OtrasOpciones_Click);
             // 
             // PanelContenedor
             // 

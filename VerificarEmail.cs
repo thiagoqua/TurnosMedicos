@@ -86,8 +86,7 @@ namespace AppEscritorio
                 emisor = servidor.FirstOrDefault().Mail;
                 pass = servidor.FirstOrDefault().Pass;
 
-                EnviarMail email = new EnviarMail();
-                setNroVerif(email.Enviar(emisor, pass, textBox1.Text));
+                setNroVerif(EnviarMail.Enviar(emisor, pass, textBox1.Text,false));
                 MessageBox.Show("Hemos enviado un mensaje a su correo. Siga las instrucciones.");
 
             }
@@ -103,8 +102,7 @@ namespace AppEscritorio
 
                 if (yesno == DialogResult.Yes)
                 {
-                    EnviarMail email = new EnviarMail();
-                    setNroVerif(email.Enviar(emisor, pass, textBox1.Text));
+                    setNroVerif(EnviarMail.Enviar(emisor, pass, textBox1.Text,false));
                     MessageBox.Show("Hemos enviado un nuevo código a su correo.");
                 }
 

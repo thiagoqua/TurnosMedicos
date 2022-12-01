@@ -1,4 +1,11 @@
-Classes/*
+Classes/bin
+Classes/obj
+Classes/Properties
+Classes/App.config
+Classes/packages*
+Classes/Tables*
+AppWeb/bin
+AppWeb/obj
 bin
 obj
 .vs
