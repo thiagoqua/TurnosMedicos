@@ -16,8 +16,8 @@ namespace AppEscritorio
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new MedicalHome(initMedico()));
-            Application.Run(new Home(init()));
+            Application.Run(new MedicalHome(initMedico()));
+            //Application.Run(new Home(init()));
             //Application.Run(new Ingreso());
         }
 
@@ -36,7 +36,7 @@ namespace AppEscritorio
         private static Classes.Medico initMedico() {
             Classes.TablesDataContext db = new Classes.TablesDataContext();
             return (from m in db.Medico
-                    where m.MedicoID == 1
+                    where m.MedicoID == 15
                     select m).FirstOrDefault();
         }
     }

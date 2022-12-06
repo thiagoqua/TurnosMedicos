@@ -40,7 +40,7 @@ namespace AppEscritorio{
                 if(logged.isMedico) {
                     Medico mLogged = new Medico();
                     var getMLogged = from medico in db.Medico
-                                     where medico.MedicoID == logged.UsuarioID
+                                     where medico.IDUsuario == logged.UsuarioID
                                      select medico;
                     mLogged = getMLogged.First();
                     MedicalHome mhome = new MedicalHome(mLogged);

@@ -3,42 +3,49 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.UI.WebControls;
 using System.Web.Security;
 using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace AppWeb {
-    public partial class WebHome : System.Web.UI.Page {
+    public partial class WebMedicalTurnos : System.Web.UI.Page {
         private Usuario whoAmI;
         private Afiliado whoAmIAsAfiliado;
+        private Medico whoAmIAsMedico;
         private TablesDataContext db;
 
         private List<TextBox> boxes;
         private string[,] descripcionTurno;
 
-        public WebHome() {
-            
-        }
-
         protected void Page_Load(object sender, EventArgs e) {
-            //al usuario lo tomo del componente Login
-            whoAmI = (Usuario) Session["user"];
-            boxes = new List<TextBox>();
+            //al usuario lo tomo del componente WebHome
+            whoAmI = (Usuario)Session["user"];
             signOutButton.ServerClick += new EventHandler(signOutButton_Click);
+
             if(IsPostBack) {
-                db = (TablesDataContext) Session["database"];
-                descripcionTurno = (string[,]) Session["turnos"];
-                whoAmIAsAfiliado = (Afiliado) Session["afiliado"];
+                db = (TablesDataContext)Session["database"];
+                descripcionTurno = (string[,])Session["turnos"];
+                whoAmIAsAfiliado = (Afiliado)Session["afiliado"];
+                whoAmIAsMedico = (Medico)Session["medico"];
+                boxes = (List<TextBox>)Session["boxes"];
             }
             else {
                 //ESTA PARTE VENDRÍA A REEMPLAZAR EL CONSTRUCTOR
+                fecha.Attributes["min"] = DateTime.Now.ToString("dd-MM-yyyy");
+                fecha.Attributes["max"] = DateTime.Now.AddYears(1).ToString("dd-MM-yyyy");
                 db = new TablesDataContext();
+                boxes = new List<TextBox>();
                 whoAmIAsAfiliado = (from af in db.Afiliado
                                     where af.AfiliadoID == whoAmI.IDAfiliado
                                     select af).FirstOrDefault();
+                whoAmIAsMedico = (from me in db.Medico
+                                  where me.IDUsuario == whoAmI.UsuarioID
+                                  select me).FirstOrDefault();
 
                 Session["database"] = db;
                 Session["afiliado"] = whoAmIAsAfiliado;
+                Session["medico"] = whoAmIAsMedico;
+                Session["boxes"] = boxes;
             }
         }
 
@@ -77,19 +84,41 @@ namespace AppWeb {
                     }
                     break;
             }
+            Session["boxes"] = boxes;
         }
 
-        protected void verTurnosButton_Click(object sender, EventArgs e) {
-            label1.Visible = label2.Visible = label3.Visible = false;
-            int szQuery, i;
+        protected void generatePDF_Click(object sender, EventArgs e) {
+            PDFDrawer drawer;
+            string filepath, filename, msg;
+
+            filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
+            filename = "reporte.pdf";
+            drawer = new PDFDrawer(filepath, filename);
+
+            drawer.drawFromMedico(whoAmIAsAfiliado, descripcionTurno, Convert.ToDateTime(fecha.Text));
+
+            msg = "El reporte ha sido creado y almacenado en " + filepath +
+                  " con el nombre de " + filename;
+
+            ClientScript.RegisterStartupScript(this.GetType(),
+                "alert", "alert('" + msg + "')", true);
+        }
+
+        protected void fecha_TextChanged(object sender, EventArgs e) {
+            DateTime selected = Convert.ToDateTime(fecha.Text);
+            int szQuery,i;
             Turno tempTurno;
-            Afiliado tempMedico;
-            List<Turno> queryTurnos = (from turno in db.Turno
-                                       where turno.IDUsuario == whoAmI.UsuarioID
-                                       select turno).ToList();
             const string newline = "\r\n";
 
+            List<Turno> queryTurnos = (from turno in db.Turno
+                                       join ft in db.FechaTurno
+                                           on turno.IDFechaTurno equals ft.FechaTurnoID
+                                       where turno.IDMedico == whoAmIAsMedico.MedicoID && 
+                                             ft.Fecha == selected
+                                       select turno).ToList();
+            
             szQuery = queryTurnos.Count();
+            var enumerator = addInfo.Controls.GetEnumerator();
             for(i = 0; i < boxes.Count(); ++i) {
                 switch(i) {
                     case 0:
@@ -105,53 +134,46 @@ namespace AppWeb {
             }
             if(szQuery == 0) {
                 generatePDF.Visible = false;
+                Session["boxes"] = boxes;
                 return;
             }
             makeBoxes(szQuery);
-            descripcionTurno = new string[szQuery,4];
+            descripcionTurno = new string[szQuery, 3];
             for(i = 0; i < szQuery; ++i) {
                 tempTurno = queryTurnos[i];
-                descripcionTurno[i,0] = "Fecha del turno: ";
-                DateTime queryFecha = (from ft in db.FechaTurno
-                                       where ft.FechaTurnoID == tempTurno.IDFechaTurno
-                                       select ft.Fecha).First();
-                descripcionTurno[i, 0] += queryFecha.ToString("d/MM/yyyy");
-
-                descripcionTurno[i, 1] += "Para médico: ";
-                tempMedico = (from medico in db.Medico
-                              join medicoUsuario in db.Usuario
-                                 on medico.IDUsuario equals medicoUsuario.UsuarioID
-                              join medicoAfiliado in db.Afiliado
-                                 on medicoUsuario.IDAfiliado equals medicoAfiliado.AfiliadoID
-                              where tempTurno.IDMedico == medico.MedicoID
-                              select medicoAfiliado).First();
-                descripcionTurno[i,1] += tempMedico.Nombre.Trim() + " " + tempMedico.Apellido.Trim();
+                descripcionTurno[i, 0] = "Turno sacado por: ";
+                Afiliado afiliado = (from af in db.Afiliado
+                                     join user in db.Usuario
+                                        on af.AfiliadoID equals user.IDAfiliado
+                                     where user.UsuarioID == tempTurno.IDUsuario
+                                     select af).FirstOrDefault();
+                descripcionTurno[i, 0] += afiliado.Nombre.Trim() + " " + afiliado.Apellido.Trim();
 
                 var querySucursal = from suc in db.Sucursal
                                     where suc.SucursalId == tempTurno.IDSucursal
                                     select suc;
-                descripcionTurno[i,2] += "En sucursal: " +
-                        querySucursal.FirstOrDefault().SucursalDescripcion.Trim();
+                descripcionTurno[i, 1] = "En sucursal: " +
+                        querySucursal.FirstOrDefault().SucursalDescripcion;
 
                 var queryProvincia = from prov in db.Provincia
                                      where prov.ProvinciaId == tempTurno.IDProvincia
                                      select prov;
-                descripcionTurno[i, 2] += ", " +
-                        queryProvincia.FirstOrDefault().ProvinciaDescripcion.Trim();
+                descripcionTurno[i, 1] += ", " +
+                        queryProvincia.FirstOrDefault().ProvinciaDescripcion;
 
                 var queryLocalidad = from loc in db.Localidad
                                      where loc.LocalidadId == tempTurno.IDLocalidad
                                      select loc;
-                descripcionTurno[i, 2] += ", " +
+                descripcionTurno[i, 1] += ", " +
                         queryLocalidad.FirstOrDefault().LocalidadDescripcion.Trim();
 
-                descripcionTurno[i, 3] += "Horario: ";
+                descripcionTurno[i, 2] = "Horario: ";
                 TimeSpan horario = (from h in db.Horario
                                     join ft in db.FechaTurno
                                         on h.HorarioID equals ft.IDHorario
                                     where tempTurno.IDFechaTurno == ft.FechaTurnoID
                                     select h.Hora).FirstOrDefault();
-                descripcionTurno[i, 3] += horario.ToString();
+                descripcionTurno[i, 2] += horario.ToString();
             }
 
             for(i = 0; i < szQuery; ++i) {
@@ -162,43 +184,14 @@ namespace AppWeb {
                 boxes[i].CssClass = "text-boxes";
                 boxes[i].Text = descripcionTurno[i, 0] + newline +
                                 descripcionTurno[i, 1] + newline +
-                                descripcionTurno[i, 2] + newline +
-                                descripcionTurno[i, 3] + newline;
+                                descripcionTurno[i, 2] + newline;
                 if(i < 2)
                     continue;
                 addInfo.Controls.Add(boxes[i]);
             }
             generatePDF.Visible = true;
             Session["turnos"] = descripcionTurno;
-        }
-
-        protected void generatePDF_Click(object sender, EventArgs e) {
-            PDFDrawer drawer;
-            string filepath, filename, msg;
-
-            filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
-            filename = "reporte.pdf";
-            drawer = new PDFDrawer(filepath, filename);
-
-            drawer.drawFromUser(whoAmIAsAfiliado, descripcionTurno);
-
-            msg = "El reporte ha sido creado y almacenado en " + filepath +
-                  " con el nombre de " + filename;
-
-            ClientScript.RegisterStartupScript(this.GetType(), 
-                "alert", "alert('" + msg + "')", true);
-        }
-
-        protected void OtrasOpc_Click(object sender, EventArgs e) {
-            label1.Visible = label2.Visible = label3.Visible = true;
-            generatePDF.Visible = false;
-            for(int i = 0; i < boxes.Count(); ++i) {
-                if(i < 2) {
-                    boxes[i].Visible = false;
-                    continue;
-                }
-                addInfo.Visible = false;
-            }
+            Session["boxes"] = boxes;
         }
 
         protected void signOutButton_Click(object sender, EventArgs e) {

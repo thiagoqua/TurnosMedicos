@@ -15,21 +15,19 @@ namespace AppWeb
             //cmdForgot.ServerClick += new EventHandler(CmdForgot_ServerClick);
         }
 
-        private bool ValidateUser(string email, string pass)
-        {
-            bool res = Validar.Validate(email, pass);
-            return res;
-        }
-
         //Login button
         private void CmdLogin_ServerClick(object sender, EventArgs e)   //ojo con el nombre porque el boton es cmdLogin
         {
-            
-            if (ValidateUser(txtUserName.Value, txtUserPass.Value))
-            {
+            Usuario trying = Validar.Validate(txtUserName.Value, txtUserPass.Value);
+            if (trying != null){
                 //la cookie persistente me guarda la sesion aun si corto la compilacion y salgo del navegador
                 //si no uso cookie persistente, cuando salga del navegador y vuelva a entrar tengo que iniciar sesion nuevamente
-                FormsAuthentication.RedirectFromLoginPage(txtUserName.Value, chkPersistCookie.Checked);
+                FormsAuthentication.SetAuthCookie(txtUserName.Value, chkPersistCookie.Checked);   
+                Session["user"] = trying;
+                if(trying.isMedico)
+                    Response.Redirect("WebMedicalHome.aspx");
+                else
+                    Response.Redirect("WebHome.aspx");
             }
             else
             {

@@ -14,7 +14,7 @@ namespace AppEscritorio {
 
         private Medico whoAmI;
         private TablesDataContext db;
-        private IList<Sucursal> tempSucursales;
+        private List<Sucursal> tempSucursales;
         private DisponibilidadMedico tempDM;
 
         private MedicalHome previousState;
@@ -24,7 +24,6 @@ namespace AppEscritorio {
             previousState = home;
             db = new TablesDataContext();
             tempDM = new DisponibilidadMedico();
-            tempSucursales = new List<Sucursal>();
             initSucursales();
         }
 
@@ -32,7 +31,12 @@ namespace AppEscritorio {
             int szSucursales;
             for(int i = 0; i < comboSucursales.Items.Count; ++i)
                 comboSucursales.Items.RemoveAt(i);
-            tempSucursales = getSucursales();
+            tempSucursales = (from suc in db.Sucursal
+                              join ms in db.MedicoSucursal
+                                  on suc.SucursalId equals ms.IDSucursal
+                              where ms.IDMedico == whoAmI.MedicoID
+                              select suc).ToList();
+
             szSucursales = tempSucursales.Count();
             string[] localidesText = getLocalidadesComplex(szSucursales);
             for(int i = 0; i < szSucursales; ++i) {
@@ -49,12 +53,14 @@ namespace AppEscritorio {
                               where dm.IDMedico == whoAmI.MedicoID &&
                                     dm.IDSucursal == tempSucursales[index].SucursalId
                               select dm;
-            var gettingDays = from dia in db.Dia
-                              join dm in queryDispoM on dia.DiaID equals dm.IDDia
-                              select dia;
+            var queryDias = from dia in db.Dia
+                            join dm in queryDispoM 
+                                on dia.DiaID equals dm.IDDia
+                            select dia;
+
             comboDias.DisplayMember = "NombreDia";
             comboDias.ValueMember = "DiaId";
-            comboDias.DataSource = gettingDays;
+            comboDias.DataSource = queryDias;
             label3.Visible = comboDias.Visible = label3.Enabled = comboDias.Enabled = true;
         }
         private void comboDias_SelectedIndexChanged(object sender, EventArgs e) {
@@ -65,20 +71,6 @@ namespace AppEscritorio {
 
             abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible = label1.Visible =
             label4.Visible = label5.Visible = true;
-        }
-
-        private IList<Sucursal> getSucursales() {
-            IList<Sucursal> sucursales = new List<Sucursal>();
-            var queryMiddleSucursales = from middleSuc in db.MedicoSucursal
-                                        where middleSuc.IDMedico == whoAmI.MedicoID
-                                        select middleSuc.IDSucursal;
-            foreach(int id in queryMiddleSucursales) {
-                var querySucursales = from suc in db.Sucursal
-                                      where suc.SucursalId == id
-                                      select suc;
-                sucursales.Add(querySucursales.First());
-            }
-            return sucursales;
         }
 
         private string[] getLocalidadesComplex(int size) {
@@ -146,6 +138,7 @@ namespace AppEscritorio {
             int hora, minutos, segundos;
             string[] stringTime;
             TimeSpan horaInicio, horaFin;
+
             stringTime = abmInicio.Text.Split(':');
             hora = Convert.ToInt32(stringTime[0]);
             minutos = Convert.ToInt32(stringTime[1]);
@@ -153,7 +146,6 @@ namespace AppEscritorio {
                 segundos = 0;
             else 
                 segundos = Convert.ToInt32(stringTime[2]);
-
             horaInicio = new TimeSpan(hora, minutos, segundos);
 
             stringTime = abmFin.Text.Split(':');
@@ -163,7 +155,6 @@ namespace AppEscritorio {
                 segundos = 0;
             else
                 segundos = Convert.ToInt32(stringTime[2]);
-
             horaFin = new TimeSpan(hora, minutos, segundos);
 
             if(horaInicio > horaFin) {
@@ -177,8 +168,8 @@ namespace AppEscritorio {
             }
             tempDM.HorarioFin = horaFin;
             tempDM.HorarioInicio = horaInicio;
-
             tempDM.Consultorio = Convert.ToInt32(abmConsultorio.Text);
+
             return true;
         }
 

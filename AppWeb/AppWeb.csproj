@@ -75,9 +75,14 @@
     <Content Include="Login.aspx" />
     <Content Include="Web.config" />
     <Content Include="WebHome.aspx" />
-    <Content Include="WebHomeStyle.css" />
+    <Content Include="Styles\WebHomeStyle.css" />
+    <Content Include="WebMedicalDisponibility.aspx" />
+    <Content Include="Styles\WebMedicalDisponibilityStyle.css" />
+    <Content Include="WebMedicalHome.aspx" />
+    <Content Include="WebMedicalTurnos.aspx" />
+    <Content Include="Styles\WebMedicalTurnosStyle.css" />
     <Content Include="WebTurnos.aspx" />
-    <Content Include="WebTurnosStyle.css" />
+    <Content Include="Styles\WebTurnosStyle.css" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChangePass.aspx.cs">
@@ -118,6 +123,27 @@
     </Compile>
     <Compile Include="WebHome.aspx.designer.cs">
       <DependentUpon>WebHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WebMedicalDisponibility.aspx.cs">
+      <DependentUpon>WebMedicalDisponibility.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebMedicalDisponibility.aspx.designer.cs">
+      <DependentUpon>WebMedicalDisponibility.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WebMedicalHome.aspx.cs">
+      <DependentUpon>WebMedicalHome.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebMedicalHome.aspx.designer.cs">
+      <DependentUpon>WebMedicalHome.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="WebMedicalTurnos.aspx.cs">
+      <DependentUpon>WebMedicalTurnos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebMedicalTurnos.aspx.designer.cs">
+      <DependentUpon>WebMedicalTurnos.aspx</DependentUpon>
     </Compile>
     <Compile Include="WebTurnos.aspx.cs">
       <DependentUpon>WebTurnos.aspx</DependentUpon>

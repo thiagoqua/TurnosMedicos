@@ -5,14 +5,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-    <style type="text/css">
-        #Select1 {
-            width: 135px;
-        }
-    </style>
 </head>
 <body>
-    <link href="WebTurnosStyle.css" rel="stylesheet" type="text/css" />
+    <link href="Styles/WebTurnosStyle.css" rel="stylesheet" type="text/css" />
     <form id="form1" runat="server">
         <div class="buttonsSection">
             <asp:Image ID="Image1" runat="server" />
@@ -32,6 +27,9 @@
                         <TodayDayStyle BackColor="#99CCCC" ForeColor="White" />
                         <WeekendDayStyle BackColor="#CCCCFF" />
                     </asp:Calendar>
+            <asp:Button ID="backButton" runat="server" Height="109px" Width="180px" 
+                        style="margin-left: 30%;font-size:xx-large;margin-top:40px" CssClass="button"
+                        Text="Volver" BackColor="#3366ff" PostBackUrl="~/WebHome.aspx"/>
         </div>
         <div class="inputSection">
             <div class="newTurn">

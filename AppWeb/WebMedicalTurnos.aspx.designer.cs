@@ -10,7 +10,7 @@
 namespace AppWeb {
 
 
-    public partial class WebHome {
+    public partial class WebMedicalTurnos {
 
         /// <summary>
         /// form1 control.
@@ -31,31 +31,13 @@ namespace AppWeb {
         protected global::System.Web.UI.WebControls.Image Image1;
 
         /// <summary>
-        /// verTurnosButton control.
+        /// backButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button verTurnosButton;
-
-        /// <summary>
-        /// SolicitarTurnoButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button SolicitarTurnoButton;
-
-        /// <summary>
-        /// OtrasOpc control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button OtrasOpc;
+        protected global::System.Web.UI.WebControls.Button backButton;
 
         /// <summary>
         /// signOutButton control.
@@ -85,6 +67,24 @@ namespace AppWeb {
         protected global::System.Web.UI.WebControls.Button generatePDF;
 
         /// <summary>
+        /// label1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label label1;
+
+        /// <summary>
+        /// fecha control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox fecha;
+
+        /// <summary>
         /// textBoxTurno0 control.
         /// </summary>
         /// <remarks>
@@ -101,32 +101,5 @@ namespace AppWeb {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox textBoxTurno1;
-
-        /// <summary>
-        /// label1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label label1;
-
-        /// <summary>
-        /// label2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label label2;
-
-        /// <summary>
-        /// label3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label label3;
     }
 }

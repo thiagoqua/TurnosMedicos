@@ -26,20 +26,18 @@ namespace AppWeb {
             }
             else {
                 db = new TablesDataContext();
-                Session["database"] = db;
                 indexShowed = -1;
+                Session["database"] = db;
                 Session["myindex"] = indexShowed;
             }
-            //SACAR ESTO DESP
-            if(whoAmI == null)
-                whoAmI = (from m in db.Usuario
-                          where m.UsuarioID == 6
-                          select m).FirstOrDefault();
         }
 
         protected void addTurnoButton_Click(object sender, EventArgs e) {
-            var queryProvincia = from prov in db.Provincia
-                                 select prov;
+            List<Provincia> queryProvincia = (from prov in db.Provincia
+                                              select prov).ToList();
+            queryProvincia.Insert(0,
+                createSeleccioneOf(queryProvincia.First().GetType()) as Provincia);
+            
             comboProvincia.ClearSelection();comboLocalidad.ClearSelection();
             comboProvincia.DataSource = queryProvincia;
             comboProvincia.DataTextField = "ProvinciaDescripcion";
@@ -53,35 +51,50 @@ namespace AppWeb {
         }
 
         protected void comboProvincia_SelectedIndexChanged1(object sender, EventArgs e) {
+            changeVisibilityBy(Tools.PROVINCIASELECTED);
             int ProvinciaId = Convert.ToInt32(comboProvincia.SelectedValue);
-            var queryLocalidad = from loc in db.Localidad
-                                 where loc.IDProvincia == ProvinciaId
-                                 select loc;
+            if(ProvinciaId == -1)
+                return;
+            List<Localidad> queryLocalidad = (from loc in db.Localidad
+                                              where loc.IDProvincia == ProvinciaId
+                                              select loc).ToList();
+            if(queryLocalidad.Count > 0)
+                queryLocalidad.Insert(0,
+                    createSeleccioneOf(queryLocalidad.First().GetType()) as Localidad);
+
             comboLocalidad.ClearSelection(); comboSucursales.ClearSelection();
             comboLocalidad.DataSource = queryLocalidad;
             comboLocalidad.DataTextField = "LocalidadDescripcion";
             comboLocalidad.DataValueField = "LocalidadId";
             comboLocalidad.DataBind();
-            changeVisibilityBy(Tools.PROVINCIASELECTED);
         }
         
         protected void comboLocalidad_SelectedIndexChanged(object sender, EventArgs e) {
+            changeVisibilityBy(Tools.LOCALIDADSELECTED);
             int LocalidadId = Convert.ToInt32(comboLocalidad.SelectedValue);
-            var querySucursal = from suc in db.Sucursal
-                                where suc.IDLocalidad == LocalidadId
-                                select suc;
+            if(LocalidadId == -1)
+                return;
+            List<Sucursal> querySucursal = (from suc in db.Sucursal
+                                            where suc.IDLocalidad == LocalidadId
+                                            select suc).ToList();
+            if(querySucursal.Count > 0)
+                querySucursal.Insert(0,
+                    createSeleccioneOf(querySucursal.First().GetType()) as Sucursal);
+
             comboSucursales.ClearSelection();
             comboSucursales.DataSource = querySucursal;
             comboSucursales.DataTextField = "SucursalDescripcion";
             comboSucursales.DataValueField = "SucursalId";
             comboSucursales.DataBind();
-            changeVisibilityBy(Tools.LOCALIDADSELECTED);
         }
 
         protected void comboSucursales_SelectedIndexChanged(object sender, EventArgs e) {
+            changeVisibilityBy(Tools.SUCURSALSELECTED);
             int LocalidadId, SucursalId;
             LocalidadId = Convert.ToInt32(comboLocalidad.SelectedValue);
             SucursalId = Convert.ToInt32(comboSucursales.SelectedValue);
+            if(SucursalId == -1)
+                return;
             var queryMedicosEspecialidades = from medico in db.Medico
                                              join ms in db.MedicoSucursal
                                                  on medico.MedicoID equals ms.IDMedico
@@ -95,46 +108,62 @@ namespace AppWeb {
                                                       .ToList()
                                                       .Distinct()
                                                       .ToList();
+            if(queryEspecialidades.Count > 0)
+                queryEspecialidades.Insert(0,
+                    createSeleccioneOf(queryEspecialidades.First().GetType()) as Especialidad);
 
             comboEspecialidades.ClearSelection();
             comboEspecialidades.DataSource = queryEspecialidades;
             comboEspecialidades.DataTextField = "EspecialidadDescripcion";
             comboEspecialidades.DataValueField = "EspecialidadId";
             comboEspecialidades.DataBind();
-            changeVisibilityBy(Tools.SUCURSALSELECTED);
         }
 
         protected void comboEspecialidades_SelectedIndexChanged1(object sender, EventArgs e) {
+            changeVisibilityBy(Tools.ESPECIALIDADSELECTED);
             int SucursalId, EspecialidadId;
             SucursalId = Convert.ToInt32(comboSucursales.SelectedValue);
             EspecialidadId = Convert.ToInt32(comboEspecialidades.SelectedValue);
+            if(EspecialidadId == -1)
+                return;
             var queryMedicos = from medico in db.Medico
                                join ms in db.MedicoSucursal
                                    on medico.MedicoID equals ms.IDMedico
                                where ms.IDSucursal == SucursalId &&
                                      medico.IDEspecialidad == EspecialidadId
                                select medico;
-            var queryAfiliados = from af in db.Afiliado
-                                 join usuario in db.Usuario
-                                    on af.AfiliadoID equals usuario.IDAfiliado
-                                 join medico in queryMedicos
-                                    on usuario.UsuarioID equals medico.IDUsuario
-                                 select af;
+            List<Afiliado> queryMedicosAfiliados = (from af in db.Afiliado
+                                                    join usuario in db.Usuario
+                                                       on af.AfiliadoID equals usuario.IDAfiliado
+                                                    join medico in queryMedicos
+                                                       on usuario.UsuarioID equals medico.IDUsuario
+                                                    select af).ToList();
+            if(queryMedicosAfiliados.Count > 0)
+                queryMedicosAfiliados.Insert(0,
+                    createSeleccioneOf(queryMedicosAfiliados.First().GetType()) as Afiliado);
+
             comboMedicos.ClearSelection();
-            comboMedicos.DataSource = queryAfiliados;
+            comboMedicos.DataSource = queryMedicosAfiliados;
             comboMedicos.DataTextField = "Apellido";
             comboMedicos.DataValueField = "AfiliadoId";
             comboMedicos.DataBind();
-            changeVisibilityBy(Tools.ESPECIALIDADSELECTED);
         }
 
         protected void comboMedicos_SelectedIndexChanged(object sender, EventArgs e) {
-            int SucursalId, MedicoId, szQuery;
+            changeVisibilityBy(Tools.MEDICOSELECTED);
+            int SucursalId, MedicoIdAsAfiliado, MedicoId, szQuery;
             string adviceDisponibilidad;
 
             SucursalId = Convert.ToInt32(comboSucursales.SelectedValue);
-            MedicoId = Convert.ToInt32(comboMedicos.SelectedValue);
             adviceDisponibilidad = "El médico está disponible ";
+            MedicoIdAsAfiliado= Convert.ToInt32(comboMedicos.SelectedValue);
+            if(MedicoIdAsAfiliado == -1)
+                return;
+            MedicoId = (from med in db.Medico
+                        join user in db.Usuario
+                            on med.IDUsuario equals user.UsuarioID
+                        where user.IDAfiliado == MedicoIdAsAfiliado
+                        select med.MedicoID).FirstOrDefault();
 
             List<Dia> queryDias = (from dia in db.Dia
                                    join dm in db.DisponibilidadMedico
@@ -164,7 +193,6 @@ namespace AppWeb {
             }
             adviceDisponibilidad += ".";
             Label18.Text = adviceDisponibilidad;
-            changeVisibilityBy(Tools.MEDICOSELECTED);
             fechaTurnoPicker.VisibleDate = DateTime.Now;
         }
 
@@ -179,12 +207,18 @@ namespace AppWeb {
                             "alert", "alert('" + msg + "')", true);
                 return;
             }
-            int SucursalId, MedicoId, DiaId, DiaSelected;
+
+            int SucursalId, MedicoIdAsAfiliado, MedicoId, DiaId, DiaSelected;
             bool diaCorrecto = false;
             List<Horario> queryHorariosDisponibles = new List<Horario>();
 
             SucursalId = Convert.ToInt32(comboSucursales.SelectedValue);
-            MedicoId = Convert.ToInt32(comboMedicos.SelectedValue);
+            MedicoIdAsAfiliado = Convert.ToInt32(comboMedicos.SelectedValue);
+            MedicoId = (from med in db.Medico
+                        join user in db.Usuario
+                            on med.IDUsuario equals user.UsuarioID
+                        where user.IDAfiliado == MedicoIdAsAfiliado
+                        select med.MedicoID).FirstOrDefault();
             DiaId = -1;
 
             var queryDias = (from dia in db.Dia
@@ -250,6 +284,7 @@ namespace AppWeb {
                 queryHorariosDisponibles = queryHorariosDisponibles
                                            .Except(queryHorariosUsados, new HorarioComparer())
                                            .ToList();
+
             comboHorarios.ClearSelection();
             comboHorarios.DataSource = queryHorariosDisponibles;
             comboHorarios.DataTextField = "Hora";
@@ -275,7 +310,11 @@ namespace AppWeb {
             HorarioId = Convert.ToInt32(comboHorarios.SelectedValue);
             fecha = fechaTurnoPicker.SelectedDate;
 
-            tToAdd.IDMedico = Convert.ToInt32(comboMedicos.SelectedValue);
+            tToAdd.IDMedico = (from med in db.Medico
+                               join user in db.Usuario
+                                   on med.IDUsuario equals user.UsuarioID
+                               where user.IDAfiliado == Convert.ToInt32(comboMedicos.SelectedValue)
+                               select med.MedicoID).FirstOrDefault();
             tToAdd.IDProvincia = Convert.ToInt32(comboProvincia.SelectedValue);
             tToAdd.IDLocalidad = Convert.ToInt32(comboLocalidad.SelectedValue);
             tToAdd.IDSucursal = Convert.ToInt32(comboSucursales.SelectedValue);
@@ -433,6 +472,56 @@ namespace AppWeb {
                     where hs.HorarioID == ft.IDHorario
                     select hs.Hora).First().ToString();
             TextBox6.Text = temp;
+        }
+
+        private object createSeleccioneOf(Type clase) {
+            /*
+                Esta función existe porque los DropDownList no detectan cambios cuando
+                se selecciona el primer elemento de la lista, entonces para cada uno
+                de ellos ponemos como primer elemento a un objeto (correspondiente) que 
+                diga Seleccione, para que puedan ser seleccionadas todas las opciones
+                que se listan.
+            */
+            object ret;
+            const int defId = -1;
+            const string defDescripcion = "--Seleccione--";
+
+            switch(clase.Name.Trim()) {
+                case "Provincia":
+                    Provincia aux_prv = new Provincia();
+                    aux_prv.ProvinciaId = defId;
+                    aux_prv.ProvinciaDescripcion = defDescripcion;
+                    ret = aux_prv;
+                    break;
+                case "Localidad":
+                    Localidad aux_loc = new Localidad();
+                    aux_loc.LocalidadId = defId;
+                    aux_loc.LocalidadDescripcion = defDescripcion;
+                    ret = aux_loc;
+                    break;
+                case "Sucursal":
+                    Sucursal aux_suc = new Sucursal();
+                    aux_suc.SucursalId = defId;
+                    aux_suc.SucursalDescripcion = defDescripcion;
+                    ret = aux_suc;
+                    break;
+                case "Especialidad":
+                    Especialidad aux_esp = new Especialidad();
+                    aux_esp.EspecialidadId = defId;
+                    aux_esp.EspecialidadDescripcion = defDescripcion;
+                    ret = aux_esp;
+                    break;
+                case "Afiliado":
+                    Afiliado aux_af = new Afiliado();
+                    aux_af.AfiliadoID = defId;
+                    aux_af.Apellido = defDescripcion;
+                    ret = aux_af;
+                    break;
+                default:
+                    ret = null;
+                    break;
+            }
+            return ret;
         }
 
         private void changeVisibilityBy(Tools which) {

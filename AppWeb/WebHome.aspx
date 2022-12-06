@@ -5,7 +5,7 @@
     <title></title>
 </head>
 <body>
-    <link href="WebHomeStyle.css" rel="stylesheet" type="text/css" />
+    <link href="Styles/WebHomeStyle.css" rel="stylesheet" type="text/css" />
     <form id="form1" runat="server">
         <div class="buttonsSection">
             <asp:Image ID="Image1" runat="server" />
@@ -23,6 +23,9 @@
                 <asp:Button ID="OtrasOpc" runat="server" Height="21px" 
                             Text="Otras opciones de contacto" Width="175px" 
                             OnClick="OtrasOpc_Click" />
+            </div>
+            <div class="button">
+                <input type="submit" value="Sign Out" runat="server" id="signOutButton"/>
             </div>
         </div>
         <div id="addInfo" class="infoSection" runat="server">

@@ -1,0 +1,25 @@
+﻿body {
+
+}
+
+.buttonsSection {
+    width: 30%;
+    height: 500px;
+    float: left;
+    background-color: darkblue;
+}
+
+.infoSection {
+    width: 70%;
+    height: 500px;
+    float: right;
+}
+
+.button {
+    margin-top: 40px;
+}
+
+.text-boxes {
+    margin-top: 70px;
+    margin-left: 40px;
+}
