@@ -27,10 +27,28 @@ namespace AppEscritorio {
             initSucursales();
         }
 
+        private void Reset() {
+            tempDM = new DisponibilidadMedico();
+            initSucursales();
+            abmDyS.Enabled = label12.Enabled = label2.Enabled = comboSucursales.Enabled = true;
+
+            label1.Visible = label3.Visible = label4.Visible = label5.Visible =
+            label6.Visible = label7.Visible = label8.Visible = label9.Visible =
+            label10.Visible = label11.Visible = label13.Visible = comboDias.Visible =
+            comboSucursalesRemove.Visible = comboProvincia.Visible = comboLocalidad.Visible =
+            comboSucursalesAñadir.Visible = comboSucModDias.Visible = comboDayToAdd.Visible =
+            comboDayToRm.Visible = abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible =
+            makeABM1.Visible = abmInicio.Visible = abmSuc.Visible = abmSuc1.Visible =
+            abmDay.Visible = abmDay1.Visible = RmSuc.Visible = AddSuc.Visible = AddRmDays.Visible =
+            addDay.Visible = rmDay.Visible = addDay.Checked = rmDay.Checked = RmSuc.Checked =
+            AddSuc.Checked = AddRmDays.Checked = false;
+
+            comboSucursalesRemove.Items.Clear();
+        }
+
         private void initSucursales() {
             int szSucursales;
-            for(int i = 0; i < comboSucursales.Items.Count; ++i)
-                comboSucursales.Items.RemoveAt(i);
+            comboSucursales.Items.Clear();
             tempSucursales = (from suc in db.Sucursal
                               join ms in db.MedicoSucursal
                                   on suc.SucursalId equals ms.IDSucursal
@@ -124,7 +142,7 @@ namespace AppEscritorio {
                 caption = "Operación realizada con éxito";
                 msg = "La relación entre usted y la sucursal ha sido modificada correctamente.";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
-                Application.Restart();
+                this.Reset();
             }
             catch(Exception) {
                 caption = "Operación fallida";
@@ -195,7 +213,6 @@ namespace AppEscritorio {
 
         private void RmSuc_CheckedChanged(object sender, EventArgs e) {
             if(RmSuc.Checked) {
-                comboSucursalesRemove.ResetText();
                 label6.Visible = comboSucursalesRemove.Visible = true;
                 AddSuc.Visible = abmDyS.Enabled = AddRmDays.Visible = false;
             }
@@ -240,7 +257,7 @@ namespace AppEscritorio {
                 caption = "Operación realizada con éxito";
                 msg = "La relación entre usted y la sucursal ha sido removida correctamente.";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
-                Application.Restart();
+                this.Reset();
             }
             catch(Exception) {
                 caption = "Operación fallida";
@@ -271,7 +288,7 @@ namespace AppEscritorio {
                 caption = "Operación realizada con éxito";
                 msg = "La relación entre usted y la sucursal ha sido registrada correctamente.";
                 MessageBox.Show(msg, caption,MessageBoxButtons.OK);
-                Application.Restart();
+                this.Reset();
             }
             catch(Exception) {
                 caption = "Operación fallida";
@@ -409,7 +426,7 @@ namespace AppEscritorio {
                 msg = "El nuevo día ha sido registrado exitosamente. Ahora proceda a editar los horarios y el consultorio en el apartado 'Modificar disponibilidad'. " + 
                       "Dichos valores están en 0 de manera predeterminada hasta que usted los modifique.";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
-                Application.Restart();
+                this.Reset();
             }
             catch(Exception) {
                 caption = "Operación fallida";
@@ -439,7 +456,7 @@ namespace AppEscritorio {
                 caption = "Operación realizada con éxito";
                 msg = "El día ha sido eliminado exitosamente.";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
-                Application.Restart();
+                this.Reset();
             }
             catch(Exception) {
                 caption = "Operación fallida";
