@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace AppEscritorio {
     public partial class Turnos : Form {
@@ -27,6 +28,11 @@ namespace AppEscritorio {
                                 select af).First();
             indexShowed = -1;
             previousState = home;
+        }
+
+        private void Reset() {
+            indexShowed = -1;
+            changeVisibilityBy(Tools.RESETALL);
         }
 
         private void back_Click(object sender, EventArgs e) {
@@ -85,7 +91,6 @@ namespace AppEscritorio {
                                                       .ToList()
                                                       .Distinct()
                                                       .ToList();
-
             comboEspecialidades.ResetText();
             comboEspecialidades.DisplayMember = "EspecialidadDescripcion";
             comboEspecialidades.ValueMember = "EspecialidadId";
@@ -103,12 +108,14 @@ namespace AppEscritorio {
                                where ms.IDSucursal == SucursalId &&
                                      medico.IDEspecialidad == EspecialidadId
                                select medico;
+
             var queryAfiliados = from af in db.Afiliado
                                  join usuario in db.Usuario
                                     on af.AfiliadoID equals usuario.IDAfiliado
                                  join medico in queryMedicos
                                     on usuario.UsuarioID equals medico.IDUsuario
                                  select af;
+
             comboMedicos.ResetText();
             comboMedicos.DisplayMember = "Apellido";
             comboMedicos.ValueMember = "AfiliadoId";
@@ -117,12 +124,17 @@ namespace AppEscritorio {
         }
 
         private void comboMedicos_SelectedIndexChanged(object sender, EventArgs e) {
-            int SucursalId, MedicoId, szQuery;
+            int SucursalId, MedicoIdAsAfiliado, MedicoId, szQuery;
             string adviceDisponibilidad;
 
             SucursalId = (int)comboSucursales.SelectedValue;
-            MedicoId = (int)comboMedicos.SelectedValue;
             adviceDisponibilidad = "El médico está disponible ";
+            MedicoIdAsAfiliado = (int)comboMedicos.SelectedValue;
+            MedicoId = (from med in db.Medico
+                        join user in db.Usuario
+                            on med.IDUsuario equals user.UsuarioID
+                        where user.IDAfiliado == MedicoIdAsAfiliado
+                        select med.MedicoID).FirstOrDefault();
 
             List<Dia> queryDias = (from dia in db.Dia
                                    join dm in db.DisponibilidadMedico
@@ -139,6 +151,7 @@ namespace AppEscritorio {
                     adviceDisponibilidad += "únicamente el día " + queryDias.FirstOrDefault().NombreDia.Trim();
                     break;
                 default:
+                    queryDias.Sort(new DayComparer());
                     adviceDisponibilidad += "los días ";
                     for(int i = 0;i < szQuery - 1; ++i) {
                         adviceDisponibilidad += queryDias[i].NombreDia.Trim();
@@ -153,25 +166,30 @@ namespace AppEscritorio {
             adviceDisponibilidad += ".";
             label18.Text = adviceDisponibilidad;
             changeVisibilityBy(Tools.MEDICOSELECTED);
-            fechaTurnoPicker.MinDate = DateTime.Today;
+            fechaTurnoPicker.Value = fechaTurnoPicker.MinDate = DateTime.Today;
         }
 
         private void fechaTurnoPicker_ValueChanged(object sender, EventArgs e) {
-            int SucursalId, MedicoId, DiaId, DiaSelected;
+            int SucursalId, MedicoIdAsAfiliado, MedicoId, DiaId, DiaSelected;
             bool diaCorrecto = false;
             string msg, caption;
             List<Horario> queryHorariosDisponibles = new List<Horario>();
 
             SucursalId = (int)comboSucursales.SelectedValue;
-            MedicoId = (int)comboMedicos.SelectedValue;
+            MedicoIdAsAfiliado = (int)comboMedicos.SelectedValue;
+            MedicoId = (from med in db.Medico
+                        join user in db.Usuario
+                            on med.IDUsuario equals user.UsuarioID
+                        where user.IDAfiliado == MedicoIdAsAfiliado
+                        select med.MedicoID).FirstOrDefault();
             DiaId = -1;
-            
-            var queryDias = (from dia in db.Dia
-                             join dispom in db.DisponibilidadMedico
-                                 on dia.DiaID equals dispom.IDDia
-                             where dispom.IDMedico == MedicoId &&
-                                   dispom.IDSucursal == SucursalId
-                             select dia).ToList();
+
+            List<Dia> queryDias = (from dia in db.Dia
+                                   join dispom in db.DisponibilidadMedico
+                                       on dia.DiaID equals dispom.IDDia
+                                   where dispom.IDMedico == MedicoId &&
+                                         dispom.IDSucursal == SucursalId
+                                   select dia).ToList();
 
             foreach(Dia dia in queryDias) {
                 DiaSelected = (int)fechaTurnoPicker.Value.Date.DayOfWeek;
@@ -253,7 +271,11 @@ namespace AppEscritorio {
             HorarioId = (int)comboHorarios.SelectedValue;
             fecha = fechaTurnoPicker.Value;
 
-            tToAdd.IDMedico = (int)comboMedicos.SelectedValue;
+            tToAdd.IDMedico = (from med in db.Medico
+                               join user in db.Usuario
+                                   on med.IDUsuario equals user.UsuarioID
+                               where user.IDAfiliado == (int)comboMedicos.SelectedValue
+                               select med.MedicoID).FirstOrDefault();
             tToAdd.IDProvincia = (int)comboProvincia.SelectedValue;
             tToAdd.IDLocalidad = (int)comboLocalidad.SelectedValue;
             tToAdd.IDSucursal = (int)comboSucursales.SelectedValue;
@@ -274,7 +296,7 @@ namespace AppEscritorio {
                     caption = "Operación realizada con éxito";
                     msg = "El turno ha sido generado exitosamente.";
                     MessageBox.Show(msg, caption, MessageBoxButtons.OK);
-                    Application.Restart();
+                    this.Reset();
                 }
                 catch(Exception) {
                     caption = "Operación fallida";
@@ -340,7 +362,7 @@ namespace AppEscritorio {
                 caption = "Operación realizada con éxito";
                 msg = "El turno ha sido eliminado exitosamente.";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
-                Application.Restart();
+                this.Reset();
             }
             catch(Exception) {
                 caption = "Operación fallida";
@@ -437,23 +459,35 @@ namespace AppEscritorio {
                     break;
                 case Tools.PROVINCIASELECTED:
                     label2.Visible = comboLocalidad.Visible = true;
-                    label6.Visible = comboHorarios.Visible = sacarTurnoButton.Visible = false;
+                    label3.Visible = label7.Visible = label4.Visible = label8.Visible = 
+                    label6.Visible = label18.Visible = comboSucursales.Visible = 
+                    comboEspecialidades.Visible = comboMedicos.Visible = 
+                    fechaTurnoPicker.Visible = comboHorarios.Visible =
+                    sacarTurnoButton.Visible = false;
                     break;
                 case Tools.LOCALIDADSELECTED:
                     label3.Visible = comboSucursales.Visible = true;
-                    label6.Visible = comboHorarios.Visible = sacarTurnoButton.Visible = false;
+                    label7.Visible = label4.Visible = label8.Visible = label6.Visible =
+                    label18.Visible = comboEspecialidades.Visible =
+                    comboMedicos.Visible = fechaTurnoPicker.Visible = comboHorarios.Visible =
+                    sacarTurnoButton.Visible = false;
                     break;
                 case Tools.SUCURSALSELECTED:
                     label7.Visible = comboEspecialidades.Visible = true;
-                    label6.Visible = comboHorarios.Visible = sacarTurnoButton.Visible = false;
+                    label4.Visible = label8.Visible = label6.Visible = label18.Visible = 
+                    comboMedicos.Visible = fechaTurnoPicker.Visible = comboHorarios.Visible =
+                    sacarTurnoButton.Visible = false;
                     break;
                 case Tools.ESPECIALIDADSELECTED:
                     label4.Visible = comboMedicos.Visible = true;
-                    label6.Visible = comboHorarios.Visible = sacarTurnoButton.Visible = false;
+                    label8.Visible = label6.Visible = label18.Visible =
+                    fechaTurnoPicker.Visible = comboHorarios.Visible =
+                    sacarTurnoButton.Visible = false;
                     break;
                 case Tools.MEDICOSELECTED:
                     label8.Visible = fechaTurnoPicker.Visible = label18.Visible = true;
-                    label6.Visible = comboHorarios.Visible = sacarTurnoButton.Visible = false;
+                    label6.Visible = comboHorarios.Visible =
+                    sacarTurnoButton.Visible = false;
                     break;
                 case Tools.FECHASELECTED:
                     label6.Visible = comboHorarios.Visible = true;
@@ -488,6 +522,23 @@ namespace AppEscritorio {
                 case Tools.INCORRECTDAY:
                     label6.Visible = comboHorarios.Visible = sacarTurnoButton.Visible = false;
                     break;
+                case Tools.RESETALL:
+                    addTurnoButton.Visible = addTurnoButton.Enabled =
+                    rmTurnoButton.Visible = rmTurnoButton.Enabled = true;
+
+                    cancelAddButton.Visible = cancelRmButton.Visible = label1.Visible =
+                    label2.Visible = label3.Visible = label4.Visible = label5.Visible =
+                    label6.Visible = label7.Visible = label8.Visible = label9.Visible =
+                    label10.Visible = label11.Visible = label12.Visible = label13.Visible =
+                    label14.Visible = label15.Visible = label16.Visible = label17.Visible =
+                    label18.Visible = comboProvincia.Visible = comboLocalidad.Visible =
+                    comboSucursales.Visible = comboEspecialidades.Visible =
+                    comboMedicos.Visible = fechaTurnoPicker.Visible = comboHorarios.Visible =
+                    textBox1.Visible = textBox2.Visible = textBox3.Visible = textBox4.Visible =
+                    textBox5.Visible = textBox6.Visible = textBox7.Visible =
+                    sacarTurnoButton.Visible = eliminarTurnoButton.Visible =
+                    nextTurnoButton.Visible = backTurnoButton.Visible = false;
+                    break;
             }
         }
 
@@ -501,6 +552,12 @@ namespace AppEscritorio {
             }
         }
 
+        private class DayComparer : IComparer<Dia> {
+            public int Compare(Dia x, Dia y) {
+                return x.DiaID.CompareTo(y.DiaID);
+            }
+        }
+
         private enum Tools {
             SACARNUEVOTURNO, SACARTURNO, ELIMINARTURNO, ELIMINARESTETURNO, CANCELARADD,
             CANCELARRM, SIGUIENTETURNO, ANTERIORTURNO,
@@ -508,7 +565,7 @@ namespace AppEscritorio {
             PROVINCIASELECTED, LOCALIDADSELECTED, SUCURSALSELECTED, ESPECIALIDADSELECTED,
             MEDICOSELECTED,FECHASELECTED,HORASELECTED,
             
-            ONLYTURNOTODELETE, LASTTURNOTODELETE, FIRSTTURNOTODELETE, INCORRECTDAY,
+            ONLYTURNOTODELETE, LASTTURNOTODELETE, FIRSTTURNOTODELETE, INCORRECTDAY, RESETALL
         }
 
         private void btnCerrar_Click(object sender, EventArgs e) {

@@ -51,8 +51,7 @@ namespace AppEscritorio
                 emisor = servidor.FirstOrDefault().Mail;
                 pass = servidor.FirstOrDefault().Pass;
 
-                EnviarMail email = new EnviarMail();
-                ve.setNroVerif(email.Enviar(emisor, pass, textBox1.Text));
+                ve.setNroVerif(EnviarMail.Enviar(emisor, pass, textBox1.Text, false));
                 MessageBox.Show("Hemos enviado un mensaje a su correo. Siga las instrucciones.");
 
                 label2.Visible = button2.Visible = textBox2.Visible = true;

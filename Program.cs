@@ -29,14 +29,14 @@ namespace AppEscritorio
         private static Classes.Usuario init() {
             Classes.TablesDataContext db = new Classes.TablesDataContext();
             return (from m in db.Usuario
-                    where m.UsuarioID == 5
+                    where m.UsuarioID == 22
                     select m).FirstOrDefault();
         }
 
         private static Classes.Medico initMedico() {
             Classes.TablesDataContext db = new Classes.TablesDataContext();
             return (from m in db.Medico
-                    where m.MedicoID == 1
+                    where m.MedicoID == 15
                     select m).FirstOrDefault();
         }
     }

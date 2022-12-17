@@ -53,7 +53,7 @@ namespace AppEscritorio {
             this.PanelMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.PanelMenu.Location = new System.Drawing.Point(0, 0);
             this.PanelMenu.Name = "PanelMenu";
-            this.PanelMenu.Size = new System.Drawing.Size(200, 504);
+            this.PanelMenu.Size = new System.Drawing.Size(200, 511);
             this.PanelMenu.TabIndex = 8;
             // 
             // logo
@@ -65,6 +65,7 @@ namespace AppEscritorio {
             this.logo.Size = new System.Drawing.Size(157, 101);
             this.logo.TabIndex = 4;
             this.logo.TabStop = false;
+            this.logo.Click += new System.EventHandler(this.logo_Click);
             // 
             // VerTurnos
             // 
@@ -97,6 +98,7 @@ namespace AppEscritorio {
             this.OtrasOpciones.TabIndex = 3;
             this.OtrasOpciones.Text = "Otras opciones de Contacto";
             this.OtrasOpciones.UseVisualStyleBackColor = false;
+            this.OtrasOpciones.Click += new System.EventHandler(this.OtrasOpciones_Click);
             // 
             // PanelContenedor
             // 
@@ -105,7 +107,7 @@ namespace AppEscritorio {
             this.PanelContenedor.Controls.Add(this.generatePDF);
             this.PanelContenedor.Location = new System.Drawing.Point(200, 37);
             this.PanelContenedor.Name = "PanelContenedor";
-            this.PanelContenedor.Size = new System.Drawing.Size(774, 467);
+            this.PanelContenedor.Size = new System.Drawing.Size(764, 474);
             this.PanelContenedor.TabIndex = 9;
             // 
             // textBoxTurno1
@@ -148,7 +150,7 @@ namespace AppEscritorio {
             this.BarraTitulo.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.BarraTitulo.Location = new System.Drawing.Point(0, 0);
             this.BarraTitulo.Name = "BarraTitulo";
-            this.BarraTitulo.Size = new System.Drawing.Size(974, 37);
+            this.BarraTitulo.Size = new System.Drawing.Size(964, 37);
             this.BarraTitulo.TabIndex = 7;
             // 
             // btnCerrar
@@ -166,7 +168,8 @@ namespace AppEscritorio {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(974, 504);
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(984, 511);
             this.Controls.Add(this.PanelMenu);
             this.Controls.Add(this.PanelContenedor);
             this.Controls.Add(this.BarraTitulo);

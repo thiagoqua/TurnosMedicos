@@ -7,9 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using PdfSharp.Pdf;
-using PdfSharp.Drawing;
-using PdfSharp.Drawing.Layout;
 using Classes;
 
 namespace AppEscritorio {
@@ -187,83 +184,14 @@ namespace AppEscritorio {
         }
 
         private void generatePDF_Click(object sender, EventArgs e) {
-            PdfDocument document = new PdfDocument();
-            PdfPage actualPage = document.AddPage();
-            XFont titleFont,headerFont,textFont;
-            XGraphics gfx = XGraphics.FromPdfPage(actualPage);
-            XTextFormatter formatter = new XTextFormatter(gfx);
-            XRect rect;
-            int deltaY,cantTurnos;
-            const int MAX_TURNOS_PER_PAGE = 8;
-            string header = "Turnos para el día " + fecha.Value.ToString("dddd") + " " +
-                            fecha.Value.Day.ToString() + " de " +
-                            fecha.Value.ToString("MMMM") + " de " +
-                            fecha.Value.Year,
-                   filepath, filename, caption, msg;
+            PDFDrawer drawer;
+            string filepath, filename, caption, msg;
 
             filepath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\";
             filename = "reporte.pdf";
-            deltaY = 80; cantTurnos = descripcionTurno.Length / 3;
-            rect = new XRect(0, 0, actualPage.Width, actualPage.Height);
+            drawer = new PDFDrawer(filepath, filename);
 
-            titleFont = new XFont("Calibri", 40, XFontStyle.Bold);
-            headerFont = new XFont("Calibri", 16, XFontStyle.Underline);
-            textFont = new XFont("Calibri", 12);
-            
-            //Escribo el título
-            gfx.DrawString("Doctor " + whoAmIAsAfiliado.Nombre.Trim() + " "
-                                     + whoAmIAsAfiliado.Apellido.Trim(),
-                                 titleFont,
-                                 XBrushes.DarkBlue,
-                                 rect,
-                                 XStringFormats.TopCenter
-            );
-
-            //Escribo la fecha
-            rect.X = 20;
-            rect.Y = deltaY;
-            formatter.DrawString(header,
-                                 headerFont,
-                                 XBrushes.DarkRed,
-                                 rect,
-                                 XStringFormats.TopLeft
-            );
-
-            for(int i = 0; i < cantTurnos; ++i) {
-                deltaY += 80;
-                rect.Y = deltaY;
-                gfx.DrawString(descripcionTurno[i, 0],
-                               textFont,
-                               XBrushes.Black,
-                               rect,
-                               XStringFormats.TopLeft
-                );
-
-                rect.Y = deltaY + 15;
-                gfx.DrawString(descripcionTurno[i, 1],
-                               textFont,
-                               XBrushes.Black,
-                               rect,
-                               XStringFormats.TopLeft
-                );
-
-                rect.Y = deltaY + 30;
-                gfx.DrawString(descripcionTurno[i, 2],
-                               textFont,
-                               XBrushes.Black,
-                               rect,
-                               XStringFormats.TopLeft
-                );
-
-                if(i % MAX_TURNOS_PER_PAGE == MAX_TURNOS_PER_PAGE - 1 && 
-                   i != cantTurnos - 1) {
-                    deltaY = 0;
-                    actualPage = document.AddPage();
-                    gfx = XGraphics.FromPdfPage(actualPage);
-                }
-            }
-
-            document.Save(filepath + filename);
+            drawer.drawFromMedico(whoAmIAsAfiliado, descripcionTurno, fecha.Value);
 
             caption = "Reporte generado de manera exitosa";
             msg = "El reporte ha sido creado y almacenado en " + filepath +

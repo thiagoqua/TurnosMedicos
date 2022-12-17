@@ -34,7 +34,6 @@ namespace AppEscritorio {
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxTurno1 = new System.Windows.Forms.TextBox();
             this.textBoxTurno2 = new System.Windows.Forms.TextBox();
-            this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.generatePDF = new System.Windows.Forms.Button();
             this.BarraTitulo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnCerrar)).BeginInit();
@@ -50,7 +49,7 @@ namespace AppEscritorio {
             this.BarraTitulo.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.BarraTitulo.Location = new System.Drawing.Point(200, 0);
             this.BarraTitulo.Name = "BarraTitulo";
-            this.BarraTitulo.Size = new System.Drawing.Size(794, 37);
+            this.BarraTitulo.Size = new System.Drawing.Size(819, 37);
             this.BarraTitulo.TabIndex = 9;
             this.BarraTitulo.Paint += new System.Windows.Forms.PaintEventHandler(this.BarraTitulo_Paint);
             // 
@@ -83,7 +82,7 @@ namespace AppEscritorio {
             this.PanelMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.PanelMenu.Location = new System.Drawing.Point(0, 0);
             this.PanelMenu.Name = "PanelMenu";
-            this.PanelMenu.Size = new System.Drawing.Size(200, 487);
+            this.PanelMenu.Size = new System.Drawing.Size(200, 491);
             this.PanelMenu.TabIndex = 10;
             // 
             // back
@@ -137,13 +136,6 @@ namespace AppEscritorio {
             this.textBoxTurno2.TabIndex = 16;
             this.textBoxTurno2.Visible = false;
             // 
-            // vScrollBar1
-            // 
-            this.vScrollBar1.Location = new System.Drawing.Point(976, 40);
-            this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(17, 447);
-            this.vScrollBar1.TabIndex = 17;
-            // 
             // generatePDF
             // 
             this.generatePDF.Image = global::AppEscritorio.Properties.Resources.PDF_IMAGE_L;
@@ -162,9 +154,9 @@ namespace AppEscritorio {
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(994, 487);
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(1019, 491);
             this.Controls.Add(this.generatePDF);
-            this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.textBoxTurno2);
             this.Controls.Add(this.textBoxTurno1);
             this.Controls.Add(this.label2);
@@ -193,7 +185,6 @@ namespace AppEscritorio {
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxTurno1;
         private System.Windows.Forms.TextBox textBoxTurno2;
-        private System.Windows.Forms.VScrollBar vScrollBar1;
         private System.Windows.Forms.Button back;
         private System.Windows.Forms.Button generatePDF;
     }

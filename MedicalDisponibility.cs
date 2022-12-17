@@ -14,7 +14,7 @@ namespace AppEscritorio {
 
         private Medico whoAmI;
         private TablesDataContext db;
-        private IList<Sucursal> tempSucursales;
+        private List<Sucursal> tempSucursales;
         private DisponibilidadMedico tempDM;
 
         private MedicalHome previousState;
@@ -24,15 +24,37 @@ namespace AppEscritorio {
             previousState = home;
             db = new TablesDataContext();
             tempDM = new DisponibilidadMedico();
-            tempSucursales = new List<Sucursal>();
             initSucursales();
+        }
+
+        private void Reset() {
+            tempDM = new DisponibilidadMedico();
+            initSucursales();
+            abmDyS.Enabled = label12.Enabled = label2.Enabled = comboSucursales.Enabled = true;
+
+            label1.Visible = label3.Visible = label4.Visible = label5.Visible =
+            label6.Visible = label7.Visible = label8.Visible = label9.Visible =
+            label10.Visible = label11.Visible = label13.Visible = comboDias.Visible =
+            comboSucursalesRemove.Visible = comboProvincia.Visible = comboLocalidad.Visible =
+            comboSucursalesAñadir.Visible = comboSucModDias.Visible = comboDayToAdd.Visible =
+            comboDayToRm.Visible = abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible =
+            makeABM1.Visible = abmInicio.Visible = abmSuc.Visible = abmSuc1.Visible =
+            abmDay.Visible = abmDay1.Visible = RmSuc.Visible = AddSuc.Visible = AddRmDays.Visible =
+            addDay.Visible = rmDay.Visible = addDay.Checked = rmDay.Checked = RmSuc.Checked =
+            AddSuc.Checked = AddRmDays.Checked = false;
+
+            comboSucursalesRemove.Items.Clear();
         }
 
         private void initSucursales() {
             int szSucursales;
-            for(int i = 0; i < comboSucursales.Items.Count; ++i)
-                comboSucursales.Items.RemoveAt(i);
-            tempSucursales = getSucursales();
+            comboSucursales.Items.Clear();
+            tempSucursales = (from suc in db.Sucursal
+                              join ms in db.MedicoSucursal
+                                  on suc.SucursalId equals ms.IDSucursal
+                              where ms.IDMedico == whoAmI.MedicoID
+                              select suc).ToList();
+
             szSucursales = tempSucursales.Count();
             string[] localidesText = getLocalidadesComplex(szSucursales);
             for(int i = 0; i < szSucursales; ++i) {
@@ -49,12 +71,14 @@ namespace AppEscritorio {
                               where dm.IDMedico == whoAmI.MedicoID &&
                                     dm.IDSucursal == tempSucursales[index].SucursalId
                               select dm;
-            var gettingDays = from dia in db.Dia
-                              join dm in queryDispoM on dia.DiaID equals dm.IDDia
-                              select dia;
+            var queryDias = from dia in db.Dia
+                            join dm in queryDispoM 
+                                on dia.DiaID equals dm.IDDia
+                            select dia;
+
             comboDias.DisplayMember = "NombreDia";
             comboDias.ValueMember = "DiaId";
-            comboDias.DataSource = gettingDays;
+            comboDias.DataSource = queryDias;
             label3.Visible = comboDias.Visible = label3.Enabled = comboDias.Enabled = true;
         }
         private void comboDias_SelectedIndexChanged(object sender, EventArgs e) {
@@ -65,20 +89,6 @@ namespace AppEscritorio {
 
             abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible = label1.Visible =
             label4.Visible = label5.Visible = true;
-        }
-
-        private IList<Sucursal> getSucursales() {
-            IList<Sucursal> sucursales = new List<Sucursal>();
-            var queryMiddleSucursales = from middleSuc in db.MedicoSucursal
-                                        where middleSuc.IDMedico == whoAmI.MedicoID
-                                        select middleSuc.IDSucursal;
-            foreach(int id in queryMiddleSucursales) {
-                var querySucursales = from suc in db.Sucursal
-                                      where suc.SucursalId == id
-                                      select suc;
-                sucursales.Add(querySucursales.First());
-            }
-            return sucursales;
         }
 
         private string[] getLocalidadesComplex(int size) {
@@ -132,7 +142,7 @@ namespace AppEscritorio {
                 caption = "Operación realizada con éxito";
                 msg = "La relación entre usted y la sucursal ha sido modificada correctamente.";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
-                Application.Restart();
+                this.Reset();
             }
             catch(Exception) {
                 caption = "Operación fallida";
@@ -146,6 +156,7 @@ namespace AppEscritorio {
             int hora, minutos, segundos;
             string[] stringTime;
             TimeSpan horaInicio, horaFin;
+
             stringTime = abmInicio.Text.Split(':');
             hora = Convert.ToInt32(stringTime[0]);
             minutos = Convert.ToInt32(stringTime[1]);
@@ -153,7 +164,6 @@ namespace AppEscritorio {
                 segundos = 0;
             else 
                 segundos = Convert.ToInt32(stringTime[2]);
-
             horaInicio = new TimeSpan(hora, minutos, segundos);
 
             stringTime = abmFin.Text.Split(':');
@@ -163,7 +173,6 @@ namespace AppEscritorio {
                 segundos = 0;
             else
                 segundos = Convert.ToInt32(stringTime[2]);
-
             horaFin = new TimeSpan(hora, minutos, segundos);
 
             if(horaInicio > horaFin) {
@@ -177,8 +186,8 @@ namespace AppEscritorio {
             }
             tempDM.HorarioFin = horaFin;
             tempDM.HorarioInicio = horaInicio;
-
             tempDM.Consultorio = Convert.ToInt32(abmConsultorio.Text);
+
             return true;
         }
 
@@ -204,7 +213,6 @@ namespace AppEscritorio {
 
         private void RmSuc_CheckedChanged(object sender, EventArgs e) {
             if(RmSuc.Checked) {
-                comboSucursalesRemove.ResetText();
                 label6.Visible = comboSucursalesRemove.Visible = true;
                 AddSuc.Visible = abmDyS.Enabled = AddRmDays.Visible = false;
             }
@@ -249,7 +257,7 @@ namespace AppEscritorio {
                 caption = "Operación realizada con éxito";
                 msg = "La relación entre usted y la sucursal ha sido removida correctamente.";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
-                Application.Restart();
+                this.Reset();
             }
             catch(Exception) {
                 caption = "Operación fallida";
@@ -280,7 +288,7 @@ namespace AppEscritorio {
                 caption = "Operación realizada con éxito";
                 msg = "La relación entre usted y la sucursal ha sido registrada correctamente.";
                 MessageBox.Show(msg, caption,MessageBoxButtons.OK);
-                Application.Restart();
+                this.Reset();
             }
             catch(Exception) {
                 caption = "Operación fallida";
@@ -418,7 +426,7 @@ namespace AppEscritorio {
                 msg = "El nuevo día ha sido registrado exitosamente. Ahora proceda a editar los horarios y el consultorio en el apartado 'Modificar disponibilidad'. " + 
                       "Dichos valores están en 0 de manera predeterminada hasta que usted los modifique.";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
-                Application.Restart();
+                this.Reset();
             }
             catch(Exception) {
                 caption = "Operación fallida";
@@ -448,7 +456,7 @@ namespace AppEscritorio {
                 caption = "Operación realizada con éxito";
                 msg = "El día ha sido eliminado exitosamente.";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
-                Application.Restart();
+                this.Reset();
             }
             catch(Exception) {
                 caption = "Operación fallida";

@@ -68,6 +68,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AplicacionDataSet.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Contacto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Contacto.Designer.cs">
+      <DependentUpon>Contacto.cs</DependentUpon>
+    </Compile>
     <Compile Include="Home.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -136,6 +142,9 @@
     <Compile Include="VerificarEmail.Designer.cs">
       <DependentUpon>VerificarEmail.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Contacto.resx">
+      <DependentUpon>Contacto.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Home.resx">
       <DependentUpon>Home.cs</DependentUpon>
     </EmbeddedResource>
