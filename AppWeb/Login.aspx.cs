@@ -15,6 +15,10 @@ namespace AppWeb
             //cmdForgot.ServerClick += new EventHandler(CmdForgot_ServerClick);
         }
 
+        private bool ValidateUser(string email, string pass) {
+            return Validar.Validate(email, pass) != null;
+        }
+
         //Login button
         private void CmdLogin_ServerClick(object sender, EventArgs e)   //ojo con el nombre porque el boton es cmdLogin
         {

@@ -19,7 +19,10 @@
         <asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
         <br />
         <br />
-        <asp:Button ID="Button1" runat="server" Text="Confirmar" />
+        <asp:Label id="lblMsg" ForeColor="red" Font-Name="Verdana" Font-Size="10" runat="server" />
+        <br />
+        <br />
+        <asp:Button ID="Button1" runat="server" Text="Confirmar" OnClick="Button1_Click" />
     </form>
 </body>
 </html>

@@ -10,8 +10,7 @@ namespace AppWeb
 {
     public class Global : HttpApplication
     {
-        protected void Application_Start(object sender, EventArgs e)
-        {
+        protected void Application_Start(object sender, EventArgs e){
             string JQueryVer = "1.7.1";
             ScriptManager.ScriptResourceMapping.AddDefinition("jquery", new ScriptResourceDefinition
             {
@@ -22,6 +21,11 @@ namespace AppWeb
                 CdnSupportsSecureConnection = true,
                 LoadSuccessExpression = "window.jQuery"
             });
+        }
+
+        void Session_Start(object s, EventArgs e) {
+            Session["requestChangePass"] = false;       //true si se pidió un cambio de contraseña y se envió el link al mail del usuario
+            Session["email"] = "";                      //guarda el mail ingresado por el usuario para cambiar la contraseña
         }
     }
 }

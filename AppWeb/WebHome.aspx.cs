@@ -191,14 +191,7 @@ namespace AppWeb {
 
         protected void OtrasOpc_Click(object sender, EventArgs e) {
             label1.Visible = label2.Visible = label3.Visible = true;
-            generatePDF.Visible = false;
-            for(int i = 0; i < boxes.Count(); ++i) {
-                if(i < 2) {
-                    boxes[i].Visible = false;
-                    continue;
-                }
-                addInfo.Visible = false;
-            }
+            generatePDF.Visible = textBoxTurno0.Visible = textBoxTurno1.Visible = false;
         }
 
         protected void signOutButton_Click(object sender, EventArgs e) {

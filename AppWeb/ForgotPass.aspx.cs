@@ -15,24 +15,28 @@ namespace AppWeb
 
         }
 
-        protected void Button1_Click(object sender, EventArgs e)
-        {
-            if (Validar.IsValidEmail(TextBox1.Text))
-            {
-                TablesDataContext db = new TablesDataContext();
+        protected void Button1_Click(object sender, EventArgs e){
+            if (Validar.IsValidEmail(TextBox1.Text)){
+                if(Validar.ExistingMail(TextBox1.Text)) {
+                    TablesDataContext db = new TablesDataContext();
 
-                var servidor = from m in db.ServidorMail
-                               select m;
-                string emisor = servidor.FirstOrDefault().Mail;
-                string pass = servidor.FirstOrDefault().Pass;
+                    var servidor = from m in db.ServidorMail
+                                   select m;
+                    string emisor = servidor.FirstOrDefault().Mail;
+                    string pass = servidor.FirstOrDefault().Pass;
 
-                //CAMBIAR BODY Y AGREGAR UN LINK PARA QUE 
-                EnviarMail.Enviar(emisor, pass, TextBox1.Text,true);
+                    //SE ENVIA UN CORREO CON UN LINK TEMPORAL 
+                    EnviarMail.Enviar(emisor, pass, TextBox1.Text, true);
+                    Session["requestChangePass"] = true;
 
-                ScriptManager.RegisterClientScriptBlock(this, this.GetType(),"alertMessage","alert('Hemos enviado un mensaje a su correo. Siga las instrucciones.')",true);
+                    //ScriptManager.RegisterClientScriptBlock(this, GetType(), "alertMessage", "alert('Hemos enviado un mensaje a su correo. Siga las instrucciones.')", true);
+                    Session["email"] = TextBox1.Text;     //recupero el mail ingresado para luego actualizar la base de datos en ChangePass
 
-                Response.Redirect("login.aspx", true);
-
+                    Response.Redirect("login.aspx", true);
+                }
+                else {
+                    lblMsg.Text = "El mail ingresado no se encuentra en nuestra base de datos, es decir, no se encuentra registrado.";
+                }
             }
             else
             {

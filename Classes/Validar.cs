@@ -22,6 +22,22 @@ namespace Classes
                 return false;
             }
         }
+
+        public static bool ExistingMail(string email) {
+            TablesDataContext db = new TablesDataContext();
+
+            var mail = from e in db.Usuario
+                        where email == e.UsuarioEmail
+                        select e;
+
+            if(mail.Count() > 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
         public static Usuario Validate(string email, string pass)
         {
             TablesDataContext db = new TablesDataContext();
@@ -44,7 +60,7 @@ namespace Classes
             var mail = (from user in db.Usuario
                         where email == user.UsuarioEmail
                         select user);
-
+            
             // Execute command and fetch pwd field into lookupPassword string.
             if(mail.Count() > 0){
                 logging = mail.FirstOrDefault();
