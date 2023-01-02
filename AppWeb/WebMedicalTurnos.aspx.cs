@@ -21,20 +21,19 @@ namespace AppWeb {
             //al usuario lo tomo del componente WebHome
             whoAmI = (Usuario)Session["user"];
             signOutButton.ServerClick += new EventHandler(signOutButton_Click);
+            boxes = new List<TextBox>();
 
             if(IsPostBack) {
                 db = (TablesDataContext)Session["database"];
                 descripcionTurno = (string[,])Session["turnos"];
                 whoAmIAsAfiliado = (Afiliado)Session["afiliado"];
                 whoAmIAsMedico = (Medico)Session["medico"];
-                boxes = (List<TextBox>)Session["boxes"];
             }
             else {
                 //ESTA PARTE VENDRÍA A REEMPLAZAR EL CONSTRUCTOR
                 fecha.Attributes["min"] = DateTime.Now.ToString("dd-MM-yyyy");
                 fecha.Attributes["max"] = DateTime.Now.AddYears(1).ToString("dd-MM-yyyy");
                 db = new TablesDataContext();
-                boxes = new List<TextBox>();
                 whoAmIAsAfiliado = (from af in db.Afiliado
                                     where af.AfiliadoID == whoAmI.IDAfiliado
                                     select af).FirstOrDefault();
@@ -45,7 +44,6 @@ namespace AppWeb {
                 Session["database"] = db;
                 Session["afiliado"] = whoAmIAsAfiliado;
                 Session["medico"] = whoAmIAsMedico;
-                Session["boxes"] = boxes;
             }
         }
 
@@ -72,19 +70,20 @@ namespace AppWeb {
                                 toAdd.Text = "";
                                 toAdd.Height = boxes[0].Height;
                                 toAdd.Width = boxes[0].Width;
+                                toAdd.BackColor = boxes[0].BackColor;
                                 break;
                             case 1:
                                 //pertenece a un box del lado derecho
                                 toAdd.Text = "";
                                 toAdd.Height = boxes[1].Height;
                                 toAdd.Width = boxes[1].Width;
+                                toAdd.BackColor = boxes[1].BackColor;
                                 break;
                         }
                         boxes.Add(toAdd);
                     }
                     break;
             }
-            Session["boxes"] = boxes;
         }
 
         protected void generatePDF_Click(object sender, EventArgs e) {
@@ -101,7 +100,8 @@ namespace AppWeb {
                   " con el nombre de " + filename;
 
             ClientScript.RegisterStartupScript(this.GetType(),
-                "alert", "alert('" + msg + "')", true);
+                "alert", "alert('" + msg + "');" +
+                         "window.location='WebMedicalTurnos.aspx';", true);
         }
 
         protected void fecha_TextChanged(object sender, EventArgs e) {
@@ -118,7 +118,6 @@ namespace AppWeb {
                                        select turno).ToList();
             
             szQuery = queryTurnos.Count();
-            var enumerator = addInfo.Controls.GetEnumerator();
             for(i = 0; i < boxes.Count(); ++i) {
                 switch(i) {
                     case 0:
@@ -134,7 +133,6 @@ namespace AppWeb {
             }
             if(szQuery == 0) {
                 generatePDF.Visible = false;
-                Session["boxes"] = boxes;
                 return;
             }
             makeBoxes(szQuery);
@@ -191,7 +189,6 @@ namespace AppWeb {
             }
             generatePDF.Visible = true;
             Session["turnos"] = descripcionTurno;
-            Session["boxes"] = boxes;
         }
 
         protected void signOutButton_Click(object sender, EventArgs e) {

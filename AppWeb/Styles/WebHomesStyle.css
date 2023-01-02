@@ -1,0 +1,97 @@
+﻿/*USADO POR WebHome, WebMedicalHome Y WebMedicalTurnos*/
+body {
+    background-color: #CDD4F7;
+    font-family: Calibri;
+}
+
+.buttonsSection {
+    width: 30%;
+    height: 500px;
+    float: left;
+    background-color: #2400A0;
+    /*background-image: linear-gradient(#2400A0,#CDD4F7);*/
+    text-align: center;
+    border-radius: 5px 5px;
+    height: 700px;
+}
+
+.infoSection {
+    width: 70%;
+    float: right;
+}
+
+.button {
+    margin-top: 40px;
+    background-color: #B0B3EB;
+    border-color: aliceblue;
+    border-radius: 10px 15px;
+    font-size: x-large;
+    color: #2400A0;
+}
+
+    .button:hover {
+        background-color: aliceblue;
+        color: #2400A0;
+        border-color: #f57839;
+    }
+
+.main-text-boxes {
+    margin-top: 30px;
+    margin-left: 10%;
+    border-radius: 7px 7px;
+    box-shadow: 5px 5px #0E0067;
+    color: #0E0067;
+}
+
+.text-boxes {
+    margin-bottom: 50px;
+    margin-left: 10%;
+    box-shadow: 5px 5px #0E0067;
+    border-radius: 5px 5px;
+    color: #0E0067;
+}
+
+.labeles {
+    float: right;
+    font-size: xx-large;
+    margin-top:40px;
+    margin-right: 20%;
+}
+
+.PDFgenerator {
+    background-color: #F57839;
+    margin-left: 38%;
+    border-radius: 10px 15px;
+    border-color: #2400A0;
+    font-size: x-large; 
+    height: 60px;
+}
+
+    .PDFgenerator:hover {
+        background-color: #2400A0;
+        color: aliceblue;
+        border-color: #f57839;
+    }
+
+    .PDFgenerator:focus {
+        background-color: aliceblue;
+        color: #F57839;
+        border-color: #F57839;
+    }
+
+.back-button {
+    margin-top: 40px;
+    background-color: #7EABED;
+    border-color: aliceblue;
+    border-radius: 10px 15px;
+    font-size: xx-large;
+    height:20%;
+    width:40%;
+    color: #2400A0;
+}
+
+    .back-button:hover {
+        background-color: aliceblue;
+        color: #2400A0;
+        border-color: #f57839;
+    }

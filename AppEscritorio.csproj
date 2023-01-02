@@ -225,6 +225,7 @@
   <ItemGroup>
     <None Include="Resources\NEXT_ARROW.png" />
     <None Include="Resources\BACK_ARROW.png" />
+    <Content Include="Resources\FCB_ICON.png" />
     <Content Include="Resources\PDF_IMAGE_L.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -184,6 +184,52 @@ namespace AppEscritorio {
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
                 return false;
             }
+
+            /*
+              cuando la hora de inicio actualizada es posterior a la hora de inicio anterior,
+              elimino todos los turnos de los pacientes que estén entre dicha franja horaria
+            */
+            if(horaInicio > tempDM.HorarioInicio) {
+                var queryTurnos = from turno in db.Turno
+                                  join ft in db.FechaTurno
+                                     on turno.IDFechaTurno equals ft.FechaTurnoID
+                                  join hs in db.Horario
+                                     on ft.IDHorario equals hs.HorarioID
+                                  where hs.Hora >= tempDM.HorarioInicio &&
+                                        hs.Hora <= horaInicio
+                                  select turno;
+
+                var queryFT = from ft in db.FechaTurno
+                              join turno in queryTurnos
+                                 on ft.FechaTurnoID equals turno.IDFechaTurno
+                              select ft;
+
+                db.Turno.DeleteAllOnSubmit(queryTurnos);
+                db.FechaTurno.DeleteAllOnSubmit(queryFT);
+            }
+            /*
+              cuando la hora de finalización actualizada es previa a la hora de finalización 
+              anterior, elimino todos los turnos de los pacientes que estén entre dicha franja horaria
+            */
+            if(horaFin < tempDM.HorarioFin) {
+                var queryTurnos = from turno in db.Turno
+                                  join ft in db.FechaTurno
+                                     on turno.IDFechaTurno equals ft.FechaTurnoID
+                                  join hs in db.Horario
+                                     on ft.IDHorario equals hs.HorarioID
+                                  where hs.Hora <= tempDM.HorarioFin &&
+                                        hs.Hora >= horaFin
+                                  select turno;
+
+                var queryFT = from ft in db.FechaTurno
+                              join turno in queryTurnos
+                                 on ft.FechaTurnoID equals turno.IDFechaTurno
+                              select ft;
+
+                db.Turno.DeleteAllOnSubmit(queryTurnos);
+                db.FechaTurno.DeleteAllOnSubmit(queryFT);
+            }
+
             tempDM.HorarioFin = horaFin;
             tempDM.HorarioInicio = horaInicio;
             tempDM.Consultorio = Convert.ToInt32(abmConsultorio.Text);
@@ -242,16 +288,35 @@ namespace AppEscritorio {
         private void abmSuc_Click(object sender, EventArgs e) {
             string msg, caption;
             int index = comboSucursalesRemove.SelectedIndex;
+            MedicoSucursal msToRemove;
+
+            //elimino toda la disponiblidad (días y horarios) del medico en dicha sucursal
             var queryDM = from dm in db.DisponibilidadMedico
                           where dm.IDMedico == whoAmI.MedicoID &&
                                 dm.IDSucursal == tempSucursales[index].SucursalId
                           select dm;
-            var queryMS = from ms in db.MedicoSucursal
+
+            //elimino la relación entre el médico y la sucursal en cuestión
+            msToRemove = (from ms in db.MedicoSucursal
                           where ms.IDMedico == whoAmI.MedicoID &&
                                 ms.IDSucursal == tempSucursales[index].SucursalId
-                          select ms;
+                          select ms).First();
+            /* elimino todos los turnos que los pacientes tienen sacados
+            con el médico en dicha sucursal */
+            var queryTurnos = from turno in db.Turno
+                              where turno.IDMedico == whoAmI.MedicoID &&
+                                    turno.IDSucursal == tempSucursales[index].SucursalId
+                              select turno;
+            //idem para tabla FechaTurno
+            var queryFT = from ft in db.FechaTurno
+                          join turno in queryTurnos
+                             on ft.FechaTurnoID equals turno.IDFechaTurno
+                          select ft;
+
             db.DisponibilidadMedico.DeleteAllOnSubmit(queryDM);
-            db.MedicoSucursal.DeleteOnSubmit(queryMS.First());
+            db.MedicoSucursal.DeleteOnSubmit(msToRemove);
+            db.Turno.DeleteAllOnSubmit(queryTurnos);
+            db.FechaTurno.DeleteAllOnSubmit(queryFT);
             try {
                 db.SubmitChanges();
                 caption = "Operación realizada con éxito";
@@ -308,6 +373,7 @@ namespace AppEscritorio {
             comboLocalidad.ValueMember = "LocalidadId";
             comboLocalidad.DataSource = queryLocalidad;
             comboLocalidad.Visible = label9.Visible =  true;
+            label8.Visible = comboSucursalesAñadir.Visible = abmSuc1.Visible = false;
         }
 
         private void comboLocalidad_SelectedIndexChanged(object sender, EventArgs e) {
@@ -321,8 +387,9 @@ namespace AppEscritorio {
                                  .ToList();
             comboSucursalesAñadir.DisplayMember = "SucursalDescripcion";
             comboSucursalesAñadir.ValueMember = "SucursalId";
-            comboSucursalesAñadir.DataSource = (IList<Sucursal>) querySucursal;
+            comboSucursalesAñadir.DataSource = querySucursal;
             comboSucursalesAñadir.Visible = label8.Visible = true;
+            abmSuc1.Visible = false;
         }
         private void comboSucursalesAñadir_SelectedIndexChanged(object sender, EventArgs e) {
             abmSuc1.Visible = true;
@@ -443,14 +510,33 @@ namespace AppEscritorio {
         private void abmDay1_Click(object sender, EventArgs e) {
             string msg, caption;
             int SucursalId, DiaId;
+
             SucursalId = (int)comboSucModDias.SelectedValue;
             DiaId = (int)comboDayToRm.SelectedValue;
+            
+            //elimino todos los días que el médico trabaja en dicha sucursal
             var dmsToRemove = from dm in db.DisponibilidadMedico
-                              where dm.IDMedico == whoAmI.MedicoID &&
+                                where dm.IDMedico == whoAmI.MedicoID &&
                                     dm.IDDia == DiaId &&
                                     dm.IDSucursal == SucursalId
-                              select dm;
+                                select dm;
+            //elimino los turnos que los pacientes tienen con el médico para el día eliminado
+            var turnosToRemove = from turno in db.Turno
+                                    join ft in db.FechaTurno
+                                    on turno.IDFechaTurno equals ft.FechaTurnoID
+                                    where turno.IDMedico == whoAmI.MedicoID &&
+                                        turno.IDSucursal == SucursalId &&
+                                        ft.IDDia == DiaId
+                                    select turno;
+            //idem para tabla FechaTurno
+            var ftToRemove = from ft in db.FechaTurno
+                                join turno in turnosToRemove
+                                on ft.FechaTurnoID equals turno.IDFechaTurno
+                                select ft;
+
             db.DisponibilidadMedico.DeleteAllOnSubmit(dmsToRemove);
+            db.Turno.DeleteAllOnSubmit(turnosToRemove);
+            db.FechaTurno.DeleteAllOnSubmit(ftToRemove);
             try {
                 db.SubmitChanges();
                 caption = "Operación realizada con éxito";

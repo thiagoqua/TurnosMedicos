@@ -24,7 +24,7 @@ namespace AppWeb {
             //al usuario lo tomo del componente Login
             whoAmI = (Usuario) Session["user"];
             boxes = new List<TextBox>();
-            signOutButton.ServerClick += new EventHandler(signOutButton_Click);
+            generatePDF.Visible = false;
             if(IsPostBack) {
                 db = (TablesDataContext) Session["database"];
                 descripcionTurno = (string[,]) Session["turnos"];
@@ -65,12 +65,14 @@ namespace AppWeb {
                                 toAdd.Text = "";
                                 toAdd.Height = boxes[0].Height;
                                 toAdd.Width = boxes[0].Width;
+                                toAdd.BackColor = boxes[0].BackColor;
                                 break;
                             case 1:
                                 //pertenece a un box del lado derecho
                                 toAdd.Text = "";
                                 toAdd.Height = boxes[1].Height;
                                 toAdd.Width = boxes[1].Width;
+                                toAdd.BackColor = boxes[1].BackColor;
                                 break;
                         }
                         boxes.Add(toAdd);
@@ -80,7 +82,8 @@ namespace AppWeb {
         }
 
         protected void verTurnosButton_Click(object sender, EventArgs e) {
-            label1.Visible = label2.Visible = label3.Visible = false;
+            label1.Visible = label2.Visible = label3.Visible =
+            FCBicon.Visible = MAILicon.Visible = PHONEicon.Visible = false;
             int szQuery, i;
             Turno tempTurno;
             Afiliado tempMedico;
@@ -159,13 +162,13 @@ namespace AppWeb {
                 boxes[i].Enabled = false;
                 boxes[i].TextMode = TextBoxMode.MultiLine;
                 boxes[i].ReadOnly = true;
-                boxes[i].CssClass = "text-boxes";
                 boxes[i].Text = descripcionTurno[i, 0] + newline +
                                 descripcionTurno[i, 1] + newline +
                                 descripcionTurno[i, 2] + newline +
                                 descripcionTurno[i, 3] + newline;
                 if(i < 2)
                     continue;
+                boxes[i].CssClass = "text-boxes";
                 addInfo.Controls.Add(boxes[i]);
             }
             generatePDF.Visible = true;
@@ -173,6 +176,7 @@ namespace AppWeb {
         }
 
         protected void generatePDF_Click(object sender, EventArgs e) {
+            textBoxTurno0.Visible = textBoxTurno1.Visible = false;
             PDFDrawer drawer;
             string filepath, filename, msg;
 
@@ -190,7 +194,8 @@ namespace AppWeb {
         }
 
         protected void OtrasOpc_Click(object sender, EventArgs e) {
-            label1.Visible = label2.Visible = label3.Visible = true;
+            label1.Visible = label2.Visible = label3.Visible = 
+            FCBicon.Visible = MAILicon.Visible = PHONEicon.Visible = true;
             generatePDF.Visible = textBoxTurno0.Visible = textBoxTurno1.Visible = false;
         }
 

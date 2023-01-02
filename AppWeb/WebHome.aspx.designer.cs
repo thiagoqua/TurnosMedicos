@@ -58,13 +58,13 @@ namespace AppWeb {
         protected global::System.Web.UI.WebControls.Button OtrasOpc;
 
         /// <summary>
-        /// signOutButton control.
+        /// signOut control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputSubmit signOutButton;
+        protected global::System.Web.UI.WebControls.Button signOut;
 
         /// <summary>
         /// addInfo control.
@@ -103,6 +103,15 @@ namespace AppWeb {
         protected global::System.Web.UI.WebControls.TextBox textBoxTurno1;
 
         /// <summary>
+        /// PHONEicon control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image PHONEicon;
+
+        /// <summary>
         /// label1 control.
         /// </summary>
         /// <remarks>
@@ -112,6 +121,15 @@ namespace AppWeb {
         protected global::System.Web.UI.WebControls.Label label1;
 
         /// <summary>
+        /// MAILicon control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image MAILicon;
+
+        /// <summary>
         /// label2 control.
         /// </summary>
         /// <remarks>
@@ -119,6 +137,15 @@ namespace AppWeb {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label label2;
+
+        /// <summary>
+        /// FCBicon control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image FCBicon;
 
         /// <summary>
         /// label3 control.

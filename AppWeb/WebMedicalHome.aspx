@@ -7,22 +7,21 @@
     <title></title>
 </head>
 <body>
-    <link href="Styles/WebHomeStyle.css" rel="stylesheet" type="text/css" />
+    <link href="Styles/WebHomesStyle.css" rel="stylesheet" type="text/css" />
     <form id="form1" runat="server">
         <div class="buttonsSection">
             <asp:Image ID="Image1" runat="server" />
-            <div class="button">
-                <asp:Button ID="verTurnosButton" runat="server" Height="21px" 
-                            Text="Ver turnos" PostBackUrl="~/WebMedicalTurnos.aspx"
-                            Width="104px"/>
+            <div>
+                <asp:Button ID="verTurnosButton" runat="server" CssClass="button"
+                            Text="Ver turnos" PostBackUrl="~/WebMedicalTurnos.aspx"/>
             </div>
-            <div class="button">
-                <asp:Button ID="verDisponibilidadButton" runat="server" Height="18px" 
-                            Text="Ver disponibilidad" Width="171px"
-                            PostBackUrl="~/WebMedicalDisponibility.aspx"/>
+            <div>
+                <asp:Button ID="verDisponibilidadButton" runat="server" CssClass="button"
+                            Text="Ver disponibilidad" PostBackUrl="~/WebMedicalDisponibility.aspx"/>
             </div>
-            <div class="button">
-                <input type="submit" value="Sign Out" runat="server" id="signOutButton"/>
+            <div>
+                <asp:Button ID="signOut" runat="server" CssClass="button"
+                            Text="Sign out" OnClick="signOutButton_Click" />
             </div>
         </div>
     </form>

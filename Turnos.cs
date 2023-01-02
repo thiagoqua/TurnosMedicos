@@ -60,6 +60,7 @@ namespace AppEscritorio {
             comboLocalidad.ValueMember = "LocalidadId";
             comboLocalidad.DataSource = queryLocalidad;
             changeVisibilityBy(Tools.PROVINCIASELECTED);
+            showHayDisponibilidad(queryLocalidad.Count() != 0, "localidades");
         }
 
         private void comboLocalidad_SelectedIndexChanged(object sender, EventArgs e) {
@@ -72,6 +73,7 @@ namespace AppEscritorio {
             comboSucursales.ValueMember = "SucursalId";
             comboSucursales.DataSource = querySucursal;
             changeVisibilityBy(Tools.LOCALIDADSELECTED);
+            showHayDisponibilidad(querySucursal.Count() != 0, "sucursales");
         }
 
         private void comboSucursales_SelectedIndexChanged(object sender, EventArgs e) {
@@ -96,6 +98,7 @@ namespace AppEscritorio {
             comboEspecialidades.ValueMember = "EspecialidadId";
             comboEspecialidades.DataSource = queryEspecialidades;
             changeVisibilityBy(Tools.SUCURSALSELECTED);
+            showHayDisponibilidad(queryEspecialidades.Count != 0, "especialidades");
         }
 
         private void comboEspecialidades_SelectedIndexChanged(object sender, EventArgs e) {
@@ -121,6 +124,7 @@ namespace AppEscritorio {
             comboMedicos.ValueMember = "AfiliadoId";
             comboMedicos.DataSource = queryAfiliados;
             changeVisibilityBy(Tools.ESPECIALIDADSELECTED);
+            showHayDisponibilidad(queryAfiliados.Count() != 0, "medicos");
         }
 
         private void comboMedicos_SelectedIndexChanged(object sender, EventArgs e) {
@@ -146,6 +150,7 @@ namespace AppEscritorio {
             szQuery = queryDias.Count;
             switch(szQuery) {
                 case 0:
+                    showHayDisponibilidad(false, "dias disponibles");
                     return;
                 case 1:
                     adviceDisponibilidad += "únicamente el día " + queryDias.FirstOrDefault().NombreDia.Trim();
@@ -252,6 +257,7 @@ namespace AppEscritorio {
             comboHorarios.ValueMember = "HorarioId";
             comboHorarios.DataSource = queryHorariosDisponibles;
             changeVisibilityBy(Tools.FECHASELECTED);
+            showHayDisponibilidad(queryHorariosDisponibles.Count() != 0, "horarios");
         }
 
         private void comboHorarios_SelectedIndexChanged(object sender, EventArgs e) {
@@ -425,6 +431,14 @@ namespace AppEscritorio {
             textBox6.Text = temp;
         }
 
+        private void showHayDisponibilidad(bool hay, string category) {
+            if(!hay) {
+                label18.Text = "Actualmente, no tenemos " + category +
+                               " según los apartados seleccionados.";
+                label18.Visible = true;
+            }
+        }
+
         private void cancelAddButton_Click(object sender, EventArgs e) {
             changeVisibilityBy(Tools.CANCELARADD);
         }
@@ -540,6 +554,13 @@ namespace AppEscritorio {
                     nextTurnoButton.Visible = backTurnoButton.Visible = false;
                     break;
             }
+            /*
+                si la label18 está visible y no la hizo visible la selección del médico,
+                es porque la hizo visible la falta de disponibilidad de alguna categoría,
+                por lo que la ocultamos 
+            */
+            if(label18.Visible && (which != Tools.MEDICOSELECTED))
+                label18.Visible = false;
         }
 
         private class HorarioComparer : IEqualityComparer<Horario> {

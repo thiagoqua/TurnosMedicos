@@ -67,6 +67,7 @@ namespace AppWeb {
             comboLocalidad.DataTextField = "LocalidadDescripcion";
             comboLocalidad.DataValueField = "LocalidadId";
             comboLocalidad.DataBind();
+            showHayDisponibilidad(queryLocalidad.Count != 0,"localidades");
         }
         
         protected void comboLocalidad_SelectedIndexChanged(object sender, EventArgs e) {
@@ -86,6 +87,7 @@ namespace AppWeb {
             comboSucursales.DataTextField = "SucursalDescripcion";
             comboSucursales.DataValueField = "SucursalId";
             comboSucursales.DataBind();
+            showHayDisponibilidad(querySucursal.Count != 0,"sucursales");
         }
 
         protected void comboSucursales_SelectedIndexChanged(object sender, EventArgs e) {
@@ -117,6 +119,7 @@ namespace AppWeb {
             comboEspecialidades.DataTextField = "EspecialidadDescripcion";
             comboEspecialidades.DataValueField = "EspecialidadId";
             comboEspecialidades.DataBind();
+            showHayDisponibilidad(queryEspecialidades.Count != 0,"especialidades");
         }
 
         protected void comboEspecialidades_SelectedIndexChanged1(object sender, EventArgs e) {
@@ -147,6 +150,7 @@ namespace AppWeb {
             comboMedicos.DataTextField = "Apellido";
             comboMedicos.DataValueField = "AfiliadoId";
             comboMedicos.DataBind();
+            showHayDisponibilidad(queryMedicosAfiliados.Count != 0,"medicos");
         }
 
         protected void comboMedicos_SelectedIndexChanged(object sender, EventArgs e) {
@@ -175,6 +179,7 @@ namespace AppWeb {
             szQuery = queryDias.Count;
             switch(szQuery) {
                 case 0:
+                    showHayDisponibilidad(false, "dias disponibles");
                     return;
                 case 1:
                     adviceDisponibilidad += "únicamente el día " + queryDias.FirstOrDefault().NombreDia.Trim();
@@ -198,7 +203,6 @@ namespace AppWeb {
 
         protected void fechaTurnoPicker_SelectionChanged(object sender, EventArgs e) {
             string msg;
-            //SOLUCION TEMPORAL, VER DE HACER DE OTRA FORMA SINO
             if(fechaTurnoPicker.SelectedDate < DateTime.Now) {
                 msg = "ATENCIÓN! La fecha seleccionada es incorrecta ya que es una fecha anterior " +
                       "al día de hoy. No podemos sacarle un turno para un día que ya pasó. " + 
@@ -290,6 +294,7 @@ namespace AppWeb {
             comboHorarios.DataTextField = "Hora";
             comboHorarios.DataValueField = "HorarioId";
             comboHorarios.DataBind();
+            showHayDisponibilidad(queryHorariosDisponibles.Count != 0,"horarios");
             changeVisibilityBy(Tools.FECHASELECTED);
         }
 
@@ -445,7 +450,7 @@ namespace AppWeb {
                         on esp.EspecialidadId equals m.IDEspecialidad
                     where m.MedicoID == medico.MedicoID
                     select esp.EspecialidadDescripcion).First();
-            TextBox7.Text = temp.Trim();
+            TextBox2.Text = temp.Trim();
 
             temp = (from prov in db.Provincia
                     where prov.ProvinciaId == turno.IDProvincia
@@ -466,12 +471,12 @@ namespace AppWeb {
                   where ftt.FechaTurnoID == turno.IDFechaTurno
                   select ftt).First();
             temp = ft.Fecha.ToString("dd/MM/yyyy");
-            TextBox2.Text = temp;
+            TextBox6.Text = temp;
 
             temp = (from hs in db.Horario
                     where hs.HorarioID == ft.IDHorario
                     select hs.Hora).First().ToString();
-            TextBox6.Text = temp;
+            TextBox7.Text = temp;
         }
 
         private object createSeleccioneOf(Type clase) {
@@ -524,6 +529,14 @@ namespace AppWeb {
             return ret;
         }
 
+        private void showHayDisponibilidad(bool hay,string category) {
+            if(!hay) {
+                Label18.Text = "Actualmente, no tenemos " + category +
+                               " según los apartados seleccionados.";
+                Label18.Visible = true;
+            }
+        }
+
         private void changeVisibilityBy(Tools which) {
             switch(which) {
                 case Tools.ELIMINARTURNO:
@@ -534,7 +547,7 @@ namespace AppWeb {
                     Label17.Visible = Label8.Visible =
                     nextTurnoButton.Visible = eliminarTurnoButton.Visible =
                     cancelRmButton.Visible = true;
-                    rmTurnoButton.Enabled = false;
+                    rmTurnoButton.Enabled = addTurnoButton.Visible = false;
                     break;
                 case Tools.LASTTURNOTODELETE:
                     Label17.Visible = nextTurnoButton.Visible = false;

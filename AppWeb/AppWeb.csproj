@@ -75,18 +75,20 @@
     <Content Include="Ingreso.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Registro.aspx" />
+    <None Include="Resources\FCB_ICON.png" />
+    <Content Include="Resources\MAIL_ICON.png" />
+    <Content Include="Resources\PDF_IMAGE_L.png" />
+    <Content Include="Resources\PHONE_ICON.png" />
+    <Content Include="Styles\WebHomesStyle.css" />
     <Content Include="Verificacion.aspx" />
     <Content Include="VerificarEmail.aspx" />
     <Content Include="Web.config" />
     <Content Include="WebHome.aspx" />
-    <Content Include="Styles\WebHomeStyle.css" />
     <Content Include="WebMedicalDisponibility.aspx" />
-    <Content Include="Styles\WebMedicalDisponibilityStyle.css" />
+    <Content Include="Styles\WebABMStyle.css" />
     <Content Include="WebMedicalHome.aspx" />
     <Content Include="WebMedicalTurnos.aspx" />
-    <Content Include="Styles\WebMedicalTurnosStyle.css" />
     <Content Include="WebTurnos.aspx" />
-    <Content Include="Styles\WebTurnosStyle.css" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChangePass.aspx.cs">
@@ -134,6 +136,11 @@
     </Compile>
     <Compile Include="Registro.aspx.designer.cs">
       <DependentUpon>Registro.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Verificacion.aspx.cs">
       <DependentUpon>Verificacion.aspx</DependentUpon>
@@ -203,6 +210,12 @@
       <Project>{8D4F8FB3-EEC0-4002-84EF-2B21A0CFAD2A}</Project>
       <Name>Classes</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

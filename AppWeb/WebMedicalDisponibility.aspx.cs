@@ -25,7 +25,6 @@ namespace AppWeb {
                                                       on suc.SucursalId equals ms.IDSucursal
                                                   where ms.IDMedico == whoAmI.MedicoID
                                                   select suc).ToList();
-
                 if(querySucursales.Count > 0)
                     querySucursales.Insert(0,
                         createSeleccioneOf(querySucursales.First().GetType()) as Sucursal);
@@ -102,8 +101,10 @@ namespace AppWeb {
 
         protected void comboSucursales_SelectedIndexChanged(object sender, EventArgs e) {
             int SucursalId = Convert.ToInt32(comboSucursales.SelectedValue);
-            if(SucursalId == -1)
+            if(SucursalId == -1) {
+                changeVisibilityBy(Tools.INCORRECTSUCSELECTED);
                 return;
+            }
             showSucursalData(SucursalId);
             var queryDispoM = from dm in db.DisponibilidadMedico
                               where dm.IDMedico == whoAmI.MedicoID &&
@@ -129,8 +130,12 @@ namespace AppWeb {
 
             SucursalId = Convert.ToInt32(comboSucursales.SelectedValue);
             DiaID = Convert.ToInt32(comboDias.SelectedValue);
-            if(DiaID == -1)
+
+            if(DiaID == -1) {
+                changeVisibilityBy(Tools.INCORRECTDSELECTED);
                 return;
+            }
+
             tempDM = (from dm in db.DisponibilidadMedico
                       where dm.IDMedico == whoAmI.MedicoID &&
                             dm.IDSucursal == SucursalId &&
@@ -197,6 +202,51 @@ namespace AppWeb {
                 return false;
             }
 
+            /*
+              cuando la hora de inicio actualizada es posterior a la hora de inicio anterior,
+              elimino todos los turnos de los pacientes que estén entre dicha franja horaria
+            */
+            if(horaInicio > tempDM.HorarioInicio) {
+                var queryTurnos = from turno in db.Turno
+                                  join ft in db.FechaTurno
+                                     on turno.IDFechaTurno equals ft.FechaTurnoID
+                                  join hs in db.Horario
+                                     on ft.IDHorario equals hs.HorarioID
+                                  where hs.Hora >= tempDM.HorarioInicio &&
+                                        hs.Hora <= horaInicio
+                                  select turno;
+
+                var queryFT = from ft in db.FechaTurno
+                              join turno in queryTurnos
+                                 on ft.FechaTurnoID equals turno.IDFechaTurno
+                              select ft;
+
+                db.Turno.DeleteAllOnSubmit(queryTurnos);
+                db.FechaTurno.DeleteAllOnSubmit(queryFT);
+            }
+            /*
+              cuando la hora de finalización actualizada es previa a la hora de finalización 
+              anterior, elimino todos los turnos de los pacientes que estén entre dicha franja horaria
+            */
+            if(horaFin < tempDM.HorarioFin) {
+                var queryTurnos = from turno in db.Turno
+                                  join ft in db.FechaTurno
+                                     on turno.IDFechaTurno equals ft.FechaTurnoID
+                                  join hs in db.Horario
+                                     on ft.IDHorario equals hs.HorarioID
+                                  where hs.Hora <= tempDM.HorarioFin &&
+                                        hs.Hora >= horaFin
+                                  select turno;
+
+                var queryFT = from ft in db.FechaTurno
+                              join turno in queryTurnos
+                                 on ft.FechaTurnoID equals turno.IDFechaTurno
+                              select ft;
+
+                db.Turno.DeleteAllOnSubmit(queryTurnos);
+                db.FechaTurno.DeleteAllOnSubmit(queryFT);
+            }
+
             tempDM.HorarioFin = horaFin;
             tempDM.HorarioInicio = horaInicio;
             tempDM.Consultorio = Convert.ToInt32(textboxConsultorio.Text);
@@ -206,6 +256,10 @@ namespace AppWeb {
         
         protected void abmDyS_Click(object sender, EventArgs e) {
             changeVisibilityBy(Tools.MODSUCDIACLICKED);
+            if(Label2.Visible)
+                abmDyS.Text = "Modificar sucursales y días";
+            else
+                abmDyS.Text = "Modificar disponibilidad";
         }
 
         protected void rmSuc_Click(object sender, EventArgs e) {
@@ -234,17 +288,33 @@ namespace AppWeb {
             string msg;
             int SucursalId = Convert.ToInt32(comboSucursalesRemove.SelectedValue);
             MedicoSucursal msToRemove;
+
+            //elimino toda la disponiblidad (días y horarios) del medico en dicha sucursal
             var queryDM = from dm in db.DisponibilidadMedico
                           where dm.IDMedico == whoAmI.MedicoID &&
                                 dm.IDSucursal == SucursalId
                           select dm;
+            /* elimino todos los turnos que los pacientes tienen sacados
+            con el médico en dicha sucursal */
+            var queryTurnos = from turno in db.Turno
+                              where turno.IDMedico == whoAmI.MedicoID &&
+                                    turno.IDSucursal == SucursalId
+                              select turno;
+            //elimino la relación entre el médico y la sucursal en cuestión
             msToRemove = (from ms in db.MedicoSucursal
                           where ms.IDMedico == whoAmI.MedicoID &&
                                 ms.IDSucursal == SucursalId
                           select ms).FirstOrDefault();
+            //idem comentario 1 para tabla FechaTurno
+            var queryFT = from ft in db.FechaTurno
+                          join turno in queryTurnos
+                             on ft.FechaTurnoID equals turno.IDFechaTurno
+                          select ft;
 
             db.DisponibilidadMedico.DeleteAllOnSubmit(queryDM);
             db.MedicoSucursal.DeleteOnSubmit(msToRemove);
+            db.Turno.DeleteAllOnSubmit(queryTurnos);
+            db.FechaTurno.DeleteAllOnSubmit(queryFT);
             try {
                 db.SubmitChanges();
                 msg = "La relación entre usted y la sucursal ha sido removida correctamente.";
@@ -272,9 +342,14 @@ namespace AppWeb {
         }
 
         protected void comboProvinciaAdd_SelectedIndexChanged(object sender, EventArgs e) {
+            Label10.Visible = comboLocalidadAdd.Visible = true;
+            Label11.Visible = comboSucursalAdd.Visible = abmSUC1.Visible = false;
+
             int ProvinciaId = Convert.ToInt32(comboProvinciaAdd.SelectedValue);
-            if(ProvinciaId == -1)
+            if(ProvinciaId == -1) {
+                comboLocalidadAdd.Items.Clear();
                 return;
+            }
             List<Localidad> queryLocalidad = (from loc in db.Localidad
                                               where loc.IDProvincia == ProvinciaId
                                               select loc).ToList();
@@ -285,13 +360,17 @@ namespace AppWeb {
             comboLocalidadAdd.DataTextField = "LocalidadDescripcion";
             comboLocalidadAdd.DataValueField = "LocalidadId";
             comboLocalidadAdd.DataBind();
-            Label10.Visible = comboLocalidadAdd.Visible = true;
         }
 
         protected void comboLocalidadAdd_SelectedIndexChanged(object sender, EventArgs e) {
+            Label11.Visible = comboSucursalAdd.Visible = true;
+            abmSUC1.Visible = false;
+
             int LocalidadId = Convert.ToInt32(comboLocalidadAdd.SelectedValue);
-            if(LocalidadId == -1)
+            if(LocalidadId == -1) {
+                comboSucursalAdd.Items.Clear();
                 return;
+            }
             List<Sucursal> querySucursalesEstoy = (from suc in db.Sucursal
                                                    join ms in db.MedicoSucursal
                                                        on suc.SucursalId equals ms.IDSucursal
@@ -312,13 +391,13 @@ namespace AppWeb {
             comboSucursalAdd.DataTextField = "SucursalDescripcion";
             comboSucursalAdd.DataValueField = "SucursalId";
             comboSucursalAdd.DataBind();
-            Label11.Visible = comboSucursalAdd.Visible = true;
         }
 
         protected void comboSucursalAdd_SelectedIndexChanged(object sender, EventArgs e) {
+            bool enable = true;
             if(Convert.ToInt32(comboSucursalAdd.SelectedValue) == -1)
-                return;
-            abmSUC1.Visible = true;
+                enable = false;
+            abmSUC1.Visible = enable;
         }
 
         protected void abmSUC1_Click(object sender, EventArgs e) {
@@ -403,9 +482,14 @@ namespace AppWeb {
         }
 
         protected void comboSucursalesDias_SelectedIndexChanged(object sender, EventArgs e) {
+            Label13.Visible = comboDias1.Visible = true;
+            abmDAY.Visible = false;
+
             int SucursalId = Convert.ToInt32(comboSucursalesDias.SelectedValue);
-            if(SucursalId == -1)
+            if(SucursalId == -1) {
+                comboDias1.Items.Clear();
                 return;
+            }
             /*
               Esto es porque uso un solo DropDownList para ambos casos, entonces
               me fijo que Checkbox está checkeado para saber si el DropDownList
@@ -447,20 +531,21 @@ namespace AppWeb {
                 comboDias1.DataValueField = "DiaId";
                 comboDias1.DataBind();
             }
-            Label13.Visible = comboDias1.Visible = true;
         }
 
         protected void comboDias1_SelectedIndexChanged(object sender, EventArgs e) {
-            if(Convert.ToInt32(comboDias1.SelectedValue) == -1)
+            if(Convert.ToInt32(comboDias1.SelectedValue) == -1) {
+                abmDAY.Visible = false;
                 return;
+            }
             /* Idem punto anterior */
             if(agregarDias.Checked) {
                 abmDAY.Text = "Agregar día";
-                abmDAY.BackColor = System.Drawing.Color.FromArgb(0, 255, 0);
+                abmDAY.CssClass = "nuevo-turno";
             }
             else {
                 abmDAY.Text = "Eliminar día";
-                abmDAY.BackColor = System.Drawing.Color.FromArgb(255, 0, 0);
+                abmDAY.CssClass = "borrar-turno";
             }
             abmDAY.Visible = true;
         }
@@ -468,6 +553,7 @@ namespace AppWeb {
         protected void abmDAY_Click(object sender, EventArgs e) {
             string msg;
             int SucursalId, DiaId;
+        
             SucursalId = Convert.ToInt32(comboSucursalesDias.SelectedValue);
             DiaId = Convert.ToInt32(comboDias1.SelectedValue);
 
@@ -497,12 +583,29 @@ namespace AppWeb {
                 }
             }
             else {
+                //elimino todos los días que el médico trabaja en dicha sucursal
                 var dmsToRemove = from dm in db.DisponibilidadMedico
                                   where dm.IDMedico == whoAmI.MedicoID &&
                                         dm.IDDia == DiaId &&
                                         dm.IDSucursal == SucursalId
                                   select dm;
+                //elimino los turnos que los pacientes tienen con el médico para el día eliminado
+                var turnosToRemove = from turno in db.Turno
+                                     join ft in db.FechaTurno
+                                        on turno.IDFechaTurno equals ft.FechaTurnoID
+                                     where turno.IDMedico == whoAmI.MedicoID &&
+                                           turno.IDSucursal == SucursalId &&
+                                           ft.IDDia == DiaId
+                                     select turno;
+                //idem para tabla FechaTurno
+                var ftToRemove = from ft in db.FechaTurno
+                                 join turno in turnosToRemove
+                                    on ft.FechaTurnoID equals turno.IDFechaTurno
+                                 select ft;
+
                 db.DisponibilidadMedico.DeleteAllOnSubmit(dmsToRemove);
+                db.Turno.DeleteAllOnSubmit(turnosToRemove);
+                db.FechaTurno.DeleteAllOnSubmit(ftToRemove);
                 try {
                     db.SubmitChanges();
                     msg = "El día ha sido eliminado exitosamente.";
@@ -516,18 +619,32 @@ namespace AppWeb {
                                 "alert", "alert('" + msg + "');", true);
                 }
             }
-
         }
 
         private void changeVisibilityBy(Tools which) {
             switch(which) {
                 case Tools.SUCURSALSELECTED:
                     Label3.Visible = comboDias.Visible = true;
+                    Label4.Visible = Label5.Visible = Label6.Visible = textboxHoraInicio.Visible =
+                    textboxHoraFin.Visible = textboxConsultorio.Visible = makeABM1.Visible =
+                    false;
+                    break;
+                case Tools.INCORRECTSUCSELECTED:
+                    Label4.Visible = Label5.Visible = Label6.Visible = makeABM1.Visible =
+                    textboxHoraInicio.Visible = textboxHoraFin.Visible =
+                    textboxConsultorio.Visible = false;
+                    ubicacion.Text = "";
+                    comboDias.Items.Clear();
                     break;
                 case Tools.DIASELECTED:
                     Label4.Visible = Label5.Visible = Label6.Visible = makeABM1.Visible =
                     textboxHoraInicio.Visible = textboxHoraFin.Visible =
                     textboxConsultorio.Visible = true;
+                    break;
+                case Tools.INCORRECTDSELECTED:
+                    Label4.Visible = Label5.Visible = Label6.Visible = makeABM1.Visible =
+                    textboxHoraInicio.Visible = textboxHoraFin.Visible =
+                    textboxConsultorio.Visible = false;
                     break;
                 case Tools.MODSUCDIACLICKED:
                     if(comboSucursales.Visible) {
@@ -553,7 +670,7 @@ namespace AppWeb {
                 case Tools.RMSUCCLICKED:
                     Label7.Text = rmSuc.Text;
                     abmDyS.Visible = addSuc.Visible = addRmDays.Visible = rmSuc.Visible =
-                    false;
+                    Label14.Visible = false;
 
                     cancelRmSuc.Visible = comboSucursalesRemove.Visible = Label8.Visible =
                     true;
@@ -561,7 +678,7 @@ namespace AppWeb {
                 case Tools.CANCELRMSUC:
                     Label7.Text = "Agregar/eliminar sucursales y días";
                     abmDyS.Visible = addSuc.Visible = addRmDays.Visible = rmSuc.Visible =
-                    true;
+                    Label14.Visible = true;
 
                     cancelRmSuc.Visible = comboSucursalesRemove.Visible = Label8.Visible =
                     abmSUC.Visible = false;
@@ -569,14 +686,15 @@ namespace AppWeb {
                 case Tools.ADDSUCCLICKED:
                     Label7.Text = addSuc.Text;
                     abmDyS.Visible = rmSuc.Visible = addRmDays.Visible = addSuc.Visible = 
-                    false;
-                        
-                    cancelAddSuc.Visible = comboProvinciaAdd.Visible = Label9.Visible = true;
+                    Label14.Visible = false;
+
+                    cancelAddSuc.Visible = comboProvinciaAdd.Visible = Label9.Visible =
+                    true;
                     break;
                 case Tools.CANCELADDSUC:
                     Label7.Text = "Agregar/eliminar sucursales y días";
                     abmDyS.Visible = rmSuc.Visible = addRmDays.Visible = addSuc.Visible =
-                    true;
+                    Label14.Visible = true;
 
                     cancelAddSuc.Visible = comboProvinciaAdd.Visible = Label9.Visible =
                     Label11.Visible = Label10.Visible = comboProvinciaAdd.Visible = 
@@ -585,8 +703,8 @@ namespace AppWeb {
                     break;
                 case Tools.ADDRMDAYSCLICKED:
                     Label7.Text = addRmDays.Text;
-                    abmDyS.Visible = rmSuc.Visible = addSuc.Visible = addRmDays.Visible = 
-                    false;
+                    abmDyS.Visible = rmSuc.Visible = addSuc.Visible = addRmDays.Visible =
+                    Label14.Visible = false;
 
                     agregarDias.Checked = eliminarDias.Checked = false;
 
@@ -595,7 +713,7 @@ namespace AppWeb {
                 case Tools.CANCELADDRMDAYS:
                     Label7.Text = "Agregar/eliminar sucursales y días";
                     abmDyS.Visible = rmSuc.Visible = addSuc.Visible = addRmDays.Visible =
-                    true;
+                    Label14.Visible = true;
 
                     cancelAddRmDays.Visible = agregarDias.Visible = eliminarDias.Visible = 
                     comboSucursalesDias.Visible = Label12.Visible = Label13.Visible = 
@@ -630,7 +748,8 @@ namespace AppWeb {
         }
 
         private enum Tools {
-            SUCURSALSELECTED, DIASELECTED, MODSUCDIACLICKED, RMSUCCLICKED, ADDSUCCLICKED,
+            SUCURSALSELECTED, INCORRECTSUCSELECTED ,DIASELECTED, INCORRECTDSELECTED,
+            MODSUCDIACLICKED, RMSUCCLICKED, ADDSUCCLICKED,
             ADDRMDAYSCLICKED, CANCELRMSUC, CANCELADDSUC, CANCELADDRMDAYS, ADDDAYCHECKED,
             RMDAYCHECKED,
         }

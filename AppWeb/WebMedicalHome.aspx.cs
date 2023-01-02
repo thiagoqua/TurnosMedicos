@@ -10,7 +10,6 @@ using Classes;
 namespace AppWeb {
     public partial class WebMedicalHome : System.Web.UI.Page {
         protected void Page_Load(object sender, EventArgs e) {
-            signOutButton.ServerClick += new EventHandler(signOutButton_Click);
             if(!IsPostBack) {
                 TablesDataContext db = new TablesDataContext();
                 int UsuarioID = (Session["user"] as Usuario).UsuarioID;

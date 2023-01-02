@@ -5,50 +5,61 @@
     <title></title>
 </head>
 <body>
-    <link href="Styles/WebHomeStyle.css" rel="stylesheet" type="text/css" />
+    <link href="Styles/WebHomesStyle.css" rel="stylesheet" type="text/css" />
     <form id="form1" runat="server">
         <div class="buttonsSection">
             <asp:Image ID="Image1" runat="server" />
-            <div class="button">
-                <asp:Button ID="verTurnosButton" runat="server" Height="21px" 
-                            OnClick="verTurnosButton_Click" Text="Ver mis turnos" 
-                            Width="104px"/>
+            <div>
+                <asp:Button ID="verTurnosButton" runat="server" CssClass="button"
+                            OnClick="verTurnosButton_Click" Text="Ver mis turnos"/>
             </div>
-            <div class="button">
-                <asp:Button ID="SolicitarTurnoButton" runat="server" Height="18px" 
-                            Text="Solicitar/Eliminar Turnos" Width="171px"
-                            PostBackUrl="~/WebTurnos.aspx"/>
+            <div>
+                <asp:Button ID="SolicitarTurnoButton" runat="server" CssClass="button"
+                            Text="Solicitar/Eliminar Turnos" PostBackUrl="~/WebTurnos.aspx"/>
             </div>
-            <div class="button">
-                <asp:Button ID="OtrasOpc" runat="server" Height="21px" 
-                            Text="Otras opciones de contacto" Width="175px" 
-                            OnClick="OtrasOpc_Click" />
+            <div>
+                <asp:Button ID="OtrasOpc" runat="server" CssClass="button"
+                            Text="Otras opciones de contacto" OnClick="OtrasOpc_Click" />
             </div>
-            <div class="button">
-                <input type="submit" value="Sign Out" runat="server" id="signOutButton"/>
+            <div>
+                <asp:Button ID="signOut" runat="server" CssClass="button"
+                            Text="Sign out" OnClick="signOutButton_Click" />
             </div>
         </div>
         <div id="addInfo" class="infoSection" runat="server">
             <div style="margin-top: 30px;">
-                <asp:Button ID="generatePDF" runat="server" Height="58px" Width="163px" 
-                            OnClick="generatePDF_Click" style="margin-left: 35%;" 
-                            Text="Generar Reporte" BackColor="#F55C56" visible="false"/>
+                <asp:Button ID="generatePDF" runat="server" 
+                            OnClick="generatePDF_Click" CssClass="PDFgenerator"
+                            Text="Generar Reporte" Visible="false"/>
             </div>
             <asp:TextBox ID="textBoxTurno0" runat="server" Height="108px" Width="291px"
-                         Enabled="false" style="margin-top:30px; margin-left: 40px;" Visible="False"
-                         TextMode="MultiLine" ReadOnly="True"></asp:TextBox>
+                         Enabled="false" Visible="False" ReadOnly="True" 
+                         CssClass="main-text-boxes"
+                         TextMode="MultiLine" BackColor="#7EABED"></asp:TextBox>
             <asp:TextBox ID="textBoxTurno1" runat="server" Height="108px" Width="291px"
-                         Enabled="false" style="margin-top:30px; margin-left: 40px;" Visible="False"
-                         TextMode="MultiLine" ReadOnly="True"></asp:TextBox>
-            <asp:Label ID="label1" runat="server" Height="24px" Width="368px" Enabled="False"
-                       Visible="False" Text="Teléfono: +549 11 45508120"
-                       style="margin-left:40px;font-size:x-large;"></asp:Label>
-            <p><asp:Label ID="label2" runat="server" Height="24px" Width="368px" Enabled="False"
-                       Visible="False" Text="Mail: sanatorioparque@appweb.com"
-                       style="margin-left:40px;font-size:x-large;"></asp:Label></p>
-            <p><asp:Label ID="label3" runat="server" Height="24px" Width="368px" Enabled="False"
-                       Visible="False" Text="Facebook: @sanatorioparque"
-                       style="margin-left:40px;font-size:x-large;"></asp:Label></p>
+                         Enabled="false" Visible="False" ReadOnly="True"
+                         CssClass="main-text-boxes"
+                         TextMode="MultiLine" BackColor="#7EABED"></asp:TextBox>
+            <div style="text-align:center">
+                <div style="margin-bottom:50px;">
+                    <asp:Image ID="PHONEicon" runat="server" ImageUrl="~/Resources/PHONE_ICON.png"
+                               Width="90px" Height="90px" Visible="False"/>
+                    <asp:Label ID="label1" runat="server" Height="24px" Width="368px" Enabled="False"
+                               Visible="False" Text="+549 11 45508120" CssClass="labeles"></asp:Label>
+                </div>
+                <div style="margin-bottom:50px;">
+                    <asp:Image ID="MAILicon" runat="server" ImageUrl="~/Resources/MAIL_ICON.png"
+                               Width="100px" Height="100px" Visible="False"/>
+                    <asp:Label ID="label2" runat="server" Height="24px" Width="368px" Enabled="False"
+                               Visible="False" Text="sanatorioparque@appweb.com" CssClass="labeles"></asp:Label>
+                </div>
+                <div>
+                    <asp:Image ID="FCBicon" runat="server" ImageUrl="~/Resources/FCB_ICON.png"
+                               Width="100px" Height="100px" Visible="False"/>
+                    <asp:Label ID="label3" runat="server" Height="24px" Width="368px" Enabled="False"
+                               Visible="False" Text="@sanatorioparque" CssClass="labeles"></asp:Label>
+                </div>
+            </div>
         </div>
     </form>
 </body>
