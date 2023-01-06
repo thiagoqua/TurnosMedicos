@@ -79,6 +79,7 @@
     <Content Include="Resources\MAIL_ICON.png" />
     <Content Include="Resources\PDF_IMAGE_L.png" />
     <Content Include="Resources\PHONE_ICON.png" />
+    <Content Include="Styles\LoginStyle.css" />
     <Content Include="Styles\WebHomesStyle.css" />
     <Content Include="Verificacion.aspx" />
     <Content Include="VerificarEmail.aspx" />
