@@ -5,7 +5,6 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Classes;
-using System.Threading;
 
 namespace AppWeb {
     public partial class WebTurnos : System.Web.UI.Page {
@@ -276,7 +275,7 @@ namespace AppWeb {
 
             foreach(DisponibilidadMedico dm in queryDm) {
                 var queryTemp = (from hs in db.Horario
-                                 where hs.Hora.CompareTo(dm.HorarioInicio) > 0 &&
+                                 where hs.Hora.CompareTo(dm.HorarioInicio) >= 0 &&
                                        hs.Hora.CompareTo(dm.HorarioFin) < 0
                                  select hs).ToList();
                 queryHorariosDisponibles = queryHorariosDisponibles
@@ -289,6 +288,10 @@ namespace AppWeb {
                                            .Except(queryHorariosUsados, new HorarioComparer())
                                            .ToList();
 
+            if(queryHorariosDisponibles.Count > 0)
+                queryHorariosDisponibles.Insert(0,
+                    createSeleccioneOf(queryHorariosDisponibles.First().GetType()) as Horario);
+
             comboHorarios.ClearSelection();
             comboHorarios.DataSource = queryHorariosDisponibles;
             comboHorarios.DataTextField = "Hora";
@@ -299,7 +302,9 @@ namespace AppWeb {
         }
 
         protected void comboHorarios_SelectedIndexChanged(object sender, EventArgs e) {
-            changeVisibilityBy(Tools.HORASELECTED);
+            Tools pasado = comboHorarios.SelectedValue == "-1" ?
+                           Tools.INCORRECTIME : Tools.HORASELECTED;
+            changeVisibilityBy(pasado);
         }
 
         protected void sacarTurnoButton_Click(object sender, EventArgs e) {
@@ -522,6 +527,12 @@ namespace AppWeb {
                     aux_af.Apellido = defDescripcion;
                     ret = aux_af;
                     break;
+                case "Horario":
+                    Horario aux_hs = new Horario();
+                    aux_hs.HorarioID = defId;
+                    aux_hs.Hora = new TimeSpan(0, 0, 0);
+                    ret = aux_hs;
+                    break;
                 default:
                     ret = null;
                     break;
@@ -622,6 +633,9 @@ namespace AppWeb {
                 case Tools.INCORRECTDAY:
                     Label7.Visible = comboHorarios.Visible = sacarTurnoButton.Visible = false;
                     break;
+                case Tools.INCORRECTIME:
+                    sacarTurnoButton.Visible = false;
+                    break;
             }
         }
 
@@ -642,7 +656,7 @@ namespace AppWeb {
             PROVINCIASELECTED, LOCALIDADSELECTED, SUCURSALSELECTED, ESPECIALIDADSELECTED,
             MEDICOSELECTED, FECHASELECTED, HORASELECTED,
 
-            ONLYTURNOTODELETE, LASTTURNOTODELETE, FIRSTTURNOTODELETE, INCORRECTDAY,
+            ONLYTURNOTODELETE, LASTTURNOTODELETE, FIRSTTURNOTODELETE, INCORRECTDAY, INCORRECTIME
         }
     }
 

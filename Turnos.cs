@@ -240,7 +240,7 @@ namespace AppEscritorio {
 
             foreach(DisponibilidadMedico dm in queryDm) {
                 var queryTemp = (from hs in db.Horario
-                                 where hs.Hora.CompareTo(dm.HorarioInicio) > 0 &&
+                                 where hs.Hora.CompareTo(dm.HorarioInicio) >= 0 &&
                                        hs.Hora.CompareTo(dm.HorarioFin) < 0
                                  select hs).ToList();
                 queryHorariosDisponibles = queryHorariosDisponibles

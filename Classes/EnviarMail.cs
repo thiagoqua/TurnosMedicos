@@ -6,9 +6,56 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Mail;
 using System.Windows.Forms;
+using Classes;
 
 namespace Classes {
     public class EnviarMail {
+        TablesDataContext db;
+        Afiliado medicoInCuestion;
+        MailMessage msg;
+        SmtpClient cliente;
+        string sender, psw;
+        string[] bodyParts, motivos;
+
+        //recibe el UsuarioId del médico que cambia la disponibilidad
+        public EnviarMail(int MedicoUsuarioId) {
+            db = new TablesDataContext();
+
+            var datos = from d in db.ServidorMail
+                        select d;
+            sender = datos.First().Mail;
+            psw = datos.First().Pass;
+            medicoInCuestion = (from af in db.Afiliado
+                                join user in db.Usuario
+                                    on af.AfiliadoID equals user.IDAfiliado
+                                where user.UsuarioID == MedicoUsuarioId
+                                select af).First();
+            cliente = new SmtpClient();
+            cliente.Credentials = new NetworkCredential(sender, psw);
+            cliente.Port = 587;
+            cliente.EnableSsl = true;
+            cliente.Host = "smtp.gmail.com";
+
+            bodyParts = new string[4];
+            bodyParts[0] = "le informamos que su turno para el doctor ";
+            bodyParts[1] = " con fecha ";
+            bodyParts[2] = " y hora ";
+            bodyParts[3] = " ha sido cancelado debido a que el médico ya no estrá disponible " +
+                           "en dicho momento. Por favor, le pedimos que saque un nuevo turno " +
+                           "a través de nuestra página web para poder conservar la asistencia. " + "<br />";
+
+            motivos = new string[4];
+            motivos[0] = "El motivo de la baja de su turno se da ya que el médico ha atrasado " +
+                         "su horario de llegada a la sucursal, por lo que el mismo lamentablemente " +
+                         "pasó a quedar fuera de su rango horario de trabajo.";
+            motivos[1] = "El motivo de la baja de su turno se da ya que el médico ha adelantado " +
+                         "su horario de salida de la sucursal, por lo que el mismo lamentablemente " +
+                         "pasó a quedar fuera de su rango horario de trabajo.";
+            motivos[2] = "El motivo de la baja de su turno se da ya que el médico no trabaja " + 
+                         "más ese día en la sucursal.";
+            motivos[3] = "El motivo de la baja de su turno se da ya que el médico no trabaja " +
+                         "más en esa sucursal";
+        }
 
         public static int Enviar(string emisor, string password, string receptor, bool bit)  //'PASSWORD' SERÁ LA CONTRASEÑA DE APLICACION GENERADA PARA LAS APPS MENOS SEGURAS
         {
@@ -106,5 +153,51 @@ namespace Classes {
             return url;
         }
 
+        public void advicePatient(Usuario patient, DateTime fecha, TimeSpan hora, Motivo motivo) {
+            Afiliado patientAsAfiliado = (from af in db.Afiliado
+                                          where af.AfiliadoID == patient.IDAfiliado
+                                          select af).First();
+            msg = new MailMessage();
+            msg.To.Add(patient.UsuarioEmail);          
+            msg.Subject = "Baja de turno"; 
+            msg.SubjectEncoding = Encoding.UTF8;
+            msg.Body = "Estimado " + patientAsAfiliado.Nombre.Trim() + ", " +
+                       bodyParts[0] + medicoInCuestion.Nombre.Trim() + " " 
+                                    + medicoInCuestion.Apellido.Trim() + 
+                       bodyParts[1] + fecha.ToString("dd/MM/yyyy") +
+                       bodyParts[2] + hora.ToString() + bodyParts[3] + "<br />";
+            msg.BodyEncoding = Encoding.UTF8;
+            msg.IsBodyHtml = true;                  
+            msg.From = new MailAddress(sender);     
+
+            switch(motivo) {
+                case Motivo.HICHANGED:
+                    msg.Body += motivos[0];
+                    break;
+                case Motivo.HFCHANGED:
+                    msg.Body += motivos[1];
+                    break;
+                case Motivo.DAY:
+                    msg.Body += motivos[2];
+                    break;
+                case Motivo.SUCURSAL:
+                    msg.Body += motivos[3];
+                    break;
+            }
+            msg.Body += "<br /><br />Disculpas cordiales.";
+
+            try {
+                cliente.Send(msg);                  
+            }
+            catch(Exception){}
+            finally{
+                msg.Dispose();
+                cliente.Dispose();
+            }
+        }
+
+        public enum Motivo {
+            HICHANGED,HFCHANGED,DAY,SUCURSAL
+        }
     }
 }

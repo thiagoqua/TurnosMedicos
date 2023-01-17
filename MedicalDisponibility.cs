@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Classes;
+using System.Threading;
 
 namespace AppEscritorio {
     public partial class MedicalDisponibility : Form {
@@ -18,7 +19,7 @@ namespace AppEscritorio {
         private DisponibilidadMedico tempDM;
 
         private MedicalHome previousState;
-        public MedicalDisponibility(Medico medico,MedicalHome home) {
+        public MedicalDisponibility(Medico medico, MedicalHome home) {
             InitializeComponent();
             whoAmI = medico;
             previousState = home;
@@ -72,7 +73,7 @@ namespace AppEscritorio {
                                     dm.IDSucursal == tempSucursales[index].SucursalId
                               select dm;
             var queryDias = from dia in db.Dia
-                            join dm in queryDispoM 
+                            join dm in queryDispoM
                                 on dia.DiaID equals dm.IDDia
                             select dia;
 
@@ -80,6 +81,8 @@ namespace AppEscritorio {
             comboDias.ValueMember = "DiaId";
             comboDias.DataSource = queryDias;
             label3.Visible = comboDias.Visible = label3.Enabled = comboDias.Enabled = true;
+            label1.Visible = label4.Visible = label5.Visible = abmInicio.Visible =
+            abmFin.Visible = abmConsultorio.Visible = makeABM1.Visible = false;
         }
         private void comboDias_SelectedIndexChanged(object sender, EventArgs e) {
             tempDM = getDM();
@@ -94,10 +97,10 @@ namespace AppEscritorio {
         private string[] getLocalidadesComplex(int size) {
             string[] localidadesComplex = new string[size];
             Localidad temp = new Localidad();
-            for(int i = 0;i < size; ++i) {
+            for(int i = 0; i < size; ++i) {
                 temp = (from loc in db.Localidad
-                                         where loc.LocalidadId == tempSucursales[i].IDLocalidad
-                                         select loc).FirstOrDefault();
+                        where loc.LocalidadId == tempSucursales[i].IDLocalidad
+                        select loc).FirstOrDefault();
                 localidadesComplex[i] = temp.LocalidadDescripcion.Trim();
                 var queryProvincias = from prov in db.Provincia
                                       where prov.ProvinciaId == temp.IDProvincia
@@ -113,7 +116,7 @@ namespace AppEscritorio {
             var queryDM = from dm in db.DisponibilidadMedico
                           where dm.IDMedico == whoAmI.MedicoID &&
                                 dm.IDSucursal == tempSucursales[selectedSucIndex].SucursalId &&
-                                dm.IDDia == (int) comboDias.SelectedValue
+                                dm.IDDia == (int)comboDias.SelectedValue
                           select dm;
             return queryDM.FirstOrDefault();
         }
@@ -153,27 +156,42 @@ namespace AppEscritorio {
         }
 
         private bool setNewValues() {
-            int hora, minutos, segundos;
+            int hora, minutos, segundos, consultorio;
             string[] stringTime;
             TimeSpan horaInicio, horaFin;
 
-            stringTime = abmInicio.Text.Split(':');
-            hora = Convert.ToInt32(stringTime[0]);
-            minutos = Convert.ToInt32(stringTime[1]);
-            if(stringTime.Length < 3)
-                segundos = 0;
-            else 
-                segundos = Convert.ToInt32(stringTime[2]);
-            horaInicio = new TimeSpan(hora, minutos, segundos);
+            //para que no me tire error después del catch
+            consultorio = 0; horaInicio = horaFin = new TimeSpan();
 
-            stringTime = abmFin.Text.Split(':');
-            hora = Convert.ToInt32(stringTime[0]);
-            minutos = Convert.ToInt32(stringTime[1]);
-            if(stringTime.Length < 3)
-                segundos = 0;
-            else
-                segundos = Convert.ToInt32(stringTime[2]);
-            horaFin = new TimeSpan(hora, minutos, segundos);
+            try {
+                stringTime = abmInicio.Text.Split(':');
+                hora = Convert.ToInt32(stringTime[0]);
+                minutos = Convert.ToInt32(stringTime[1]);
+                if(stringTime.Length < 3)
+                    segundos = 0;
+                else
+                    segundos = Convert.ToInt32(stringTime[2]);
+                horaInicio = new TimeSpan(hora, minutos, segundos);
+
+                stringTime = abmFin.Text.Split(':');
+                hora = Convert.ToInt32(stringTime[0]);
+                minutos = Convert.ToInt32(stringTime[1]);
+                if(stringTime.Length < 3)
+                    segundos = 0;
+                else
+                    segundos = Convert.ToInt32(stringTime[2]);
+                horaFin = new TimeSpan(hora, minutos, segundos);
+
+                consultorio = Convert.ToInt32(abmConsultorio.Text);
+            }
+            catch(FormatException) {
+                string msg, caption;
+                caption = "Datos incorrectos";
+                msg = "Los datos ingresados son incorrectos. Al ingresar los horarios, ingreselos " +
+                      "con el formato HORA:MINUTOS u HORA:MINUTOS:SEGUNDOS. Por favor, intente nuevamente.";
+                MessageBox.Show(msg, caption, MessageBoxButtons.OK);
+                return false;
+            }
 
             if(horaInicio > horaFin) {
                 string msg, caption;
@@ -185,24 +203,40 @@ namespace AppEscritorio {
                 return false;
             }
 
+            deleteAndAdvice_Times(horaInicio, tempDM.HorarioInicio, horaFin, tempDM.HorarioFin);
+
+            tempDM.HorarioFin = horaFin;
+            tempDM.HorarioInicio = horaInicio;
+            tempDM.Consultorio = consultorio;
+
+            return true;
+        }
+
+        private void deleteAndAdvice_Times(TimeSpan newInicio,TimeSpan oldInicio,
+                                           TimeSpan newFin,TimeSpan oldFin) {
+            IQueryable<Turno> queryTurnos = null;
+            IQueryable<FechaTurno> queryFT = null;
+            bool HIChanged = false;
             /*
               cuando la hora de inicio actualizada es posterior a la hora de inicio anterior,
               elimino todos los turnos de los pacientes que estén entre dicha franja horaria
             */
-            if(horaInicio > tempDM.HorarioInicio) {
-                var queryTurnos = from turno in db.Turno
-                                  join ft in db.FechaTurno
-                                     on turno.IDFechaTurno equals ft.FechaTurnoID
-                                  join hs in db.Horario
-                                     on ft.IDHorario equals hs.HorarioID
-                                  where hs.Hora >= tempDM.HorarioInicio &&
-                                        hs.Hora <= horaInicio
-                                  select turno;
-
-                var queryFT = from ft in db.FechaTurno
-                              join turno in queryTurnos
-                                 on ft.FechaTurnoID equals turno.IDFechaTurno
-                              select ft;
+            if(newInicio > oldInicio) {
+                HIChanged = true;
+                queryTurnos = from turno in db.Turno
+                              join ft in db.FechaTurno
+                                 on turno.IDFechaTurno equals ft.FechaTurnoID
+                              join hs in db.Horario
+                                 on ft.IDHorario equals hs.HorarioID
+                              where hs.Hora >= oldInicio &&
+                                    hs.Hora <= newInicio
+                              select turno;
+                if(queryTurnos.Count() == 0)
+                    return;
+                queryFT = from ft in db.FechaTurno
+                          join turno in queryTurnos
+                             on ft.FechaTurnoID equals turno.IDFechaTurno
+                          select ft;
 
                 db.Turno.DeleteAllOnSubmit(queryTurnos);
                 db.FechaTurno.DeleteAllOnSubmit(queryFT);
@@ -211,30 +245,133 @@ namespace AppEscritorio {
               cuando la hora de finalización actualizada es previa a la hora de finalización 
               anterior, elimino todos los turnos de los pacientes que estén entre dicha franja horaria
             */
-            if(horaFin < tempDM.HorarioFin) {
-                var queryTurnos = from turno in db.Turno
-                                  join ft in db.FechaTurno
-                                     on turno.IDFechaTurno equals ft.FechaTurnoID
-                                  join hs in db.Horario
-                                     on ft.IDHorario equals hs.HorarioID
-                                  where hs.Hora <= tempDM.HorarioFin &&
-                                        hs.Hora >= horaFin
-                                  select turno;
-
-                var queryFT = from ft in db.FechaTurno
-                              join turno in queryTurnos
-                                 on ft.FechaTurnoID equals turno.IDFechaTurno
-                              select ft;
+            if(newFin < oldFin) {
+                HIChanged = false;
+                queryTurnos = from turno in db.Turno
+                              join ft in db.FechaTurno
+                                 on turno.IDFechaTurno equals ft.FechaTurnoID
+                              join hs in db.Horario
+                                 on ft.IDHorario equals hs.HorarioID
+                              where hs.Hora <= oldFin &&
+                                    hs.Hora >= newFin
+                              select turno;
+                if(queryTurnos.Count() == 0)
+                    return;
+                queryFT = from ft in db.FechaTurno
+                          join turno in queryTurnos
+                             on ft.FechaTurnoID equals turno.IDFechaTurno
+                          select ft;
 
                 db.Turno.DeleteAllOnSubmit(queryTurnos);
                 db.FechaTurno.DeleteAllOnSubmit(queryFT);
             }
+            if(queryTurnos != null) {
+                EnviarMail sender = new EnviarMail(whoAmI.IDUsuario);
+                Usuario afectado;
+                FechaTurno ft;
+                TimeSpan hs;
 
-            tempDM.HorarioFin = horaFin;
-            tempDM.HorarioInicio = horaInicio;
-            tempDM.Consultorio = Convert.ToInt32(abmConsultorio.Text);
+                Cursor.Current = Cursors.WaitCursor;
+                foreach(Turno turno in queryTurnos) {
+                    afectado = (from user in db.Usuario
+                                where user.UsuarioID == turno.IDUsuario
+                                select user).FirstOrDefault();
+                    ft = (from fecha in db.FechaTurno
+                            where fecha.FechaTurnoID == turno.IDFechaTurno
+                            select fecha).First();
+                    hs = (from h in db.Horario
+                            where h.HorarioID == ft.IDHorario
+                            select h.Hora).First();
 
-            return true;
+                    sender.advicePatient(afectado,ft.Fecha,hs,HIChanged ? 
+                                                                EnviarMail.Motivo.HICHANGED :
+                                                                EnviarMail.Motivo.HFCHANGED);
+                }
+                Cursor.Current = Cursors.Default;
+            }
+        }
+
+        private void deleteAndAdvice_Sucursal(int SucursalId) {
+            /* elimino todos los turnos que los pacientes tienen sacados
+            con el médico en dicha sucursal */
+            var queryTurnos = from turno in db.Turno
+                              where turno.IDMedico == whoAmI.MedicoID &&
+                                    turno.IDSucursal == SucursalId
+                              select turno;
+            if(queryTurnos.Count() == 0)
+                return;
+            //idem para tabla FechaTurno
+            var queryFT = from ft in db.FechaTurno
+                          join turno in queryTurnos
+                             on ft.FechaTurnoID equals turno.IDFechaTurno
+                          select ft;
+
+            if(queryTurnos != null) {
+                EnviarMail sender = new EnviarMail(whoAmI.IDUsuario);
+                Usuario afectado;
+                FechaTurno ft;
+                TimeSpan hs;
+
+                Cursor.Current = Cursors.WaitCursor;
+                foreach(Turno turno in queryTurnos) {
+                    afectado = (from user in db.Usuario
+                                where user.UsuarioID == turno.IDUsuario
+                                select user).FirstOrDefault();
+                    ft = (from fecha in db.FechaTurno
+                          where fecha.FechaTurnoID == turno.IDFechaTurno
+                          select fecha).First();
+                    hs = (from h in db.Horario
+                          where h.HorarioID == ft.IDHorario
+                          select h.Hora).First();
+
+                    sender.advicePatient(afectado, ft.Fecha, hs, EnviarMail.Motivo.SUCURSAL);
+                }
+                db.Turno.DeleteAllOnSubmit(queryTurnos);
+                db.FechaTurno.DeleteAllOnSubmit(queryFT);
+                Cursor.Current = Cursors.Default;
+            }
+        }
+
+        private void deleteAndAdvice_Day(int SucursalId, int DiaId) {
+            //elimino los turnos que los pacientes tienen con el médico para el día eliminado
+            var queryTurnos= from turno in db.Turno
+                                 join ft in db.FechaTurno
+                                    on turno.IDFechaTurno equals ft.FechaTurnoID
+                                 where turno.IDMedico == whoAmI.MedicoID &&
+                                       turno.IDSucursal == SucursalId &&
+                                       ft.IDDia == DiaId
+                                 select turno;
+            if(queryTurnos.Count() == 0)
+                return;
+            //idem para tabla FechaTurno
+            var queryFT = from ft in db.FechaTurno
+                             join turno in queryTurnos
+                                on ft.FechaTurnoID equals turno.IDFechaTurno
+                             select ft;
+            if(queryTurnos != null) {
+                EnviarMail sender = new EnviarMail(whoAmI.IDUsuario);
+                Usuario afectado;
+                FechaTurno ft;
+                TimeSpan hs;
+
+                Cursor.Current = Cursors.WaitCursor;
+                foreach(Turno turno in queryTurnos) {
+                    afectado = (from user in db.Usuario
+                                where user.UsuarioID == turno.IDUsuario
+                                select user).FirstOrDefault();
+                    ft = (from fecha in db.FechaTurno
+                          where fecha.FechaTurnoID == turno.IDFechaTurno
+                          select fecha).First();
+                    hs = (from h in db.Horario
+                          where h.HorarioID == ft.IDHorario
+                          select h.Hora).First();
+
+                    sender.advicePatient(afectado, ft.Fecha, hs, EnviarMail.Motivo.DAY);
+                }
+                db.Turno.DeleteAllOnSubmit(queryTurnos);
+                db.FechaTurno.DeleteAllOnSubmit(queryFT);
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         private void abmDyS_Click_1(object sender, EventArgs e) {
@@ -287,36 +424,27 @@ namespace AppEscritorio {
 
         private void abmSuc_Click(object sender, EventArgs e) {
             string msg, caption;
-            int index = comboSucursalesRemove.SelectedIndex;
+            int index,SucursalId;
             MedicoSucursal msToRemove;
+
+            index = comboSucursalesRemove.SelectedIndex;
+            SucursalId = tempSucursales[index].SucursalId;
 
             //elimino toda la disponiblidad (días y horarios) del medico en dicha sucursal
             var queryDM = from dm in db.DisponibilidadMedico
                           where dm.IDMedico == whoAmI.MedicoID &&
-                                dm.IDSucursal == tempSucursales[index].SucursalId
+                                dm.IDSucursal == SucursalId
                           select dm;
-
             //elimino la relación entre el médico y la sucursal en cuestión
             msToRemove = (from ms in db.MedicoSucursal
                           where ms.IDMedico == whoAmI.MedicoID &&
-                                ms.IDSucursal == tempSucursales[index].SucursalId
+                                ms.IDSucursal == SucursalId
                           select ms).First();
-            /* elimino todos los turnos que los pacientes tienen sacados
-            con el médico en dicha sucursal */
-            var queryTurnos = from turno in db.Turno
-                              where turno.IDMedico == whoAmI.MedicoID &&
-                                    turno.IDSucursal == tempSucursales[index].SucursalId
-                              select turno;
-            //idem para tabla FechaTurno
-            var queryFT = from ft in db.FechaTurno
-                          join turno in queryTurnos
-                             on ft.FechaTurnoID equals turno.IDFechaTurno
-                          select ft;
+
+            deleteAndAdvice_Sucursal(SucursalId);
 
             db.DisponibilidadMedico.DeleteAllOnSubmit(queryDM);
             db.MedicoSucursal.DeleteOnSubmit(msToRemove);
-            db.Turno.DeleteAllOnSubmit(queryTurnos);
-            db.FechaTurno.DeleteAllOnSubmit(queryFT);
             try {
                 db.SubmitChanges();
                 caption = "Operación realizada con éxito";
@@ -513,30 +641,17 @@ namespace AppEscritorio {
 
             SucursalId = (int)comboSucModDias.SelectedValue;
             DiaId = (int)comboDayToRm.SelectedValue;
-            
+
             //elimino todos los días que el médico trabaja en dicha sucursal
             var dmsToRemove = from dm in db.DisponibilidadMedico
-                                where dm.IDMedico == whoAmI.MedicoID &&
+                              where dm.IDMedico == whoAmI.MedicoID &&
                                     dm.IDDia == DiaId &&
                                     dm.IDSucursal == SucursalId
-                                select dm;
-            //elimino los turnos que los pacientes tienen con el médico para el día eliminado
-            var turnosToRemove = from turno in db.Turno
-                                    join ft in db.FechaTurno
-                                    on turno.IDFechaTurno equals ft.FechaTurnoID
-                                    where turno.IDMedico == whoAmI.MedicoID &&
-                                        turno.IDSucursal == SucursalId &&
-                                        ft.IDDia == DiaId
-                                    select turno;
-            //idem para tabla FechaTurno
-            var ftToRemove = from ft in db.FechaTurno
-                                join turno in turnosToRemove
-                                on ft.FechaTurnoID equals turno.IDFechaTurno
-                                select ft;
+                              select dm;
+
+            deleteAndAdvice_Day(SucursalId,DiaId);
 
             db.DisponibilidadMedico.DeleteAllOnSubmit(dmsToRemove);
-            db.Turno.DeleteAllOnSubmit(turnosToRemove);
-            db.FechaTurno.DeleteAllOnSubmit(ftToRemove);
             try {
                 db.SubmitChanges();
                 caption = "Operación realizada con éxito";
