@@ -211,11 +211,12 @@ namespace AppEscritorio {
                     break;
                 }
             }
-            if(!diaCorrecto) {
+            if(!diaCorrecto && comboMedicos.Visible) {
                 caption = "Día seleccionado incorrecto";
                 msg = "El médico en cuestión no trabaja en ésta sucursal el día que usted seleccionó";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
                 changeVisibilityBy(Tools.INCORRECTDAY);
+                label18.Visible = true;
                 return;
             }
             

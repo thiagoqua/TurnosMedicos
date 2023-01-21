@@ -112,14 +112,18 @@ namespace AppEscritorio {
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(276, 63);
+            this.label2.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(248, 56);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(93, 13);
+            this.label2.Size = new System.Drawing.Size(150, 24);
             this.label2.TabIndex = 14;
             this.label2.Text = "Seleccione Fecha";
             // 
             // textBoxTurno1
             // 
+            this.textBoxTurno1.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.textBoxTurno1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxTurno1.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxTurno1.Location = new System.Drawing.Point(236, 107);
             this.textBoxTurno1.Multiline = true;
             this.textBoxTurno1.Name = "textBoxTurno1";
@@ -129,6 +133,9 @@ namespace AppEscritorio {
             // 
             // textBoxTurno2
             // 
+            this.textBoxTurno2.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.textBoxTurno2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxTurno2.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxTurno2.Location = new System.Drawing.Point(658, 107);
             this.textBoxTurno2.Multiline = true;
             this.textBoxTurno2.Name = "textBoxTurno2";
@@ -138,15 +145,19 @@ namespace AppEscritorio {
             // 
             // generatePDF
             // 
+            this.generatePDF.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(171)))), ((int)(((byte)(237)))));
+            this.generatePDF.FlatAppearance.BorderSize = 0;
+            this.generatePDF.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.generatePDF.Font = new System.Drawing.Font("Calibri", 19F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.generatePDF.Image = global::AppEscritorio.Properties.Resources.PDF_IMAGE_L;
             this.generatePDF.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.generatePDF.Location = new System.Drawing.Point(803, 42);
+            this.generatePDF.Location = new System.Drawing.Point(745, 42);
             this.generatePDF.Name = "generatePDF";
-            this.generatePDF.Size = new System.Drawing.Size(146, 53);
+            this.generatePDF.Size = new System.Drawing.Size(243, 53);
             this.generatePDF.TabIndex = 18;
             this.generatePDF.Text = "Generar Reporte";
             this.generatePDF.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.generatePDF.UseVisualStyleBackColor = true;
+            this.generatePDF.UseVisualStyleBackColor = false;
             this.generatePDF.Visible = false;
             this.generatePDF.Click += new System.EventHandler(this.generatePDF_Click);
             // 

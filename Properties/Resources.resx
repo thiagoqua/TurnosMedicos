@@ -121,10 +121,19 @@
   <data name="BACK_ARROW" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BACK_ARROW.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="FCB_ICON" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\fcb_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MAIL_ICON" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\mail_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="NEXT_ARROW" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NEXT_ARROW.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="PDF_IMAGE_L" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PDF_IMAGE_L.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PHONE_ICON" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\phone_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

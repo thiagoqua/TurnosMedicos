@@ -102,6 +102,7 @@ namespace AppEscritorio {
             // 
             // PanelContenedor
             // 
+            this.PanelContenedor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PanelContenedor.Controls.Add(this.textBoxTurno1);
             this.PanelContenedor.Controls.Add(this.textBoxTurno0);
             this.PanelContenedor.Controls.Add(this.generatePDF);
@@ -112,6 +113,10 @@ namespace AppEscritorio {
             // 
             // textBoxTurno1
             // 
+            this.textBoxTurno1.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.textBoxTurno1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxTurno1.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxTurno1.ForeColor = System.Drawing.SystemColors.MenuBar;
             this.textBoxTurno1.Location = new System.Drawing.Point(447, 99);
             this.textBoxTurno1.Multiline = true;
             this.textBoxTurno1.Name = "textBoxTurno1";
@@ -121,6 +126,10 @@ namespace AppEscritorio {
             // 
             // textBoxTurno0
             // 
+            this.textBoxTurno0.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.textBoxTurno0.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxTurno0.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxTurno0.ForeColor = System.Drawing.SystemColors.MenuHighlight;
             this.textBoxTurno0.Location = new System.Drawing.Point(46, 99);
             this.textBoxTurno0.Multiline = true;
             this.textBoxTurno0.Name = "textBoxTurno0";
@@ -130,15 +139,19 @@ namespace AppEscritorio {
             // 
             // generatePDF
             // 
+            this.generatePDF.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(171)))), ((int)(((byte)(237)))));
+            this.generatePDF.FlatAppearance.BorderSize = 0;
+            this.generatePDF.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.generatePDF.Font = new System.Drawing.Font("Calibri", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.generatePDF.Image = global::AppEscritorio.Properties.Resources.PDF_IMAGE_L;
             this.generatePDF.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.generatePDF.Location = new System.Drawing.Point(305, 22);
+            this.generatePDF.Location = new System.Drawing.Point(268, 20);
             this.generatePDF.Name = "generatePDF";
-            this.generatePDF.Size = new System.Drawing.Size(161, 53);
+            this.generatePDF.Size = new System.Drawing.Size(269, 53);
             this.generatePDF.TabIndex = 19;
             this.generatePDF.Text = "Generar Reporte";
             this.generatePDF.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.generatePDF.UseVisualStyleBackColor = true;
+            this.generatePDF.UseVisualStyleBackColor = false;
             this.generatePDF.Visible = false;
             this.generatePDF.Click += new System.EventHandler(this.generatePDF_Click);
             // 

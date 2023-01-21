@@ -28,6 +28,7 @@ namespace AppEscritorio {
             this.BarraTitulo = new System.Windows.Forms.Panel();
             this.btnCerrar = new System.Windows.Forms.PictureBox();
             this.PanelMenu = new System.Windows.Forms.Panel();
+            this.back = new System.Windows.Forms.Button();
             this.logo = new System.Windows.Forms.PictureBox();
             this.comboSucursales = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -65,7 +66,6 @@ namespace AppEscritorio {
             this.label13 = new System.Windows.Forms.Label();
             this.comboDayToRm = new System.Windows.Forms.ComboBox();
             this.abmDay1 = new System.Windows.Forms.Button();
-            this.back = new System.Windows.Forms.Button();
             this.BarraTitulo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnCerrar)).BeginInit();
             this.PanelMenu.SuspendLayout();
@@ -101,8 +101,20 @@ namespace AppEscritorio {
             this.PanelMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.PanelMenu.Location = new System.Drawing.Point(0, 0);
             this.PanelMenu.Name = "PanelMenu";
-            this.PanelMenu.Size = new System.Drawing.Size(200, 450);
+            this.PanelMenu.Size = new System.Drawing.Size(200, 463);
             this.PanelMenu.TabIndex = 10;
+            // 
+            // back
+            // 
+            this.back.Font = new System.Drawing.Font("Microsoft Tai Le", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.back.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.back.Location = new System.Drawing.Point(22, 209);
+            this.back.Name = "back";
+            this.back.Size = new System.Drawing.Size(157, 84);
+            this.back.TabIndex = 7;
+            this.back.Text = "Volver";
+            this.back.UseVisualStyleBackColor = false;
+            this.back.Click += new System.EventHandler(this.back_Click);
             // 
             // logo
             // 
@@ -154,12 +166,16 @@ namespace AppEscritorio {
             // 
             // abmDyS
             // 
-            this.abmDyS.Location = new System.Drawing.Point(315, 76);
+            this.abmDyS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(171)))), ((int)(((byte)(237)))));
+            this.abmDyS.FlatAppearance.BorderSize = 0;
+            this.abmDyS.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.abmDyS.Font = new System.Drawing.Font("Calibri", 18F, System.Drawing.FontStyle.Bold);
+            this.abmDyS.Location = new System.Drawing.Point(220, 76);
             this.abmDyS.Name = "abmDyS";
-            this.abmDyS.Size = new System.Drawing.Size(147, 69);
+            this.abmDyS.Size = new System.Drawing.Size(309, 69);
             this.abmDyS.TabIndex = 17;
             this.abmDyS.Text = "Modificar sucursales y días";
-            this.abmDyS.UseVisualStyleBackColor = true;
+            this.abmDyS.UseVisualStyleBackColor = false;
             this.abmDyS.Click += new System.EventHandler(this.abmDyS_Click_1);
             // 
             // label1
@@ -221,12 +237,16 @@ namespace AppEscritorio {
             // 
             // makeABM1
             // 
+            this.makeABM1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(255)))), ((int)(((byte)(153)))));
+            this.makeABM1.FlatAppearance.BorderSize = 0;
+            this.makeABM1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.makeABM1.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Bold);
             this.makeABM1.Location = new System.Drawing.Point(716, 209);
             this.makeABM1.Name = "makeABM1";
             this.makeABM1.Size = new System.Drawing.Size(182, 38);
             this.makeABM1.TabIndex = 24;
             this.makeABM1.Text = "Guardar cambios";
-            this.makeABM1.UseVisualStyleBackColor = true;
+            this.makeABM1.UseVisualStyleBackColor = false;
             this.makeABM1.Visible = false;
             this.makeABM1.Click += new System.EventHandler(this.makeABM1_Click);
             // 
@@ -253,7 +273,9 @@ namespace AppEscritorio {
             // abmSuc
             // 
             this.abmSuc.BackColor = System.Drawing.Color.Red;
-            this.abmSuc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.abmSuc.FlatAppearance.BorderSize = 0;
+            this.abmSuc.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.abmSuc.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Bold);
             this.abmSuc.Location = new System.Drawing.Point(209, 345);
             this.abmSuc.Name = "abmSuc";
             this.abmSuc.Size = new System.Drawing.Size(180, 45);
@@ -300,7 +322,9 @@ namespace AppEscritorio {
             // abmSuc1
             // 
             this.abmSuc1.BackColor = System.Drawing.Color.Lime;
-            this.abmSuc1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.abmSuc1.FlatAppearance.BorderSize = 0;
+            this.abmSuc1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.abmSuc1.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Bold);
             this.abmSuc1.Location = new System.Drawing.Point(443, 393);
             this.abmSuc1.Name = "abmSuc1";
             this.abmSuc1.Size = new System.Drawing.Size(232, 45);
@@ -429,10 +453,12 @@ namespace AppEscritorio {
             // abmDay
             // 
             this.abmDay.BackColor = System.Drawing.Color.Lime;
-            this.abmDay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.abmDay.FlatAppearance.BorderSize = 0;
+            this.abmDay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.abmDay.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Bold);
             this.abmDay.Location = new System.Drawing.Point(718, 410);
             this.abmDay.Name = "abmDay";
-            this.abmDay.Size = new System.Drawing.Size(132, 28);
+            this.abmDay.Size = new System.Drawing.Size(132, 41);
             this.abmDay.TabIndex = 49;
             this.abmDay.Text = "Agregar";
             this.abmDay.UseVisualStyleBackColor = false;
@@ -453,11 +479,11 @@ namespace AppEscritorio {
             // 
             this.label12.AutoSize = true;
             this.label12.BackColor = System.Drawing.Color.Transparent;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Font = new System.Drawing.Font("Calibri", 22F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             this.label12.Location = new System.Drawing.Point(619, 38);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(319, 31);
+            this.label12.Size = new System.Drawing.Size(319, 37);
             this.label12.TabIndex = 51;
             this.label12.Text = "Modificar disponibilidad";
             // 
@@ -484,33 +510,23 @@ namespace AppEscritorio {
             // abmDay1
             // 
             this.abmDay1.BackColor = System.Drawing.Color.Red;
-            this.abmDay1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.abmDay1.FlatAppearance.BorderSize = 0;
+            this.abmDay1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.abmDay1.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Bold);
             this.abmDay1.Location = new System.Drawing.Point(868, 410);
             this.abmDay1.Name = "abmDay1";
-            this.abmDay1.Size = new System.Drawing.Size(132, 28);
+            this.abmDay1.Size = new System.Drawing.Size(132, 41);
             this.abmDay1.TabIndex = 54;
             this.abmDay1.Text = "Eliminar";
             this.abmDay1.UseVisualStyleBackColor = false;
             this.abmDay1.Visible = false;
             this.abmDay1.Click += new System.EventHandler(this.abmDay1_Click);
             // 
-            // back
-            // 
-            this.back.Font = new System.Drawing.Font("Microsoft Tai Le", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.back.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.back.Location = new System.Drawing.Point(22, 209);
-            this.back.Name = "back";
-            this.back.Size = new System.Drawing.Size(157, 84);
-            this.back.TabIndex = 7;
-            this.back.Text = "Volver";
-            this.back.UseVisualStyleBackColor = false;
-            this.back.Click += new System.EventHandler(this.back_Click);
-            // 
             // MedicalDisponibility
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1001, 450);
+            this.ClientSize = new System.Drawing.Size(1001, 463);
             this.Controls.Add(this.abmDay1);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.comboDayToRm);

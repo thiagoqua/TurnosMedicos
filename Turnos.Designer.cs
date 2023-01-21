@@ -218,36 +218,42 @@ namespace AppEscritorio {
             // 
             // cancelRmButton
             // 
-            this.cancelRmButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cancelRmButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(120)))), ((int)(((byte)(57)))));
+            this.cancelRmButton.FlatAppearance.BorderSize = 0;
+            this.cancelRmButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cancelRmButton.Font = new System.Drawing.Font("Calibri", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cancelRmButton.Location = new System.Drawing.Point(795, 291);
             this.cancelRmButton.Name = "cancelRmButton";
             this.cancelRmButton.Size = new System.Drawing.Size(99, 33);
             this.cancelRmButton.TabIndex = 89;
             this.cancelRmButton.Text = "Cancelar";
-            this.cancelRmButton.UseVisualStyleBackColor = true;
+            this.cancelRmButton.UseVisualStyleBackColor = false;
             this.cancelRmButton.Visible = false;
             this.cancelRmButton.Click += new System.EventHandler(this.cancelRmButton_Click);
             // 
             // cancelAddButton
             // 
-            this.cancelAddButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cancelAddButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(245)))), ((int)(((byte)(120)))), ((int)(((byte)(57)))));
+            this.cancelAddButton.FlatAppearance.BorderSize = 0;
+            this.cancelAddButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cancelAddButton.Font = new System.Drawing.Font("Calibri", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cancelAddButton.Location = new System.Drawing.Point(795, 51);
             this.cancelAddButton.Name = "cancelAddButton";
             this.cancelAddButton.Size = new System.Drawing.Size(99, 33);
             this.cancelAddButton.TabIndex = 88;
             this.cancelAddButton.Text = "Cancelar";
-            this.cancelAddButton.UseVisualStyleBackColor = true;
+            this.cancelAddButton.UseVisualStyleBackColor = false;
             this.cancelAddButton.Visible = false;
             this.cancelAddButton.Click += new System.EventHandler(this.cancelAddButton_Click);
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Font = new System.Drawing.Font("Calibri", 21.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.label9.Location = new System.Drawing.Point(471, 337);
+            this.label9.Location = new System.Drawing.Point(452, 332);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(205, 26);
+            this.label9.Size = new System.Drawing.Size(257, 36);
             this.label9.TabIndex = 87;
             this.label9.Text = "Datos de sus turnos";
             this.label9.Visible = false;
@@ -255,7 +261,9 @@ namespace AppEscritorio {
             // eliminarTurnoButton
             // 
             this.eliminarTurnoButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.eliminarTurnoButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.eliminarTurnoButton.FlatAppearance.BorderSize = 0;
+            this.eliminarTurnoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.eliminarTurnoButton.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eliminarTurnoButton.Location = new System.Drawing.Point(830, 418);
             this.eliminarTurnoButton.Name = "eliminarTurnoButton";
             this.eliminarTurnoButton.Size = new System.Drawing.Size(179, 46);
@@ -268,6 +276,7 @@ namespace AppEscritorio {
             // label17
             // 
             this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label17.Location = new System.Drawing.Point(439, 374);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(73, 13);
@@ -332,6 +341,7 @@ namespace AppEscritorio {
             // label16
             // 
             this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label16.Location = new System.Drawing.Point(206, 374);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(42, 13);
@@ -464,7 +474,9 @@ namespace AppEscritorio {
             // sacarTurnoButton
             // 
             this.sacarTurnoButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.sacarTurnoButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sacarTurnoButton.FlatAppearance.BorderSize = 0;
+            this.sacarTurnoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.sacarTurnoButton.Font = new System.Drawing.Font("Calibri", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sacarTurnoButton.Location = new System.Drawing.Point(358, 231);
             this.sacarTurnoButton.Name = "sacarTurnoButton";
             this.sacarTurnoButton.Size = new System.Drawing.Size(424, 46);
@@ -576,24 +588,30 @@ namespace AppEscritorio {
             // 
             // rmTurnoButton
             // 
-            this.rmTurnoButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rmTurnoButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(171)))), ((int)(((byte)(237)))));
+            this.rmTurnoButton.FlatAppearance.BorderSize = 0;
+            this.rmTurnoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.rmTurnoButton.Font = new System.Drawing.Font("Calibri", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rmTurnoButton.Location = new System.Drawing.Point(358, 283);
             this.rmTurnoButton.Name = "rmTurnoButton";
             this.rmTurnoButton.Size = new System.Drawing.Size(424, 46);
             this.rmTurnoButton.TabIndex = 1;
             this.rmTurnoButton.Text = "Eliminar turnos";
-            this.rmTurnoButton.UseVisualStyleBackColor = true;
+            this.rmTurnoButton.UseVisualStyleBackColor = false;
             this.rmTurnoButton.Click += new System.EventHandler(this.rmTurnoButton_Click);
             // 
             // addTurnoButton
             // 
-            this.addTurnoButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.addTurnoButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(126)))), ((int)(((byte)(171)))), ((int)(((byte)(237)))));
+            this.addTurnoButton.FlatAppearance.BorderSize = 0;
+            this.addTurnoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.addTurnoButton.Font = new System.Drawing.Font("Calibri", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.addTurnoButton.Location = new System.Drawing.Point(358, 43);
             this.addTurnoButton.Name = "addTurnoButton";
             this.addTurnoButton.Size = new System.Drawing.Size(424, 46);
             this.addTurnoButton.TabIndex = 0;
             this.addTurnoButton.Text = "Sacar nuevo turno";
-            this.addTurnoButton.UseVisualStyleBackColor = true;
+            this.addTurnoButton.UseVisualStyleBackColor = false;
             this.addTurnoButton.Click += new System.EventHandler(this.addTurnoButton_Click);
             // 
             // Turnos

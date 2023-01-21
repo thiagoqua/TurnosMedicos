@@ -34,6 +34,7 @@ namespace AppEscritorio {
                       offsetX = 200,
                       lineLength = 2;
             int deltaY, Xposition, Yposition;
+            short pos;
             deltaY = Xposition = Yposition = 0;
             TextBox toAdd;
             switch(cant) {
@@ -48,30 +49,25 @@ namespace AppEscritorio {
                     boxes.Add(textBoxTurno0);
                     boxes.Add(textBoxTurno1);
                     for(int i = 2; i < cant; ++i) {
+                        /*
+                          si es 0, el box pertenece al lado izquierdo
+                          si es 1, el box pertenece al lado derecho
+                        */
+                        pos = Convert.ToInt16(i % lineLength);
                         toAdd = new TextBox();
-                        switch(i % lineLength) {
-                            case 0:
-                                //pertenece a un box del lado izquierdo
-                                toAdd.Clear();
-                                deltaY += offsetY;
-                                Xposition = boxes[0].Location.X;
-                                Yposition = boxes[0].Location.Y;
-                                toAdd.Size = boxes[0].Size;
-                                toAdd.Multiline = true;
-                                toAdd.Location = new Point(Xposition + offsetX, 
-                                                           Yposition + deltaY);
-                                break;
-                            case 1:
-                                //pertenece a un box del lado derecho
-                                toAdd.Clear();
-                                Xposition = boxes[1].Location.X;
-                                Yposition = boxes[1].Location.Y;
-                                toAdd.Size = boxes[1].Size;
-                                toAdd.Multiline = true;
-                                toAdd.Location = new Point(Xposition + offsetX, 
-                                                           Yposition + deltaY);
-                                break;
-                        }
+                        if(pos == 0)
+                            deltaY += offsetY;
+
+                        toAdd.Clear();
+                        Xposition = boxes[0].Location.X;
+                        Yposition = boxes[0].Location.Y;
+                        toAdd.Size = boxes[0].Size;
+                        toAdd.Multiline = true;
+                        toAdd.Location = new Point(Xposition + offsetX,
+                                                   Yposition + deltaY);
+                        toAdd.BorderStyle = boxes[0].BorderStyle;
+                        toAdd.BackColor = boxes[0].BackColor;
+                        toAdd.Font = boxes[0].Font;
                         boxes.Add(toAdd);
                     }
                     break;
