@@ -15,13 +15,13 @@ namespace AppWeb
     {
 
         /// <summary>
-        /// Control form2.
+        /// Control form1.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form2;
+        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
         /// Control Label1.
@@ -42,22 +42,22 @@ namespace AppWeb
         protected global::System.Web.UI.WebControls.Label dni_lbl;
 
         /// <summary>
-        /// Control Dni.
+        /// Control dni.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox Dni;
+        protected global::System.Web.UI.WebControls.TextBox dni;
 
         /// <summary>
-        /// Control obrasocial_lbl.
+        /// Control Label3.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label obrasocial_lbl;
+        protected global::System.Web.UI.WebControls.Label Label3;
 
         /// <summary>
         /// Control obrasocial_combo.
@@ -69,13 +69,13 @@ namespace AppWeb
         protected global::System.Web.UI.WebControls.DropDownList obrasocial_combo;
 
         /// <summary>
-        /// Control plan_lbl.
+        /// Control Label4.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label plan_lbl;
+        protected global::System.Web.UI.WebControls.Label Label4;
 
         /// <summary>
         /// Control plan_combo.
@@ -87,13 +87,13 @@ namespace AppWeb
         protected global::System.Web.UI.WebControls.DropDownList plan_combo;
 
         /// <summary>
-        /// Control lbl_nroafiliado.
+        /// Control Label5.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbl_nroafiliado;
+        protected global::System.Web.UI.WebControls.Label Label5;
 
         /// <summary>
         /// Control nroafiliado.
@@ -105,24 +105,6 @@ namespace AppWeb
         protected global::System.Web.UI.WebControls.TextBox nroafiliado;
 
         /// <summary>
-        /// Control HyperLink_volver.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HyperLink HyperLink_volver;
-
-        /// <summary>
-        /// Control btn_Verificar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btn_Verificar;
-
-        /// <summary>
         /// Control lblMsg.
         /// </summary>
         /// <remarks>
@@ -130,5 +112,23 @@ namespace AppWeb
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMsg;
+
+        /// <summary>
+        /// Control volver_btn.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button volver_btn;
+
+        /// <summary>
+        /// Control Button1.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button Button1;
     }
 }

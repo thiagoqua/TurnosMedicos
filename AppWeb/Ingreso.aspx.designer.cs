@@ -33,21 +33,21 @@ namespace AppWeb
         protected global::System.Web.UI.WebControls.Label Label1;
 
         /// <summary>
-        /// Control registrarse_btn.
+        /// Control Registrarse_btn.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button registrarse_btn;
+        protected global::System.Web.UI.WebControls.Button Registrarse_btn;
 
         /// <summary>
-        /// Control ingresar_btn.
+        /// Control Ingresar_btn.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button ingresar_btn;
+        protected global::System.Web.UI.WebControls.Button Ingresar_btn;
     }
 }

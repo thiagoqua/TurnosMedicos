@@ -33,13 +33,13 @@ namespace AppWeb
         protected global::System.Web.UI.WebControls.Label Label1;
 
         /// <summary>
-        /// Control Label2.
+        /// Control contraseña_lbl.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label2;
+        protected global::System.Web.UI.WebControls.Label contraseña_lbl;
 
         /// <summary>
         /// Control contraseña.
@@ -48,16 +48,16 @@ namespace AppWeb
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox contraseña;
+        protected global::System.Web.UI.HtmlControls.HtmlInputPassword contraseña;
 
         /// <summary>
-        /// Control Label3.
+        /// Control Label5.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label3;
+        protected global::System.Web.UI.WebControls.Label Label5;
 
         /// <summary>
         /// Control rep_contraseña.
@@ -66,7 +66,7 @@ namespace AppWeb
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox rep_contraseña;
+        protected global::System.Web.UI.HtmlControls.HtmlInputPassword rep_contraseña;
 
         /// <summary>
         /// Control btn_registrarse.

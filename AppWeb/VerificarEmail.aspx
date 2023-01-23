@@ -8,25 +8,48 @@
     <title></title>
 </head>
 <body>
+    <link href="Styles/LoginStyle.css" rel="stylesheet" type="text/css" />
+    <p>
+        <br />
+    </p>
+    <p>
+        &nbsp;</p>
     <form id="form1" runat="server">
-        <div>
-            <asp:Label ID="Label1" runat="server" Text="Ingrese el correo electrónico   "></asp:Label>
-            <asp:TextBox ID="Email" runat="server"></asp:TextBox>
-            <asp:Button ID="btn_Verificar" runat="server" OnClick="btn_Verificar_Click" Text="Verificar" />
+        <div style="vertical-align: middle; text-align: center; height: 259px;">
+            
+            <table align="center" style="text-align: left; vertical-align: middle; font-family: Calibri; font-size: large;">
+                <tr>
+                    <td><asp:Label ID="ingrese_lbl" runat="server" Text="Ingrese el correo electronico: " Font-Names="Calibri" Font-Size="Large"></asp:Label>
+                    </td>
+                    <td>
+                        <asp:TextBox ID="email" runat="server"></asp:TextBox><asp:Button ID="btn_verificar" runat="server" Text="Verificar" class="LoginButton" OnClick="btn_verificar_Click" Font-Names="Calibri" Font-Size="Large" BackColor="#0033CC" BorderStyle="None" Font-Bold="True" ForeColor="White" Height="25px" Width="100px" />
+                
+                    </td>
+                </tr>
+                  
+                <tr>
+                    <td><asp:Label ID="Label5" runat="server" Text="Ingrese el codigo enviado a su correo: " Font-Names="Calibri" Font-Size="Large"></asp:Label>
+                    </td>
+                    <td>
+                        <asp:TextBox ID="codigo" runat="server"></asp:TextBox>
+                    </td>
+                </tr>
+            </table>
+            <br />
+            <br />
+            <br />
+
+            <tr>
+                <td>
+                    <asp:Button ID="btn_volver" runat="server" Text="Volver" class="LoginButton" OnClick="btn_volver_Click" Font-Names="Calibri" Font-Size="Large" BackColor="#0033CC" BorderStyle="None" Font-Bold="True" ForeColor="White" Height="40px" Width="100px" />
+                </td>
+                <td>&nbsp;</td>
+                <td>
+                    <asp:Button ID="btn_confirmar" runat="server" Text="Confirmar" class="LoginButton" OnClick="btn_confirmar_Click" Font-Names="Calibri" Font-Size="Large" BackColor="#0033CC" BorderStyle="None" Font-Bold="True" ForeColor="White" Height="40px" Width="100px" />
+                </td>
+                    <td>&nbsp;</td>
+            </tr>
         </div>
-        <p>
-            <asp:Label ID="Label2" runat="server" Text="Ingrese el codigo enviado a su correo   "></asp:Label>
-            <asp:TextBox ID="Codigo" runat="server"></asp:TextBox>
-        </p>
-        <p>
-            <asp:Button ID="btn_volver" runat="server" OnClick="btn_volver_Click" Text="Volver" />
-            <asp:Button ID="btn_confirmar" runat="server" Enabled="False" OnClick="btn_confirmar_Click" Text="Confirmar" />
-        </p>
-        <p>
-        <asp:Label id="lblMsg" ForeColor="red" Font-Name="Verdana" Font-Size="10" runat="server" />
-        </p>
-        <p>
-            &nbsp;</p>
     </form>
 </body>
 </html>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.UI;
@@ -59,60 +60,15 @@ namespace AppWeb
 
         }
 
-        protected void Verificar_link_Click(object sender, EventArgs e)
+        protected void btn_verificar(object sender, EventArgs e)
         {
-            if (Dni.Text.Trim() == "" || nroafiliado.Text.Trim() == "")
-            {
-                Response.Write("<script>alert('Complete los campos faltantes.');</script>");
-                return;
-            }
-            var checkDNIandNroAfil = from afil in db.Afiliado
-                                     where afil.nroDNI.ToString() == Dni.Text &&
-                                     afil.NroAfiliado == nroafiliado.Text
-                                     select afil;
-
-            int IDAfiliado = 0;
-            foreach (Afiliado afil in checkDNIandNroAfil)
-            {
-                IDAfiliado = afil.AfiliadoID;
-                strAfiliado = IDAfiliado.ToString();
-            }
-
-            if (checkDNIandNroAfil.Count() == 1)
-            {
-
-                var checkPlanAndObra = from plan in db.PlanObraSocial
-                                       where plan.PlanDescripcion == plan_combo.Text &&
-                                       plan.PlanId == checkDNIandNroAfil.First().IDPlan
-                                       select plan;
-
-                if (checkPlanAndObra.Count() == 1)
-                {
-
-                    Response.Write("<script>alert('La verificacion fue exitosa. Cierre la ventana emergente y proceda a registrarse.');</script>");
-                }
-                else
-                {
-                    Response.Write("<script>alert('Los datos ingresados y/o seleccionados no son correctos.');</script>");
-                    return;
-                }
-            }
-            else
-            {
-                Response.Write("<script>alert('Los datos ingresados y/o seleccionados no son correctos.');</script>");
-                return;
-            }
-        }
-
-        protected void Button1_Click(object sender, EventArgs e)
-        {
-            if (Dni.Text.Trim() == "" || nroafiliado.Text.Trim() == "")
+            if (dni.Text.Trim() == "" || nroafiliado.Text.Trim() == "")
             {
                 Response.Write("<script>alert('Complete los campos faltantes.');</script>");
                 return;
             }
             int dni_int = 0;
-            int.TryParse(Dni.Text, out dni_int);
+            int.TryParse(dni.Text, out dni_int);
             if (dni_int == 0)
             {
                 Response.Write("<script>alert('Error.');</script>");
@@ -170,6 +126,13 @@ namespace AppWeb
                 return;
             }
 
+        }
+
+        protected void Volver_btn_Click(object sender, EventArgs e)
+        {
+            dni.Text = String.Empty;
+            nroafiliado.Text = String.Empty;
+            Response.Redirect(Constante.BaseUrl.baseurl + "Ingreso.aspx");
         }
     }
 }

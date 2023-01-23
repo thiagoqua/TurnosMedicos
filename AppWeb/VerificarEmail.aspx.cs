@@ -116,20 +116,20 @@ namespace AppWeb
 
         }
 
-        protected void btn_Verificar_Click(object sender, EventArgs e)
+        protected void btn_verificar_Click(object sender, EventArgs e)
         {
-            if (isValidEmail(Email.Text) == false)
+            if (isValidEmail(email.Text) == false)
             {
                 Response.Write("<script>alert('Ingrese un mail válido.');</script>");
             }
-            else if (checkEmail(Email.Text) == true)
+            else if (checkEmail(email.Text) == true)
             {
                 Response.Write("<script>alert('El mail ingresado ya se encuentra registrado. Pruebe con otro mail o proceda a loguearse.');</script>");
             }
             else
             {
                 DatosEmail();
-                setNroVerif(EnviarMail.Enviar(emisor, pass, Email.Text, false));
+                setNroVerif(EnviarMail.Enviar(emisor, pass, email.Text, false));
 
                 Session.Add("CodVerif_Session", getNroVerif());
 
@@ -143,29 +143,29 @@ namespace AppWeb
         protected void btn_confirmar_Click(object sender, EventArgs e)
         {
             setNroVerif((int)Session["CodVerif_Session"]);
-            if (Codigo.Text.Trim() == "")
+            if (codigo.Text.Trim() == "")
             {
                 Response.Write("<script>alert('Ingrese el código de verificación.');</script>");
             }
 
             DatosEmail();
-            EnviarMail.Enviar(emisor, pass, Email.Text, false);
+            EnviarMail.Enviar(emisor, pass, email.Text, false);
 
             if (getNroVerif() != 0)            //SE ENVIÓ EL CORREO
             {
-                if (nroVerif.ToString() == Codigo.Text)         //SI EL NRO ES IGUAL ESTÁ VERIFICADO
+                if (nroVerif.ToString() == codigo.Text)         //SI EL NRO ES IGUAL ESTÁ VERIFICADO
                 {
                     Response.Write("<script>alert('Verificación exitosa.');</script>");
 
                     bool verificacion = false;
 
-                    verificacion = Verificacion(Codigo);
+                    verificacion = Verificacion(codigo);
 
                     if (verificacion == true)
                     {
                         Response.Write("<script>alert('Verificacion');</script>");
 
-                        Response.Redirect(Constante.BaseUrl.baseurl + "Registro.aspx?Email=" + Email.Text + "&IDAfiliado=" + IDAfiliado.ToString());
+                        Response.Redirect(Constante.BaseUrl.baseurl + "Registro.aspx?Email=" + email.Text + "&IDAfiliado=" + IDAfiliado.ToString());
                     }
                 }
             }
@@ -177,9 +177,10 @@ namespace AppWeb
 
         protected void btn_volver_Click(object sender, EventArgs e)
         {
-            Codigo.Text = String.Empty;
-            Email.Text = String.Empty;
+            codigo.Text = String.Empty;
+            email.Text = String.Empty;
             Response.Redirect(Constante.BaseUrl.baseurl + "Verificacion.aspx");
         }
+
     }
 }

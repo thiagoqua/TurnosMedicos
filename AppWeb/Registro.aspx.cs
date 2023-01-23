@@ -93,17 +93,17 @@ namespace AppWeb
         protected void btn_registrarse_Click(object sender, EventArgs e)
         {
 
-            if (contraseña.Text.Trim() == "" || rep_contraseña.Text.Trim() == "")
+            if (contraseña.Value.ToString().Trim() == "" || rep_contraseña.Value.ToString().Trim() == "")
             {
                 Response.Write("<script>alert('Complete los campos faltantes.');</script>");
                 return;
             }
-            else if (contraseña.Text == rep_contraseña.Text)
+            else if (contraseña.Value.ToString() == rep_contraseña.Value.ToString())
             {
                 Response.Write("<script>alert('¡Su registro ha sido completado! Proceda a ingresar a su cuenta.');</script>");
 
                 //ACTUALIZAR BDD INGRESANDO EL NVO USUARIO
-                insertarUsuario(email, contraseña.Text);
+                insertarUsuario(email, contraseña.Value.ToString());
                 Response.Redirect(Constante.BaseUrl.baseurl + "Login.aspx?");
             }
             else

@@ -8,27 +8,39 @@
     <title></title>
 </head>
 <body>
-    <form id="form1" runat="server">
-        <div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <asp:Label ID="Label1" runat="server" Font-Bold="True" Font-Size="Large" Text="¡Bienvenido al Sistema!"></asp:Label>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-            </div>
-        </div>
-        <div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<asp:Button ID="registrarse_btn" runat="server" OnClick="registrarse_btn_Click" Text="Registrarse" />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <asp:Button ID="ingresar_btn" runat="server" OnClick="ingresar_btn_Click" Text="Ingresar" />
-        </div>
-            </form>
-
+    <link href="Styles/LoginStyle.css" rel="stylesheet" type="text/css" />
+    <p>
+        <br />
+    </p>
     <p>
         &nbsp;</p>
+    <form id="form1" runat="server">
+        <div style="vertical-align: middle; text-align: center">
+            <asp:Label ID="Label1" runat="server" Font-Bold="True" Font-Size="X-Large" Text="¡Bienvenido al sistema!" Font-Names="Calibri"></asp:Label>
+            <br />
+            <br />
 
+            <table align="center" style="text-align: left; vertical-align: middle; font-family: Calibri; font-size: large;">
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>
+            <asp:Button ID="Registrarse_btn" runat="server" Text="Registrarse" class="LoginButton" OnClick="registrarse_btn_Click" Font-Names="Calibri" Font-Size="Large" BackColor="#0033CC" BorderStyle="None" Font-Bold="True" ForeColor="White" Height="40px" Width="100px" />
+                    </td>
+                    <td>&nbsp;</td>
+                             <td>
+            <asp:Button ID="Ingresar_btn" runat="server" Text="Ingresar" class="LoginButton" OnClick="ingresar_btn_Click" Font-Names="Calibri" Font-Size="Large" BackColor="#0033CC" BorderStyle="None" Font-Bold="True" ForeColor="White" Height="40px" Width="100px" />
+                    </td>
+                    <td>&nbsp;</td>
+                </tr>
+            </table>
+            
+            <br />
+            <br />
+            <br />
+        </div>
+    </form>
 </body>
 </html>
