@@ -3,6 +3,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Web;
 using System.Web.Security;
 
 namespace AppWeb
@@ -28,6 +29,13 @@ namespace AppWeb
                 //si no uso cookie persistente, cuando salga del navegador y vuelva a entrar tengo que iniciar sesion nuevamente
                 FormsAuthentication.SetAuthCookie(txtUserName.Value, chkPersistCookie.Checked);   
                 Session["user"] = trying;
+                if(chkPersistCookie.Checked) {
+                    Response.Cookies.Add(new HttpCookie("userID") {
+                        Value = trying.UsuarioID.ToString(),
+                        Expires = DateTime.Now.AddDays(1)
+                    });
+                }
+
                 if(trying.isMedico)
                     Response.Redirect("WebMedicalHome.aspx");
                 else

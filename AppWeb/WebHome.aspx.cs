@@ -22,17 +22,25 @@ namespace AppWeb {
 
         protected void Page_Load(object sender, EventArgs e) {
             //al usuario lo tomo del componente Login
-            whoAmI = (Usuario) Session["user"];
             boxes = new List<TextBox>();
             generatePDF.Visible = false;
+            whoAmI = (Usuario) Session["user"];
             if(IsPostBack) {
-                db = (TablesDataContext) Session["database"];
-                descripcionTurno = (string[,]) Session["turnos"];
-                whoAmIAsAfiliado = (Afiliado) Session["afiliado"];
+                db = (TablesDataContext)Session["database"];
+                descripcionTurno = (string[,])Session["turnos"];
+                whoAmIAsAfiliado = (Afiliado)Session["afiliado"];
             }
             else {
-                //ESTA PARTE VENDRÍA A REEMPLAZAR EL CONSTRUCTOR
                 db = new TablesDataContext();
+                //si se reinició el navegador y se guardó la sesió se va a ejecutar este código
+                if(whoAmI == null) {
+                    int UsuarioId = Convert.ToInt32(Request.Cookies["userID"].Value);
+                    whoAmI = (from user in db.Usuario
+                              where user.UsuarioID == UsuarioId
+                              select user).FirstOrDefault();
+                    Session["user"] = whoAmI;
+                }
+
                 whoAmIAsAfiliado = (from af in db.Afiliado
                                     where af.AfiliadoID == whoAmI.IDAfiliado
                                     select af).FirstOrDefault();
