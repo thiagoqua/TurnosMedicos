@@ -76,6 +76,7 @@
     <Content Include="Login.aspx" />
     <Content Include="Registro.aspx" />
     <None Include="Resources\FCB_ICON.png" />
+    <Content Include="Resources\LOGO.png" />
     <Content Include="Resources\MAIL_ICON.png" />
     <Content Include="Resources\PDF_IMAGE_L.png" />
     <Content Include="Resources\PHONE_ICON.png" />

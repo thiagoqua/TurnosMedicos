@@ -10,7 +10,8 @@
     <link href="Styles/WebHomesStyle.css" rel="stylesheet" type="text/css" />
     <form id="form1" runat="server">
         <div class="buttonsSection">
-            <asp:Image ID="Image1" runat="server" />
+            <div><asp:Image ID="Image1" runat="server" ImageUrl="~/Resources/LOGO.png"
+                       Width="200px" style="border-radius: 10px 10px;margin-top:20px;"/></div>
             <asp:Button ID="backButton" runat="server" CssClass="back-button"
                         Text="Volver" PostBackUrl="~/WebMedicalHome.aspx"/>
             <p><input type="submit" value="Sign Out" runat="server" id="signOutButton" class="button"/></p>

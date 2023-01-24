@@ -10,9 +10,11 @@
     <link href="Styles/WebABMStyle.css" rel="stylesheet" type="text/css" />
     <form id="form1" runat="server">
         <div class="buttonsSection">
-            <asp:Image ID="Image1" runat="server" />
+            <div><asp:Image ID="Image1" runat="server" ImageUrl="~/Resources/LOGO.png"
+                       Width="200px" style="border-radius: 10px 10px;margin-top:20px;"/></div>
             <asp:Label ID="Label6" runat="server" Text="Seleccione fecha" 
-                       style="color:aliceblue;margin-left:10px;font-weight:600" Visible="false"></asp:Label>
+                       style="color:aliceblue;margin-left:10px;font-weight:600;margin-top: 20px;" 
+                       Visible="false"></asp:Label>
                     <asp:Calendar ID="fechaTurnoPicker" runat="server" BackColor="White" MinimunDate="2022-11-24"
                         BorderColor="#3366CC" BorderWidth="1px" CellPadding="1" DayNameFormat="Shortest" 
                         Font-Names="Verdana" Font-Size="8pt" ForeColor="#003399" Height="166px" 
