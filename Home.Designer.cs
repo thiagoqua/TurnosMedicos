@@ -102,7 +102,6 @@ namespace AppEscritorio {
             // 
             // PanelContenedor
             // 
-            this.PanelContenedor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PanelContenedor.Controls.Add(this.textBoxTurno1);
             this.PanelContenedor.Controls.Add(this.textBoxTurno0);
             this.PanelContenedor.Controls.Add(this.generatePDF);
@@ -163,7 +162,7 @@ namespace AppEscritorio {
             this.BarraTitulo.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.BarraTitulo.Location = new System.Drawing.Point(0, 0);
             this.BarraTitulo.Name = "BarraTitulo";
-            this.BarraTitulo.Size = new System.Drawing.Size(964, 37);
+            this.BarraTitulo.Size = new System.Drawing.Size(984, 37);
             this.BarraTitulo.TabIndex = 7;
             // 
             // btnCerrar

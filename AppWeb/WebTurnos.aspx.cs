@@ -12,28 +12,46 @@ namespace AppWeb {
         private Afiliado whoAmIAsAfiliado;
         private TablesDataContext db;
 
+        /** ambos campos se utilizan para la eliminación de turnos **/
+        //almacena todos los turnos a mi nombre
         private List<Turno> myTurnosToDelete;
+        //almacena el índice del último turno mostrado de la lista de arriba 
         private int indexShowed;
         protected void Page_Load(object sender, EventArgs e) {
-            //VENDRÍA A SER COMO EL CONSTRUCTOR
             whoAmI = (Usuario)Session["user"]; 
-            whoAmIAsAfiliado = (Afiliado)Session["afiliado"];
             if(IsPostBack) {
                 db = (TablesDataContext)Session["database"];
                 myTurnosToDelete = (List<Turno>)Session["turnos_delete"];
                 indexShowed = Convert.ToInt32(Session["myindex"]);
+                whoAmIAsAfiliado = (Afiliado)Session["afiliado"];
             }
             else {
                 db = new TablesDataContext();
-                indexShowed = -1;
+                /*
+                  si whoAmI es null, significa que el Login no guardó en la sesión al usuario, 
+                  por lo que tengo que ir a buscarlo a la cookie ya que se trata de un 
+                  reinicio del navegador
+                */
+                if(whoAmI == null) {
+                    int UsuarioId = Convert.ToInt32(Request.Cookies["userID"].Value);
+                    whoAmI = (from user in db.Usuario
+                              where user.UsuarioID == UsuarioId
+                              select user).First();
+                    whoAmIAsAfiliado = (from af in db.Afiliado
+                                        where af.AfiliadoID == whoAmI.IDAfiliado
+                                        select af).First();
+                    Session["afiliado"] = whoAmIAsAfiliado;
+                    Session["user"] = whoAmI;
+                }
+                Session["myindex"] = indexShowed = -1;
                 Session["database"] = db;
-                Session["myindex"] = indexShowed;
             }
         }
 
         protected void addTurnoButton_Click(object sender, EventArgs e) {
             List<Provincia> queryProvincia = (from prov in db.Provincia
                                               select prov).ToList();
+            //inserto al objeto seleccione como primer elemento de la lista que recibe el DropDownList
             queryProvincia.Insert(0,
                 createSeleccioneOf(queryProvincia.First().GetType()) as Provincia);
             
@@ -52,11 +70,13 @@ namespace AppWeb {
         protected void comboProvincia_SelectedIndexChanged1(object sender, EventArgs e) {
             changeVisibilityBy(Tools.PROVINCIASELECTED);
             int ProvinciaId = Convert.ToInt32(comboProvincia.SelectedValue);
+            //si el item seleccionado es el objeto seleccione aborto
             if(ProvinciaId == -1)
                 return;
             List<Localidad> queryLocalidad = (from loc in db.Localidad
                                               where loc.IDProvincia == ProvinciaId
                                               select loc).ToList();
+            //inserto al objeto seleccione como primer elemento de la lista que recibe el DropDownList
             if(queryLocalidad.Count > 0)
                 queryLocalidad.Insert(0,
                     createSeleccioneOf(queryLocalidad.First().GetType()) as Localidad);
@@ -72,11 +92,13 @@ namespace AppWeb {
         protected void comboLocalidad_SelectedIndexChanged(object sender, EventArgs e) {
             changeVisibilityBy(Tools.LOCALIDADSELECTED);
             int LocalidadId = Convert.ToInt32(comboLocalidad.SelectedValue);
+            //si el item seleccionado es el objeto seleccione aborto
             if(LocalidadId == -1)
                 return;
             List<Sucursal> querySucursal = (from suc in db.Sucursal
                                             where suc.IDLocalidad == LocalidadId
                                             select suc).ToList();
+            //inserto al objeto seleccione como primer elemento de la lista que recibe el DropDownList
             if(querySucursal.Count > 0)
                 querySucursal.Insert(0,
                     createSeleccioneOf(querySucursal.First().GetType()) as Sucursal);
@@ -92,8 +114,10 @@ namespace AppWeb {
         protected void comboSucursales_SelectedIndexChanged(object sender, EventArgs e) {
             changeVisibilityBy(Tools.SUCURSALSELECTED);
             int LocalidadId, SucursalId;
+            List<Especialidad> queryEspecialidades;
             LocalidadId = Convert.ToInt32(comboLocalidad.SelectedValue);
             SucursalId = Convert.ToInt32(comboSucursales.SelectedValue);
+            //si el item seleccionado es el objeto seleccione aborto
             if(SucursalId == -1)
                 return;
             var queryMedicosEspecialidades = from medico in db.Medico
@@ -102,13 +126,18 @@ namespace AppWeb {
                                              where ms.IDSucursal == SucursalId
                                              select medico.IDEspecialidad;
 
-            List<Especialidad> queryEspecialidades = (from esp in db.Especialidad
-                                                      join ID in queryMedicosEspecialidades
-                                                          on esp.EspecialidadId equals ID
-                                                      select esp)
-                                                      .ToList()
-                                                      .Distinct()
-                                                      .ToList();
+            /*
+              aplico Distinct() porque al haber varios médicos que trabajan de la misma especialidad,
+              habrían especialidades repetidas
+            */
+            queryEspecialidades = (from esp in db.Especialidad
+                                   join ID in queryMedicosEspecialidades
+                                       on esp.EspecialidadId equals ID
+                                   select esp)
+                                   .ToList()
+                                   .Distinct()
+                                   .ToList();
+            //inserto al objeto seleccione como primer elemento de la lista que recibe el DropDownList
             if(queryEspecialidades.Count > 0)
                 queryEspecialidades.Insert(0,
                     createSeleccioneOf(queryEspecialidades.First().GetType()) as Especialidad);
@@ -126,6 +155,7 @@ namespace AppWeb {
             int SucursalId, EspecialidadId;
             SucursalId = Convert.ToInt32(comboSucursales.SelectedValue);
             EspecialidadId = Convert.ToInt32(comboEspecialidades.SelectedValue);
+            //si el item seleccionado es el objeto seleccione aborto
             if(EspecialidadId == -1)
                 return;
             var queryMedicos = from medico in db.Medico
@@ -140,6 +170,7 @@ namespace AppWeb {
                                                     join medico in queryMedicos
                                                        on usuario.UsuarioID equals medico.IDUsuario
                                                     select af).ToList();
+            //inserto al objeto seleccione como primer elemento de la lista que recibe el DropDownList
             if(queryMedicosAfiliados.Count > 0)
                 queryMedicosAfiliados.Insert(0,
                     createSeleccioneOf(queryMedicosAfiliados.First().GetType()) as Afiliado);
@@ -156,24 +187,26 @@ namespace AppWeb {
             changeVisibilityBy(Tools.MEDICOSELECTED);
             int SucursalId, MedicoIdAsAfiliado, MedicoId, szQuery;
             string adviceDisponibilidad;
+            List<Dia> queryDias;
 
             SucursalId = Convert.ToInt32(comboSucursales.SelectedValue);
             adviceDisponibilidad = "El médico está disponible ";
             MedicoIdAsAfiliado= Convert.ToInt32(comboMedicos.SelectedValue);
+            //si el item seleccionado es el objeto seleccione aborto
             if(MedicoIdAsAfiliado == -1)
                 return;
             MedicoId = (from med in db.Medico
                         join user in db.Usuario
                             on med.IDUsuario equals user.UsuarioID
                         where user.IDAfiliado == MedicoIdAsAfiliado
-                        select med.MedicoID).FirstOrDefault();
+                        select med.MedicoID).First();
 
-            List<Dia> queryDias = (from dia in db.Dia
-                                   join dm in db.DisponibilidadMedico
-                                       on dia.DiaID equals dm.IDDia
-                                   where dm.IDMedico == MedicoId &&
-                                         dm.IDSucursal == SucursalId
-                                   select dia).ToList().Distinct().ToList();
+            queryDias = (from dia in db.Dia
+                         join dm in db.DisponibilidadMedico
+                             on dia.DiaID equals dm.IDDia
+                         where dm.IDMedico == MedicoId &&
+                               dm.IDSucursal == SucursalId
+                         select dia).ToList().Distinct().ToList();
 
             szQuery = queryDias.Count;
             switch(szQuery) {
@@ -181,7 +214,7 @@ namespace AppWeb {
                     showHayDisponibilidad(false, "dias disponibles");
                     return;
                 case 1:
-                    adviceDisponibilidad += "únicamente el día " + queryDias.FirstOrDefault().NombreDia.Trim();
+                    adviceDisponibilidad += "únicamente el día " + queryDias.First().NombreDia.Trim();
                     break;
                 default:
                     adviceDisponibilidad += "los días ";
@@ -221,7 +254,7 @@ namespace AppWeb {
                         join user in db.Usuario
                             on med.IDUsuario equals user.UsuarioID
                         where user.IDAfiliado == MedicoIdAsAfiliado
-                        select med.MedicoID).FirstOrDefault();
+                        select med.MedicoID).First();
             DiaId = -1;
 
             var queryDias = (from dia in db.Dia
@@ -260,19 +293,13 @@ namespace AppWeb {
                                 dispom.IDSucursal == SucursalId
                           select dispom;
 
-            var queryTurnos = from ft in db.FechaTurno
-                              join turno in db.Turno
-                                  on ft.FechaTurnoID equals turno.IDFechaTurno
-                              where ft.Fecha.Equals(fechaTurnoPicker.SelectedDate) &&
-                                    turno.IDSucursal == SucursalId &&
-                                    turno.IDMedico == MedicoId
-                              select ft;
-
-            var queryHorariosUsados = from hs in db.Horario
-                                      join ft in queryTurnos
-                                          on hs.HorarioID equals ft.IDHorario
-                                      select hs;
-
+            /*
+              esto se dá en el caso de que el médico trabaje en dos (o más) franjas horarias distintas
+              el mismo día en una misma sucursal, por lo que en tal caso habrán dos 
+              (o la cantidad que sea) registros de tipo DisponibilidadMedico con el mismo 
+              MedicoId, DiaId y SucursalId, pero con distinto horario de inicio, horario de finalización 
+              o consultorio.
+            */
             foreach(DisponibilidadMedico dm in queryDm) {
                 var queryTemp = (from hs in db.Horario
                                  where hs.Hora.CompareTo(dm.HorarioInicio) >= 0 &&
@@ -283,11 +310,31 @@ namespace AppWeb {
                                            .ToList();
             }
 
+            //todos los turnos sacados para el día seleccionado
+            var queryTurnos = from ft in db.FechaTurno
+                              join turno in db.Turno
+                                  on ft.FechaTurnoID equals turno.IDFechaTurno
+                              where ft.Fecha.Equals(fechaTurnoPicker.SelectedDate) &&
+                                    turno.IDSucursal == SucursalId &&
+                                    turno.IDMedico == MedicoId
+                              select ft;
+
+            //los horarios de los turnos sacados para el día seleccionado
+            var queryHorariosUsados = from hs in db.Horario
+                                      join ft in queryTurnos
+                                          on hs.HorarioID equals ft.IDHorario
+                                      select hs;
+
+            /*
+              en la lista de horarios a elegir, muestro todos los
+              disponibles EXCEPTO aquellos que no están disponibles debido a que corresponden
+              al horario de otro turno
+            */
             if(queryHorariosUsados.Count() > 0)
                 queryHorariosDisponibles = queryHorariosDisponibles
                                            .Except(queryHorariosUsados, new HorarioComparer())
                                            .ToList();
-
+            //inserto al objeto seleccione como primer elemento de la lista que recibe el DropDownList
             if(queryHorariosDisponibles.Count > 0)
                 queryHorariosDisponibles.Insert(0,
                     createSeleccioneOf(queryHorariosDisponibles.First().GetType()) as Horario);
@@ -315,8 +362,9 @@ namespace AppWeb {
             FechaTurno ftToAdd = new FechaTurno();
 
             DiaId = (int)fechaTurnoPicker.SelectedDate.DayOfWeek;
+            //el por qué de esto está exiplicado en la línea 269
             if(DiaId == 0)
-                DiaId = 7;  //el por qué de esto está exiplicado en la línea 178
+                DiaId = 7;  
             HorarioId = Convert.ToInt32(comboHorarios.SelectedValue);
             fecha = fechaTurnoPicker.SelectedDate;
 
@@ -324,7 +372,7 @@ namespace AppWeb {
                                join user in db.Usuario
                                    on med.IDUsuario equals user.UsuarioID
                                where user.IDAfiliado == Convert.ToInt32(comboMedicos.SelectedValue)
-                               select med.MedicoID).FirstOrDefault();
+                               select med.MedicoID).First();
             tToAdd.IDProvincia = Convert.ToInt32(comboProvincia.SelectedValue);
             tToAdd.IDLocalidad = Convert.ToInt32(comboLocalidad.SelectedValue);
             tToAdd.IDSucursal = Convert.ToInt32(comboSucursales.SelectedValue);
@@ -431,6 +479,10 @@ namespace AppWeb {
             changeVisibilityBy(Tools.CANCELARRM);
         }
 
+        /// <summary>
+        ///     Muestra en la interfaz los detalles del turno que recibe.
+        /// </summary>
+        /// <param name="turno">turno que se quiere mostrar</param>
         private void showTurnoValues(Turno turno) {
             Afiliado medicoAsAfiliado;
             Medico medico;
@@ -484,14 +536,20 @@ namespace AppWeb {
             TextBox7.Text = temp;
         }
 
+        /// <summary>
+        ///     Crea un objeto cuyo fin es ser siempre el primero en los DropDownLists.
+        ///     Ya que los DropDownList no detectan cambios cuando se selecciona el primer 
+        ///     elemento de la lista, para cada uno de ellos ponemos como primer 
+        ///     elemento a un objeto (que corresponda al tipo de dato que almacena el 
+        ///     DropDownList) con el único fin de que en la interfaz diga Seleccione, 
+        ///     para que puedan ser seleccionadas todas las opciones que se listan.
+        /// </summary>
+        /// <param name="clase">tipo de dato del objeto a crear</param>
+        /// <returns>
+        ///     Un objeto cuyo tipo es el que recibe como argumento y cuyo campo descipción es 
+        ///     "--Seleccione--" o valor 0 en caso de Horario.
+        /// </returns>
         private object createSeleccioneOf(Type clase) {
-            /*
-                Esta función existe porque los DropDownList no detectan cambios cuando
-                se selecciona el primer elemento de la lista, entonces para cada uno
-                de ellos ponemos como primer elemento a un objeto (correspondiente) que 
-                diga Seleccione, para que puedan ser seleccionadas todas las opciones
-                que se listan.
-            */
             object ret;
             const int defId = -1;
             const string defDescripcion = "--Seleccione--";
@@ -540,6 +598,14 @@ namespace AppWeb {
             return ret;
         }
 
+        /// <summary>
+        ///     Muestra en la interfaz un cartel detallando si no hay disponibilidad de algún
+        ///     campo a la hora de sacar el turno.
+        /// </summary>
+        /// <param name="hay">existencia o no de la disponibilidad</param>
+        /// <param name="category">
+        ///     campo por el cual se tiene que notificar la no disponibilidad en caso de que así sea.
+        /// </param>
         private void showHayDisponibilidad(bool hay,string category) {
             if(!hay) {
                 Label18.Text = "Actualmente, no tenemos " + category +
@@ -548,6 +614,13 @@ namespace AppWeb {
             }
         }
 
+        /// <summary>
+        ///     Cambia la visibilidad de todos los componentes dependiendo de que ocurra
+        ///     en el programa
+        /// </summary>
+        /// <param name="which">
+        ///     cuál es el evento que produjo el cambio en la visibilidad
+        /// </param>
         private void changeVisibilityBy(Tools which) {
             switch(which) {
                 case Tools.ELIMINARTURNO:
@@ -649,6 +722,10 @@ namespace AppWeb {
             }
         }
 
+        /// <summary>
+        ///     Constantes utilizadas para describir un evento del programa, como un click
+        ///     o alguna notificación al usuario.
+        /// </summary>
         private enum Tools {
             SACARNUEVOTURNO, SACARTURNO, ELIMINARTURNO, ELIMINARESTETURNO, CANCELARADD,
             CANCELARRM, SIGUIENTETURNO, ANTERIORTURNO,

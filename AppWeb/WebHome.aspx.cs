@@ -13,15 +13,12 @@ namespace AppWeb {
         private Afiliado whoAmIAsAfiliado;
         private TablesDataContext db;
 
+        //almacena los TextBoxes que hay en la interfaz
         private List<TextBox> boxes;
+        //almacena los turnos que los pacientes tienen con el médico
         private string[,] descripcionTurno;
 
-        public WebHome() {
-            
-        }
-
         protected void Page_Load(object sender, EventArgs e) {
-            //al usuario lo tomo del componente Login
             boxes = new List<TextBox>();
             generatePDF.Visible = false;
             whoAmI = (Usuario) Session["user"];
@@ -32,25 +29,39 @@ namespace AppWeb {
             }
             else {
                 db = new TablesDataContext();
-                //si se reinició el navegador y se guardó la sesió se va a ejecutar este código
+                /*
+                  si whoAmI es null, significa que el Login no guardó en la sesión al usuario, por lo que
+                  tengo que ir a buscarlo a la cookie ya que se trata de un reinicio del navegador
+                */
                 if(whoAmI == null) {
                     int UsuarioId = Convert.ToInt32(Request.Cookies["userID"].Value);
                     whoAmI = (from user in db.Usuario
                               where user.UsuarioID == UsuarioId
-                              select user).FirstOrDefault();
+                              select user).First();
                     Session["user"] = whoAmI;
                 }
 
                 whoAmIAsAfiliado = (from af in db.Afiliado
                                     where af.AfiliadoID == whoAmI.IDAfiliado
-                                    select af).FirstOrDefault();
+                                    select af).First();
 
                 Session["database"] = db;
                 Session["afiliado"] = whoAmIAsAfiliado;
             }
         }
 
+        /// <summary>
+        ///     Crea una cierta cantidad de TextBoxes con los parámetros necesarios, invisibles 
+        ///     y los agrega a la lista boxes.
+        /// </summary>
+        /// <param name="cant">cantidad de TextBoxes que hay que crear</param>
         private void makeBoxes(int cant) {
+            /*
+              tanto textBoxTurno0 (lado izquierdo) como textBoxTurno1 (lado derecho) 
+              son los dos TextBoxes que ya se encuentran puestos en la interfaz, 
+              pero de manera invisible. Existen ya que se usan como "molde" para crear 
+              los próximos TextBoxes en caso de que sean necesarios.
+            */
             boxes.Clear();
             const int lineLength = 2;
             TextBox toAdd;
@@ -93,14 +104,15 @@ namespace AppWeb {
             label1.Visible = label2.Visible = label3.Visible =
             FCBicon.Visible = MAILicon.Visible = PHONEicon.Visible = false;
             int szQuery, i;
+            const string newline = "\r\n";
             Turno tempTurno;
             Afiliado tempMedico;
             List<Turno> queryTurnos = (from turno in db.Turno
                                        where turno.IDUsuario == whoAmI.UsuarioID
                                        select turno).ToList();
-            const string newline = "\r\n";
 
             szQuery = queryTurnos.Count();
+            //elimino de la interfaz los TextBoxes si es que hay visibles
             for(i = 0; i < boxes.Count(); ++i) {
                 switch(i) {
                     case 0:
@@ -114,12 +126,14 @@ namespace AppWeb {
                         break;
                 }
             }
+
             if(szQuery == 0) {
                 generatePDF.Visible = false;
                 return;
             }
             makeBoxes(szQuery);
             descripcionTurno = new string[szQuery,4];
+            //se arma el texto donde se detalla cada turno
             for(i = 0; i < szQuery; ++i) {
                 tempTurno = queryTurnos[i];
                 descripcionTurno[i,0] = "Fecha del turno: ";
@@ -142,26 +156,26 @@ namespace AppWeb {
                                     where suc.SucursalId == tempTurno.IDSucursal
                                     select suc;
                 descripcionTurno[i,2] += "En sucursal: " +
-                        querySucursal.FirstOrDefault().SucursalDescripcion.Trim();
+                        querySucursal.First().SucursalDescripcion.Trim();
 
                 var queryProvincia = from prov in db.Provincia
                                      where prov.ProvinciaId == tempTurno.IDProvincia
                                      select prov;
                 descripcionTurno[i, 2] += ", " +
-                        queryProvincia.FirstOrDefault().ProvinciaDescripcion.Trim();
+                        queryProvincia.First().ProvinciaDescripcion.Trim();
 
                 var queryLocalidad = from loc in db.Localidad
                                      where loc.LocalidadId == tempTurno.IDLocalidad
                                      select loc;
                 descripcionTurno[i, 2] += ", " +
-                        queryLocalidad.FirstOrDefault().LocalidadDescripcion.Trim();
+                        queryLocalidad.First().LocalidadDescripcion.Trim();
 
                 descripcionTurno[i, 3] += "Horario: ";
                 TimeSpan horario = (from h in db.Horario
                                     join ft in db.FechaTurno
                                         on h.HorarioID equals ft.IDHorario
                                     where tempTurno.IDFechaTurno == ft.FechaTurnoID
-                                    select h.Hora).FirstOrDefault();
+                                    select h.Hora).First();
                 descripcionTurno[i, 3] += horario.ToString();
             }
 

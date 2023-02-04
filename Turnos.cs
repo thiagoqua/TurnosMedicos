@@ -15,9 +15,13 @@ namespace AppEscritorio {
         private Usuario whoAmI;
         private Afiliado whoAmIAsAfiliado;
         private TablesDataContext db;
+        //utilizado para volver al componente anterior
         private Home previousState;
         
+        /** ambos campos se utilizan para la eliminación de turnos **/
+        //almacena todos los turnos a mi nombre
         private List<Turno> myTurnosToDelete;
+        //almacena el índice del último turno mostrado de la lista de arriba 
         private int indexShowed;
         public Turnos(Usuario logged,Home home) {
             InitializeComponent();
@@ -43,7 +47,9 @@ namespace AppEscritorio {
         private void addTurnoButton_Click(object sender, EventArgs e) {
             var queryProvincia = from prov in db.Provincia
                                  select prov;
+            
             comboProvincia.ResetText(); comboLocalidad.ResetText(); comboSucursales.ResetText();
+            
             comboProvincia.DisplayMember = "ProvinciaDescripcion";
             comboProvincia.ValueMember = "ProvinciaId";
             comboProvincia.DataSource = queryProvincia;
@@ -55,7 +61,9 @@ namespace AppEscritorio {
             var queryLocalidad = from loc in db.Localidad
                                  where loc.IDProvincia == ProvinciaId
                                  select loc;
+
             comboLocalidad.ResetText(); comboSucursales.ResetText();
+            
             comboLocalidad.DisplayMember = "LocalidadDescripcion";
             comboLocalidad.ValueMember = "LocalidadId";
             comboLocalidad.DataSource = queryLocalidad;
@@ -68,7 +76,9 @@ namespace AppEscritorio {
             var querySucursal = from suc in db.Sucursal
                                 where suc.IDLocalidad == LocalidadId
                                 select suc;
+            
             comboSucursales.ResetText();
+            
             comboSucursales.DisplayMember = "SucursalDescripcion";
             comboSucursales.ValueMember = "SucursalId";
             comboSucursales.DataSource = querySucursal;
@@ -78,6 +88,8 @@ namespace AppEscritorio {
 
         private void comboSucursales_SelectedIndexChanged(object sender, EventArgs e) {
             int LocalidadId, SucursalId;
+            List<Especialidad> queryEspecialidades;
+
             LocalidadId = (int)comboLocalidad.SelectedValue;
             SucursalId = (int)comboSucursales.SelectedValue;
             var queryMedicosEspecialidades = from medico in db.Medico
@@ -85,15 +97,20 @@ namespace AppEscritorio {
                                                  on medico.MedicoID equals ms.IDMedico
                                              where ms.IDSucursal == SucursalId
                                              select medico.IDEspecialidad;
-
-            List<Especialidad> queryEspecialidades = (from esp in db.Especialidad
-                                                      join ID in queryMedicosEspecialidades
-                                                          on esp.EspecialidadId equals ID
-                                                      select esp)
-                                                      .ToList()
-                                                      .Distinct()
-                                                      .ToList();
+            /*
+              aplico Distinct() porque al haber varios médicos que trabajan de la misma especialidad,
+              habrían especialidades repetidas
+            */
+            queryEspecialidades = (from esp in db.Especialidad
+                                   join ID in queryMedicosEspecialidades
+                                       on esp.EspecialidadId equals ID
+                                   select esp)
+                                   .ToList()
+                                   .Distinct()
+                                   .ToList();
+            
             comboEspecialidades.ResetText();
+            
             comboEspecialidades.DisplayMember = "EspecialidadDescripcion";
             comboEspecialidades.ValueMember = "EspecialidadId";
             comboEspecialidades.DataSource = queryEspecialidades;
@@ -103,6 +120,7 @@ namespace AppEscritorio {
 
         private void comboEspecialidades_SelectedIndexChanged(object sender, EventArgs e) {
             int SucursalId, EspecialidadId;
+            
             SucursalId = (int)comboSucursales.SelectedValue;
             EspecialidadId = (int)comboEspecialidades.SelectedValue;
             var queryMedicos = from medico in db.Medico
@@ -120,6 +138,7 @@ namespace AppEscritorio {
                                  select af;
 
             comboMedicos.ResetText();
+            
             comboMedicos.DisplayMember = "Apellido";
             comboMedicos.ValueMember = "AfiliadoId";
             comboMedicos.DataSource = queryAfiliados;
@@ -130,6 +149,7 @@ namespace AppEscritorio {
         private void comboMedicos_SelectedIndexChanged(object sender, EventArgs e) {
             int SucursalId, MedicoIdAsAfiliado, MedicoId, szQuery;
             string adviceDisponibilidad;
+            List<Dia> queryDias;
 
             SucursalId = (int)comboSucursales.SelectedValue;
             adviceDisponibilidad = "El médico está disponible ";
@@ -138,14 +158,17 @@ namespace AppEscritorio {
                         join user in db.Usuario
                             on med.IDUsuario equals user.UsuarioID
                         where user.IDAfiliado == MedicoIdAsAfiliado
-                        select med.MedicoID).FirstOrDefault();
+                        select med.MedicoID).First();
 
-            List<Dia> queryDias = (from dia in db.Dia
-                                   join dm in db.DisponibilidadMedico
-                                       on dia.DiaID equals dm.IDDia
-                                   where dm.IDMedico == MedicoId &&
-                                         dm.IDSucursal == SucursalId
-                                   select dia).ToList().Distinct().ToList();
+            queryDias = (from dia in db.Dia
+                         join dm in db.DisponibilidadMedico
+                             on dia.DiaID equals dm.IDDia
+                         where dm.IDMedico == MedicoId &&
+                               dm.IDSucursal == SucursalId
+                         select dia)
+                         .ToList()
+                         .Distinct()
+                         .ToList();
 
             szQuery = queryDias.Count;
             switch(szQuery) {
@@ -153,7 +176,7 @@ namespace AppEscritorio {
                     showHayDisponibilidad(false, "dias disponibles");
                     return;
                 case 1:
-                    adviceDisponibilidad += "únicamente el día " + queryDias.FirstOrDefault().NombreDia.Trim();
+                    adviceDisponibilidad += "únicamente el día " + queryDias.First().NombreDia.Trim();
                     break;
                 default:
                     queryDias.Sort(new DayComparer());
@@ -178,6 +201,7 @@ namespace AppEscritorio {
             int SucursalId, MedicoIdAsAfiliado, MedicoId, DiaId, DiaSelected;
             bool diaCorrecto = false;
             string msg, caption;
+            List<Dia> queryDias;
             List<Horario> queryHorariosDisponibles = new List<Horario>();
 
             SucursalId = (int)comboSucursales.SelectedValue;
@@ -186,21 +210,20 @@ namespace AppEscritorio {
                         join user in db.Usuario
                             on med.IDUsuario equals user.UsuarioID
                         where user.IDAfiliado == MedicoIdAsAfiliado
-                        select med.MedicoID).FirstOrDefault();
+                        select med.MedicoID).First();
             DiaId = -1;
-
-            List<Dia> queryDias = (from dia in db.Dia
-                                   join dispom in db.DisponibilidadMedico
-                                       on dia.DiaID equals dispom.IDDia
-                                   where dispom.IDMedico == MedicoId &&
-                                         dispom.IDSucursal == SucursalId
-                                   select dia).ToList();
+            queryDias = (from dia in db.Dia
+                         join dispom in db.DisponibilidadMedico
+                             on dia.DiaID equals dispom.IDDia
+                         where dispom.IDMedico == MedicoId &&
+                               dispom.IDSucursal == SucursalId
+                         select dia).ToList();
 
             foreach(Dia dia in queryDias) {
                 DiaSelected = (int)fechaTurnoPicker.Value.Date.DayOfWeek;
                 /* 
-                   esto de abajo es porque el picker toma al día domingo como el día 0
-                   de la semana, mientras que para la base de datos, el día domingo es
+                   esto es porque el picker toma al día domingo como el día 0
+                   de la semana, mientras que para la base de datos el día domingo es
                    el día 7
                  */
                 if(DiaSelected == 0)
@@ -226,19 +249,13 @@ namespace AppEscritorio {
                                 dispom.IDSucursal == SucursalId
                           select dispom;
             
-            var queryTurnos = from ft in db.FechaTurno
-                              join turno in db.Turno
-                                  on ft.FechaTurnoID equals turno.IDFechaTurno
-                              where ft.Fecha.Equals(fechaTurnoPicker.Value.Date) && 
-                                    turno.IDSucursal == SucursalId &&
-                                    turno.IDMedico == MedicoId
-                              select ft;
-
-            var queryHorariosUsados = from hs in db.Horario
-                                      join ft in queryTurnos
-                                          on hs.HorarioID equals ft.IDHorario
-                                      select hs;
-
+            /*
+              esto se dá en el caso de que el médico trabaje en dos (o más) franjas horarias distintas
+              el mismo día en una misma sucursal, por lo que en tal caso habrán dos 
+              (o la cantidad que sea) registros de tipo DisponibilidadMedico con el mismo 
+              MedicoId, DiaId y SucursalId, pero con distinto horario de inicio, horario de finalización 
+              o consultorio.
+            */
             foreach(DisponibilidadMedico dm in queryDm) {
                 var queryTemp = (from hs in db.Horario
                                  where hs.Hora.CompareTo(dm.HorarioInicio) >= 0 &&
@@ -248,12 +265,33 @@ namespace AppEscritorio {
                                            .Concat(queryTemp)
                                            .ToList();
             }
-            
+
+            //todos los turnos sacados para el día seleccionado
+            var queryTurnos = from ft in db.FechaTurno
+                              join turno in db.Turno
+                                  on ft.FechaTurnoID equals turno.IDFechaTurno
+                              where ft.Fecha.Equals(fechaTurnoPicker.Value.Date) && 
+                                    turno.IDSucursal == SucursalId &&
+                                    turno.IDMedico == MedicoId
+                              select ft;
+
+            //los horarios de los turnos sacados para el día seleccionado
+            var queryHorariosUsados = from hs in db.Horario
+                                      join ft in queryTurnos
+                                          on hs.HorarioID equals ft.IDHorario
+                                      select hs;
+            /*
+              en la lista de horarios a elegir, muestro todos los
+              disponibles EXCEPTO aquellos que no están disponibles debido a que corresponden
+              al horario de otro turno
+            */
             if(queryHorariosUsados.Count() > 0)
                 queryHorariosDisponibles = queryHorariosDisponibles
                                            .Except(queryHorariosUsados, new HorarioComparer())
                                            .ToList();
+            
             comboHorarios.ResetText();
+            
             comboHorarios.DisplayMember = "Hora";
             comboHorarios.ValueMember = "HorarioId";
             comboHorarios.DataSource = queryHorariosDisponibles;
@@ -273,8 +311,9 @@ namespace AppEscritorio {
             FechaTurno ftToAdd = new FechaTurno();
 
             DiaId = (int)fechaTurnoPicker.Value.Date.DayOfWeek;
+            //el por qué de esto está exiplicado en la línea 2
             if(DiaId == 0)
-                DiaId = 7;  //el por qué de esto está exiplicado en la línea 176
+                DiaId = 7;  
             HorarioId = (int)comboHorarios.SelectedValue;
             fecha = fechaTurnoPicker.Value;
 
@@ -282,7 +321,7 @@ namespace AppEscritorio {
                                join user in db.Usuario
                                    on med.IDUsuario equals user.UsuarioID
                                where user.IDAfiliado == (int)comboMedicos.SelectedValue
-                               select med.MedicoID).FirstOrDefault();
+                               select med.MedicoID).First();
             tToAdd.IDProvincia = (int)comboProvincia.SelectedValue;
             tToAdd.IDLocalidad = (int)comboLocalidad.SelectedValue;
             tToAdd.IDSucursal = (int)comboSucursales.SelectedValue;
@@ -379,6 +418,10 @@ namespace AppEscritorio {
             }
         }
 
+        /// <summary>
+        ///     Muestra en la interfaz los detalles del turno que recibe.
+        /// </summary>
+        /// <param name="turno">turno que se quiere mostrar</param>
         private void showTurnoValues(Turno turno) {
             Afiliado medicoAsAfiliado;
             Medico medico;
@@ -432,6 +475,14 @@ namespace AppEscritorio {
             textBox6.Text = temp;
         }
 
+        /// <summary>
+        ///     Muestra en la interfaz un cartel detallando si no hay disponibilidad de algún
+        ///     campo a la hora de sacar el turno.
+        /// </summary>
+        /// <param name="hay">existencia o no de la disponibilidad</param>
+        /// <param name="category">
+        ///     campo por el cual se tiene que notificar la no disponibilidad en caso de que así sea.
+        /// </param>
         private void showHayDisponibilidad(bool hay, string category) {
             if(!hay) {
                 label18.Text = "Actualmente, no tenemos " + category +
@@ -448,6 +499,13 @@ namespace AppEscritorio {
             changeVisibilityBy(Tools.CANCELARRM);
         }
 
+        /// <summary>
+        ///     Cambia la visibilidad de todos los componentes dependiendo de que ocurra
+        ///     en el programa
+        /// </summary>
+        /// <param name="which">
+        ///     cuál es el evento que produjo el cambio en la visibilidad
+        /// </param>
         private void changeVisibilityBy(Tools which) {
             switch(which) {
                 case Tools.ELIMINARTURNO:
@@ -580,6 +638,10 @@ namespace AppEscritorio {
             }
         }
 
+        /// <summary>
+        ///     Constantes utilizadas para describir un evento del programa, como un click
+        ///     o alguna notificación al usuario.
+        /// </summary>
         private enum Tools {
             SACARNUEVOTURNO, SACARTURNO, ELIMINARTURNO, ELIMINARESTETURNO, CANCELARADD,
             CANCELARRM, SIGUIENTETURNO, ANTERIORTURNO,

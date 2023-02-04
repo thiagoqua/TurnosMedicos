@@ -69,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ChangePass.aspx" />
-    <Content Include="Default.aspx" />
     <Content Include="ForgotPass.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Ingreso.aspx" />
@@ -99,13 +98,6 @@
     </Compile>
     <Compile Include="ChangePass.aspx.designer.cs">
       <DependentUpon>ChangePass.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Default.aspx.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Default.aspx.designer.cs">
-      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="ForgotPass.aspx.cs">
       <DependentUpon>ForgotPass.aspx</DependentUpon>

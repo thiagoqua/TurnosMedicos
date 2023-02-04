@@ -14,9 +14,12 @@ namespace AppEscritorio {
         private Medico whoAmI;
         private Afiliado whoAmIAsAfiliado;
         private TablesDataContext db;
-        private IList<TextBox> boxes; 
+        //almacena los TextBoxes que hay en la interfaz
+        private List<TextBox> boxes;
+        //almacena los turnos que los pacientes tienen con el médico
         private string[,] descripcionTurno;
 
+        //utilizado para volver al componente anterior
         private MedicalHome previousState;
 
         public MedicalTurnos(Medico medico,MedicalHome home) {
@@ -32,13 +35,24 @@ namespace AppEscritorio {
             boxes = new List<TextBox>();
         }
 
+        /// <summary>
+        ///     Crea una cierta cantidad de TextBoxes con los parámetros necesarios, invisibles 
+        ///     y los agrega a la lista boxes.
+        /// </summary>
+        /// <param name="cant">cantidad de TextBoxes que hay que crear</param>
         private void makeBoxes(int cant) {
+            /*
+              tanto textBoxTurno0 (lado izquierdo) como textBoxTurno1 (lado derecho) 
+              son los dos TextBoxes que ya se encuentran puestos en la interfaz, 
+              pero de manera invisible. Existen ya que se usan como "molde" para crear 
+              los próximos TextBoxes en caso de que sean necesarios.
+            */
             boxes.Clear();
             const int offsetY = 140,
                       lineLength = 2;
             int deltaY,Xposition,Yposition;
-            deltaY = Xposition = Yposition = 0;
             TextBox toAdd;
+            deltaY = Xposition = Yposition = 0;
             switch(cant) {
                 case 1:
                     boxes.Add(textBoxTurno1);
@@ -50,7 +64,7 @@ namespace AppEscritorio {
                 default:
                     boxes.Add(textBoxTurno1);
                     boxes.Add(textBoxTurno2);
-                    for(int i = 2;i < cant; ++i) {
+                    for(int i = 2; i < cant; ++i) {
                         toAdd = new TextBox();
                         switch(i % lineLength) {
                             case 0:
@@ -60,8 +74,6 @@ namespace AppEscritorio {
                                 Xposition = boxes[0].Location.X;
                                 Yposition = boxes[0].Location.Y;
                                 toAdd.Size = boxes[0].Size;
-                                toAdd.Multiline = true;
-                                toAdd.Location = new Point(Xposition, Yposition + deltaY);
                                 break;
                             case 1:
                                 //pertenece a un box del lado derecho
@@ -69,10 +81,13 @@ namespace AppEscritorio {
                                 Xposition = boxes[1].Location.X;
                                 Yposition = boxes[1].Location.Y;
                                 toAdd.Size = boxes[1].Size;
-                                toAdd.Multiline = true;
-                                toAdd.Location = new Point(Xposition, Yposition + deltaY);
                                 break;
                         }
+                        toAdd.Multiline = true;
+                        toAdd.Location = new Point(Xposition, Yposition + deltaY);
+                        toAdd.BorderStyle = boxes[0].BorderStyle;
+                        toAdd.BackColor = boxes[0].BackColor;
+                        toAdd.Font = boxes[0].Font;
                         boxes.Add(toAdd);
                     }
                     break;
@@ -88,12 +103,16 @@ namespace AppEscritorio {
             DateTime selected = Convert.ToDateTime(fecha.Value.Date);
             int szQuery;
             Turno tempTurno;
-            lines[1] = "";  //para que haya un espacio entre la información
-            var queryTurnos = (from turno in db.Turno
-                               join ft in db.FechaTurno
-                                 on turno.IDFechaTurno equals ft.FechaTurnoID
-                               where turno.IDMedico == whoAmI.MedicoID && ft.Fecha == selected
-                               select turno).ToList();
+            List<Turno> queryTurnos;
+
+            //para que haya un espacio entre la información
+            lines[1] = "";
+            queryTurnos = (from turno in db.Turno
+                           join ft in db.FechaTurno
+                             on turno.IDFechaTurno equals ft.FechaTurnoID
+                           where turno.IDMedico == whoAmI.MedicoID && ft.Fecha == selected
+                           select turno).ToList();
+            //elimino de la interfaz los TextBoxes si es que hay visibles
             for(int i = 0;i < boxes.Count();++i) {
                 if(i < 2) {
                     boxes[i].Visible = false;
@@ -101,6 +120,7 @@ namespace AppEscritorio {
                 }
                 Controls.Remove(boxes[i]);
             }
+
             szQuery = queryTurnos.Count();
             if(szQuery == 0) {
                 generatePDF.Visible = false;
@@ -108,6 +128,7 @@ namespace AppEscritorio {
             }
             makeBoxes(szQuery);
             descripcionTurno = new string[szQuery,3];
+            //se arma el texto donde se detalla cada turno
             for(int i = 0;i < szQuery;++i){
                 tempTurno = queryTurnos[i];
                 descripcionTurno[i,0] = "Turno sacado por: ";
@@ -115,35 +136,36 @@ namespace AppEscritorio {
                                      join user in db.Usuario
                                         on af.AfiliadoID equals user.IDAfiliado
                                      where user.UsuarioID == tempTurno.IDUsuario
-                                     select af).FirstOrDefault();
+                                     select af).First();
                 descripcionTurno[i,0] += afiliado.Nombre.Trim() + " " + afiliado.Apellido.Trim();
 
                 var querySucursal = from suc in db.Sucursal
                                     where suc.SucursalId == tempTurno.IDSucursal
                                     select suc;
                 descripcionTurno[i,1] = "En sucursal: " + 
-                        querySucursal.FirstOrDefault().SucursalDescripcion;
+                        querySucursal.First().SucursalDescripcion;
 
                 var queryProvincia = from prov in db.Provincia
                                      where prov.ProvinciaId == tempTurno.IDProvincia
                                      select prov;
                 descripcionTurno[i,1] += ", " + 
-                        queryProvincia.FirstOrDefault().ProvinciaDescripcion;
+                        queryProvincia.First().ProvinciaDescripcion;
 
                 var queryLocalidad = from loc in db.Localidad
                                      where loc.LocalidadId == tempTurno.IDLocalidad
                                      select loc;
                 descripcionTurno[i,1] += ", " + 
-                        queryLocalidad.FirstOrDefault().LocalidadDescripcion.Trim();
+                        queryLocalidad.First().LocalidadDescripcion.Trim();
 
                 descripcionTurno[i, 2] = "Horario: ";
                 TimeSpan horario = (from h in db.Horario
                                     join ft in db.FechaTurno
                                         on h.HorarioID equals ft.IDHorario
                                     where tempTurno.IDFechaTurno == ft.FechaTurnoID
-                                    select h.Hora).FirstOrDefault();
+                                    select h.Hora).First();
                 descripcionTurno[i, 2] += horario.ToString();
             }
+            //salteo posiciones para crear un espacio entre cada línea del TextBox
             for(int i = 0;i < szQuery; ++i) {
                 lines[0] = descripcionTurno[i, 0];
                 lines[2] = descripcionTurno[i, 1];

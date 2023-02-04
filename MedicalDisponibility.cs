@@ -8,16 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Classes;
-using System.Threading;
 
 namespace AppEscritorio {
     public partial class MedicalDisponibility : Form {
-
         private Medico whoAmI;
         private TablesDataContext db;
-        private List<Sucursal> tempSucursales;
+        private List<Sucursal> workingSucursals;
         private DisponibilidadMedico tempDM;
 
+        //utilizado para volver al componente anterior
         private MedicalHome previousState;
         public MedicalDisponibility(Medico medico, MedicalHome home) {
             InitializeComponent();
@@ -47,19 +46,23 @@ namespace AppEscritorio {
             comboSucursalesRemove.Items.Clear();
         }
 
+        /// <summary>
+        ///     Carga todas las sucursales en las que trabaja el médico en cuestión en 
+        ///     tempSucursales y las inserta en el ComboBox de Sucursales.
+        /// </summary>
         private void initSucursales() {
             int szSucursales;
             comboSucursales.Items.Clear();
-            tempSucursales = (from suc in db.Sucursal
+            workingSucursals = (from suc in db.Sucursal
                               join ms in db.MedicoSucursal
                                   on suc.SucursalId equals ms.IDSucursal
                               where ms.IDMedico == whoAmI.MedicoID
                               select suc).ToList();
 
-            szSucursales = tempSucursales.Count();
+            szSucursales = workingSucursals.Count();
             string[] localidesText = getLocalidadesComplex(szSucursales);
             for(int i = 0; i < szSucursales; ++i) {
-                comboSucursales.Items.Add(tempSucursales[i].SucursalDescripcion.Trim() +
+                comboSucursales.Items.Add(workingSucursals[i].SucursalDescripcion.Trim() +
                                           " en " + localidesText[i]);
             }
         }
@@ -70,7 +73,7 @@ namespace AppEscritorio {
             int index = comboSucursales.SelectedIndex;
             var queryDispoM = from dm in db.DisponibilidadMedico
                               where dm.IDMedico == whoAmI.MedicoID &&
-                                    dm.IDSucursal == tempSucursales[index].SucursalId
+                                    dm.IDSucursal == workingSucursals[index].SucursalId
                               select dm;
             var queryDias = from dia in db.Dia
                             join dm in queryDispoM
@@ -80,6 +83,7 @@ namespace AppEscritorio {
             comboDias.DisplayMember = "NombreDia";
             comboDias.ValueMember = "DiaId";
             comboDias.DataSource = queryDias;
+
             label3.Visible = comboDias.Visible = label3.Enabled = comboDias.Enabled = true;
             label1.Visible = label4.Visible = label5.Visible = abmInicio.Visible =
             abmFin.Visible = abmConsultorio.Visible = makeABM1.Visible = false;
@@ -94,31 +98,47 @@ namespace AppEscritorio {
             label4.Visible = label5.Visible = true;
         }
 
+        /// <param name="size">
+        ///     tamaño de la lista de sucursales en donde trabaja el médico
+        /// </param>
+        /// <returns>
+        ///     Un arreglo de strings con el nombre de la localidad concatenado al nombre
+        ///     de su respectiva provincia.
+        /// </returns>
         private string[] getLocalidadesComplex(int size) {
             string[] localidadesComplex = new string[size];
-            Localidad temp = new Localidad();
+            Localidad temp;
+
             for(int i = 0; i < size; ++i) {
                 temp = (from loc in db.Localidad
-                        where loc.LocalidadId == tempSucursales[i].IDLocalidad
-                        select loc).FirstOrDefault();
+                        where loc.LocalidadId == workingSucursals[i].IDLocalidad
+                        select loc).First();
                 localidadesComplex[i] = temp.LocalidadDescripcion.Trim();
                 var queryProvincias = from prov in db.Provincia
                                       where prov.ProvinciaId == temp.IDProvincia
                                       select prov.ProvinciaDescripcion;
-                localidadesComplex[i] += ", " + queryProvincias.FirstOrDefault().Trim();
+                localidadesComplex[i] += ", " + queryProvincias.First().Trim();
             }
             return localidadesComplex;
         }
 
+        /// <returns>
+        ///     El objeto DisponibilidadMedico correspondiente a la sucursal y día seleccionado.
+        /// </returns>
         private DisponibilidadMedico getDM() {
             int selectedSucIndex;
             selectedSucIndex = comboSucursales.SelectedIndex;
+            /*
+              esto funciona porque, dada la forma en que ingresamos los datos en el ComboBox,
+              el index del item seleccionado del ComboBox corresponde al mismo item de la
+              lista tempSucursales
+            */
             var queryDM = from dm in db.DisponibilidadMedico
                           where dm.IDMedico == whoAmI.MedicoID &&
-                                dm.IDSucursal == tempSucursales[selectedSucIndex].SucursalId &&
+                                dm.IDSucursal == workingSucursals[selectedSucIndex].SucursalId &&
                                 dm.IDDia == (int)comboDias.SelectedValue
                           select dm;
-            return queryDM.FirstOrDefault();
+            return queryDM.First();
         }
 
         private void abmInicio_TextChanged(object sender, EventArgs e) {
@@ -155,12 +175,19 @@ namespace AppEscritorio {
             }
         }
 
+        /// <summary>
+        ///     Setea los valores nuevos/modificados a la variable tempDM, para así poder
+        ///     actualizar la disponibilidad del médico en la base de datos
+        /// </summary>
+        /// <returns>
+        ///     true si se puedieron modificar los valores correctamente.
+        ///     false en caso contario.
+        /// </returns>
         private bool setNewValues() {
             int hora, minutos, segundos, consultorio;
             string[] stringTime;
             TimeSpan horaInicio, horaFin;
 
-            //para que no me tire error después del catch
             consultorio = 0; horaInicio = horaFin = new TimeSpan();
 
             try {
@@ -212,14 +239,23 @@ namespace AppEscritorio {
             return true;
         }
 
+        /// <summary>
+        ///     Elimina todos los turnos que los pacientes tengan con el médico en cuestión
+        ///     que queden fuera de su nuevo/actualizado rango horario.
+        /// </summary>
+        /// <param name="newInicio">hora de inicio nueva/actualizada</param>
+        /// <param name="oldInicio">hora de inicio que el médico tenía antes de actualizarla</param>
+        /// <param name="newFin">hora de finalización nueva/actualizada</param>
+        /// <param name="oldFin">hora de finalización que el médico tenía antes de actualizarla</param>
         private void deleteAndAdvice_Times(TimeSpan newInicio,TimeSpan oldInicio,
                                            TimeSpan newFin,TimeSpan oldFin) {
             IQueryable<Turno> queryTurnos = null;
             IQueryable<FechaTurno> queryFT = null;
             bool HIChanged = false;
             /*
-              cuando la hora de inicio actualizada es posterior a la hora de inicio anterior,
-              elimino todos los turnos de los pacientes que estén entre dicha franja horaria
+              cuando la hora de inicio actualizada es POSTERIOR a la hora de inicio antes 
+              de actualizar, se eliminan todos los turnos de los pacientes que estén entre 
+              dicha franja horaria
             */
             if(newInicio > oldInicio) {
                 HIChanged = true;
@@ -231,6 +267,7 @@ namespace AppEscritorio {
                               where hs.Hora >= oldInicio &&
                                     hs.Hora <= newInicio
                               select turno;
+                //caso en el que no haya turnos en la franja horaria mencionada más arriba
                 if(queryTurnos.Count() == 0)
                     return;
                 queryFT = from ft in db.FechaTurno
@@ -242,8 +279,9 @@ namespace AppEscritorio {
                 db.FechaTurno.DeleteAllOnSubmit(queryFT);
             }
             /*
-              cuando la hora de finalización actualizada es previa a la hora de finalización 
-              anterior, elimino todos los turnos de los pacientes que estén entre dicha franja horaria
+              cuando la hora de finalización actualizada es PREVIA a la hora de finalización 
+              antes de actualizar, se eliminan todos los turnos de los pacientes que estén 
+              entre dicha franja horaria
             */
             if(newFin < oldFin) {
                 HIChanged = false;
@@ -255,6 +293,7 @@ namespace AppEscritorio {
                               where hs.Hora <= oldFin &&
                                     hs.Hora >= newFin
                               select turno;
+                //caso en el que no haya turnos en la franja horaria mencionada más arriba
                 if(queryTurnos.Count() == 0)
                     return;
                 queryFT = from ft in db.FechaTurno
@@ -275,7 +314,7 @@ namespace AppEscritorio {
                 foreach(Turno turno in queryTurnos) {
                     afectado = (from user in db.Usuario
                                 where user.UsuarioID == turno.IDUsuario
-                                select user).FirstOrDefault();
+                                select user).First();
                     ft = (from fecha in db.FechaTurno
                             where fecha.FechaTurnoID == turno.IDFechaTurno
                             select fecha).First();
@@ -291,16 +330,20 @@ namespace AppEscritorio {
             }
         }
 
+        /// <summary>
+        ///     Elimina todos los turnos que los pacientes tengan con el médico en cuestión en
+        ///     la sucursal en la cual el mismo ya no asiste.
+        /// </summary>
+        /// <param name="SucursalId">ID de la sucural en la que el médico deja de trabajar</param>
         private void deleteAndAdvice_Sucursal(int SucursalId) {
-            /* elimino todos los turnos que los pacientes tienen sacados
-            con el médico en dicha sucursal */
             var queryTurnos = from turno in db.Turno
                               where turno.IDMedico == whoAmI.MedicoID &&
                                     turno.IDSucursal == SucursalId
                               select turno;
+            //caso en el que no haya turnos en la sucursal eliminada
             if(queryTurnos.Count() == 0)
                 return;
-            //idem para tabla FechaTurno
+            
             var queryFT = from ft in db.FechaTurno
                           join turno in queryTurnos
                              on ft.FechaTurnoID equals turno.IDFechaTurno
@@ -316,7 +359,7 @@ namespace AppEscritorio {
                 foreach(Turno turno in queryTurnos) {
                     afectado = (from user in db.Usuario
                                 where user.UsuarioID == turno.IDUsuario
-                                select user).FirstOrDefault();
+                                select user).First();
                     ft = (from fecha in db.FechaTurno
                           where fecha.FechaTurnoID == turno.IDFechaTurno
                           select fecha).First();
@@ -332,8 +375,13 @@ namespace AppEscritorio {
             }
         }
 
+        /// <summary>
+        ///     Elimina todos los turnos que los pacientes tengan con el médico en cuestión para
+        ///     el día que el médico que ya no asiste en determinada sucursal.
+        /// </summary>
+        /// <param name="SucursalId">ID de la sucural en cuestión</param>
+        /// <param name="DiaId">ID del día que el médico dejará de asistir en la sucursal</param>
         private void deleteAndAdvice_Day(int SucursalId, int DiaId) {
-            //elimino los turnos que los pacientes tienen con el médico para el día eliminado
             var queryTurnos= from turno in db.Turno
                                  join ft in db.FechaTurno
                                     on turno.IDFechaTurno equals ft.FechaTurnoID
@@ -341,13 +389,15 @@ namespace AppEscritorio {
                                        turno.IDSucursal == SucursalId &&
                                        ft.IDDia == DiaId
                                  select turno;
+            //caso en el que no haya turnos en la sucursal eliminada
             if(queryTurnos.Count() == 0)
                 return;
-            //idem para tabla FechaTurno
+
             var queryFT = from ft in db.FechaTurno
                              join turno in queryTurnos
                                 on ft.FechaTurnoID equals turno.IDFechaTurno
                              select ft;
+
             if(queryTurnos != null) {
                 EnviarMail sender = new EnviarMail(whoAmI.IDUsuario);
                 Usuario afectado;
@@ -358,7 +408,7 @@ namespace AppEscritorio {
                 foreach(Turno turno in queryTurnos) {
                     afectado = (from user in db.Usuario
                                 where user.UsuarioID == turno.IDUsuario
-                                select user).FirstOrDefault();
+                                select user).First();
                     ft = (from fecha in db.FechaTurno
                           where fecha.FechaTurnoID == turno.IDFechaTurno
                           select fecha).First();
@@ -380,15 +430,17 @@ namespace AppEscritorio {
                 RmSuc.Visible = AddSuc.Visible = AddRmDays.Visible = false;
             }
             else {
+                string[] localidesText;
                 abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible = label1.Visible =
                 label4.Visible = label5.Visible = makeABM1.Visible = label2.Enabled =
                 label3.Enabled = comboDias.Enabled = label3.Visible = comboDias.Visible = 
                 comboSucursales.Enabled = false;
 
                 RmSuc.Visible = AddSuc.Visible = AddRmDays.Visible = true;
-                string[] localidesText = getLocalidadesComplex(tempSucursales.Count());
+
+                localidesText = getLocalidadesComplex(workingSucursals.Count());
                 for(int i = 0; i < localidesText.Length; ++i) {
-                    comboSucursalesRemove.Items.Add(tempSucursales[i].SucursalDescripcion +
+                    comboSucursalesRemove.Items.Add(workingSucursals[i].SucursalDescripcion +
                                               " en " + localidesText[i]);
                 }
             }
@@ -428,7 +480,7 @@ namespace AppEscritorio {
             MedicoSucursal msToRemove;
 
             index = comboSucursalesRemove.SelectedIndex;
-            SucursalId = tempSucursales[index].SucursalId;
+            SucursalId = workingSucursals[index].SucursalId;
 
             //elimino toda la disponiblidad (días y horarios) del medico en dicha sucursal
             var queryDM = from dm in db.DisponibilidadMedico
@@ -507,11 +559,16 @@ namespace AppEscritorio {
         private void comboLocalidad_SelectedIndexChanged(object sender, EventArgs e) {
             int LocalidadId = (int) comboLocalidad.SelectedValue;
             comboSucursalesAñadir.ResetText();
+            /*
+              en la lista de sucursales a añadir a la disponibilidad del médico, muestro todas las
+              disponibles EXCEPTO aquellas en las que el médico ya trabaja, que son las que 
+              están presentes en la lista tempSucursales
+            */  
             var querySucursal = (from suc in db.Sucursal
                                  where suc.IDLocalidad == LocalidadId
                                  select suc)
                                  .ToList()
-                                 .Except(tempSucursales, new SucursalComparer())
+                                 .Except(workingSucursals, new SucursalComparer())
                                  .ToList();
             comboSucursalesAñadir.DisplayMember = "SucursalDescripcion";
             comboSucursalesAñadir.ValueMember = "SucursalId";
@@ -559,6 +616,10 @@ namespace AppEscritorio {
                                            where dm.IDMedico == whoAmI.MedicoID &&
                                                  dm.IDSucursal == SucursalId
                                            select dia;
+                /*
+                  en la lista de días a añadir a la disponibilidad del médico, muestro todos los
+                  disponibles EXCEPTO los que el médico ya trabaja
+                */
                 var queryDias = (from dia in db.Dia
                                  select dia).ToList()
                                  .Except(queryExceptionalDays, new DayComparer())
@@ -604,9 +665,10 @@ namespace AppEscritorio {
         private void abmDay_Click(object sender, EventArgs e) {
             string msg, caption;
             int SucursalId, DiaId;
+            DisponibilidadMedico dm = new DisponibilidadMedico();
+
             SucursalId = (int)comboSucModDias.SelectedValue;
             DiaId = (int)comboDayToAdd.SelectedValue;
-            DisponibilidadMedico dm = new DisponibilidadMedico();
             dm.IDMedico = whoAmI.MedicoID;
             dm.IDDia = DiaId;
             dm.Consultorio = 0;
@@ -667,26 +729,11 @@ namespace AppEscritorio {
             }
         }
 
-        private void resetEverything() {
-            comboSucursales.ResetText();
-            abmConsultorio.ResetText();
-            abmInicio.ResetText();
-            abmFin.ResetText();
-            label1.Visible = label3.Visible = label4.Visible = label5.Visible =
-            comboDias.Visible = abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible = 
-            makeABM1.Visible = 
-            AddSuc.Visible = RmSuc.Visible = AddRmDays.Visible = 
-            AddSuc.Checked = RmSuc.Checked = AddRmDays.Checked            
-            = false;
-            initSucursales();
-        }
-
         private void back_Click(object sender, EventArgs e) {
             previousState.Show();
             this.Close();
         }
     }
-
     class SucursalComparer : IEqualityComparer<Sucursal> {
         public bool Equals(Sucursal x,Sucursal y) {
             return x.SucursalId == y.SucursalId;

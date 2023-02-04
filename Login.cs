@@ -11,32 +11,31 @@ using System.Data.SqlClient;
 using Classes;
 
 namespace AppEscritorio{
-    public partial class Login : Form
-    {
-        public Login()
-        {
+    public partial class Login : Form{
+        public Login(){
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
+        private void Form1_Load(object sender, EventArgs e){
         }
 
         private void button1_Click(object sender, EventArgs e) {
             TablesDataContext db = new TablesDataContext();
-            
-            string ePass = Registro.GetSHA256(ContraseñaTxt.Text);
+            string ePass = Encriptar.GetSHA256(ContraseñaTxt.Text);
             var checkUser = from user in db.Usuario
                             where user.UsuarioEmail == UsuarioTxt.Text &&
                                   user.UsuarioContraseña == ePass
                             select user;
+
             if(checkUser.Count() == 1){
                 Usuario logged = checkUser.First();
-                IQueryable<Afiliado> queryAfiliado = from af in db.Afiliado
-                                                     where af.AfiliadoID == logged.IDAfiliado
-                                                     select af;
-                Afiliado aLogged = queryAfiliado.First();
-                MessageBox.Show("Bienvenido al sistema " + aLogged.Nombre.Trim() + " " + aLogged.Apellido.Trim());
+                Afiliado aLogged;
+                var queryAfiliado = from af in db.Afiliado
+                                    where af.AfiliadoID == logged.IDAfiliado
+                                    select af;
+                aLogged = queryAfiliado.First();
+                MessageBox.Show("Bienvenido al sistema " + aLogged.Nombre.Trim() + " " + 
+                                                           aLogged.Apellido.Trim());
                 if(logged.isMedico) {
                     Medico mLogged = new Medico();
                     var getMLogged = from medico in db.Medico
@@ -44,14 +43,15 @@ namespace AppEscritorio{
                                      select medico;
                     mLogged = getMLogged.First();
                     MedicalHome mhome = new MedicalHome(mLogged);
-                    mhome.Show();
                     this.Hide();
+                    mhome.Show();
                 }
                 else {
                     Home home = new Home(logged);
                     home.Show();
                     this.Hide();
                 }
+                this.Close();
             }
             else{   
                 MessageBox.Show("Usuario o contraseña incorrectos, por favor intente de nuevo");

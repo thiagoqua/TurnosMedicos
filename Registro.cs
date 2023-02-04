@@ -8,41 +8,36 @@ using Classes;
 
 namespace AppEscritorio
 {
-    public partial class Registro : Form
-    {
-        TablesDataContext db = new TablesDataContext(); //Tables contiene las tablas generadas con linq to SQL
-        string email = "";
-        static bool isMedico = false;
-        static int IDPerfil = 1;
-        int IDAfiliado = -1;
-        //bool usado = false;
+    public partial class Registro : Form{
+        private TablesDataContext db;
+        private string email;
+        private static bool isMedico;
+        private static int IDPerfil;
+        private int IDAfiliado;
 
-        public Registro(string e,int id)
-        {
+        public Registro(string e,int id){
             InitializeComponent();
+            db = new TablesDataContext();
             email = e;
             IDAfiliado = id;
+            IDPerfil = 1;
+            isMedico = false;
         }
 
-        public string getEmail()
-        {
+        public string getEmail(){
             return email;
         }
-        public int getIDAfiliado()
-        {
+
+        public int getIDAfiliado(){
             return IDAfiliado;
         }
 
-        private void button1_Click(object sender, EventArgs e)      //REGISTRARSE
-        {
-
-            if (textBox1.Text.Trim() == "" || textBox2.Text.Trim() == "")
-            {
+        private void button1_Click(object sender, EventArgs e){
+            if (textBox1.Text.Trim() == "" || textBox2.Text.Trim() == ""){
                 MessageBox.Show("Complete los campos faltantes.");
                 return;
             }
-            else if (textBox1.Text == textBox2.Text)
-            {
+            else if (textBox1.Text == textBox2.Text){
                 MessageBox.Show("¡Su registro ha sido completado! Proceda a ingresar a su cuenta.");
 
                 //ACTUALIZAR BDD INGRESANDO EL NVO USUARIO
@@ -53,92 +48,49 @@ namespace AppEscritorio
                 login.Show();
                 this.Close();
             }
-            else
-            {
+            else{
                 MessageBox.Show("Las contraseñas no coinciden. Vuelva a intentarlo.");
                 return;
             }
-            
-
         }
 
-        public static string GetSHA256(string str)
-        {
-            SHA256 sha256 = SHA256Managed.Create();
-            ASCIIEncoding encoding = new ASCIIEncoding();
-            byte[] stream = null;
-            StringBuilder sb = new StringBuilder();
-            stream = sha256.ComputeHash(encoding.GetBytes(str));
-            for (int i = 0; i < stream.Length; i++) sb.AppendFormat("{0:x2}", stream[i]);
-            return sb.ToString();
-        }
-
-        private void insertarUsuario(string email, string pass)
-        {
+        private void insertarUsuario(string email, string pass){
             Usuario user = new Usuario();
             user.IDAfiliado = getIDAfiliado();
             user.IDPerfil = IDPerfil;
             user.isMedico = isMedico;
             user.UsuarioEmail = email;
-            user.UsuarioContraseña = GetSHA256(pass);
-
-            /*
-            do
-            {
-                usado = false;
-                
-                Random r = new Random();
-                user.UsuarioID = r.Next(0, 1000);
-
-                var id = from us in db.Usuario
-                         where user.UsuarioID == us.UsuarioID
-                         select user;
-                
-                if(id.Count() >= 1)
-                {
-                    usado = true;
-                }
-
-            } while (usado == true);
-            */
+            user.UsuarioContraseña = Encriptar.GetSHA256(pass);
 
             db.Usuario.InsertOnSubmit(user);
-            try
-            {
+            try{
                 db.SubmitChanges();
             }
-            catch(Exception ex)
-            {
-                //throw (ex);
+            catch(Exception){
             }
         }
 
-        private void Registro_Load(object sender, EventArgs e)      //NO BORRAR O SE ROMPE TODO
-        {
+        private void Registro_Load(object sender, EventArgs e){
             textBox1.PasswordChar = '*';
             textBox2.PasswordChar = '*';
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)  //ocultar
-        {
+        private void pictureBox1_Click(object sender, EventArgs e){
             pictureBox2.BringToFront();
             textBox1.PasswordChar = '*';
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)  //mostrar
-        {
+        private void pictureBox2_Click(object sender, EventArgs e){
             pictureBox1.BringToFront();
             textBox1.PasswordChar = '\0';
         }
 
-        private void pictureBox3_Click(object sender, EventArgs e)  //ocultar repetir
-        {
+        private void pictureBox3_Click(object sender, EventArgs e){
             pictureBox4.BringToFront();
             textBox2.PasswordChar = '*';
         }
 
-        private void pictureBox4_Click(object sender, EventArgs e)  //mostrar repetir
-        {
+        private void pictureBox4_Click(object sender, EventArgs e){
             pictureBox3.BringToFront();
             textBox2.PasswordChar = '\0';
         }

@@ -4,16 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AppEscritorio
-{
-    internal static class Program
-    {
+namespace AppEscritorio{
+    internal static class Program{
         /// <summary>
         /// Punto de entrada principal para la aplicación.
         /// </summary>
         [STAThread]
-        static void Main()
-        {
+        static void Main(){
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new MedicalHome(initMedico()));
@@ -30,14 +27,14 @@ namespace AppEscritorio
             Classes.TablesDataContext db = new Classes.TablesDataContext();
             return (from m in db.Usuario
                     where m.UsuarioID == 22
-                    select m).FirstOrDefault();
+                    select m).First();
         }
 
         private static Classes.Medico initMedico() {
             Classes.TablesDataContext db = new Classes.TablesDataContext();
             return (from m in db.Medico
                     where m.MedicoID == 15
-                    select m).FirstOrDefault();
+                    select m).First();
         }
     }
 }

@@ -10,14 +10,17 @@ using Classes;
 
 namespace Classes {
     public class EnviarMail {
-        TablesDataContext db;
-        Afiliado medicoInCuestion;
-        MailMessage msg;
-        SmtpClient cliente;
-        string sender, psw;
-        string[] bodyParts, motivos;
+        private TablesDataContext db;
+        //medico que alteró su disponibilidad
+        private Afiliado medicoInCuestion;
+        private MailMessage msg;
+        private SmtpClient cliente;
+        private string sender, psw;
+        private string[] bodyParts, motivos;
 
-        //recibe el UsuarioId del médico que cambia la disponibilidad
+        /// <param name="MedicoUsuarioId">
+        ///     el UsuarioId del médico que cambia la disponibilidad
+        /// </param>
         public EnviarMail(int MedicoUsuarioId) {
             db = new TablesDataContext();
 
@@ -57,26 +60,31 @@ namespace Classes {
                          "más en esa sucursal";
         }
 
-        public static int Enviar(string emisor, string password, string receptor, bool bit)  //'PASSWORD' SERÁ LA CONTRASEÑA DE APLICACION GENERADA PARA LAS APPS MENOS SEGURAS
-        {
+        /// <summary>
+        ///     Genera y envía un mail al nuevo usuario del sistema con el fin de verificarle
+        ///     su dirección de email.
+        /// </summary>
+        /// <param name="emisor">dirección email del emisor</param>
+        /// <param name="password">contraseña de aplicación generada para aplicaciones menos seguras</param>
+        /// <param name="receptor">dirección email del receptor</param>
+        /// <returns>El número aleatorio generado para la posterior verificación.</returns>
+        public static int Enviar(string emisor, string password, string receptor, bool bit){
             int nro = 0;
             TablesDataContext db = new TablesDataContext();
-            //int id = -1;
 
-            if(bit == false) {
+            if(!bit) {
                 Random r = new Random();
-                nro = r.Next(100000, 1000000);      //GENERO UN NRO ALEATORIO PARA LA VERIFICACION
+                nro = r.Next(100000, 1000000);
             }
             else {
-                //obtengo el id del usuario que realizó la peticion y lo hago en base al mail ingresado
+                //obtengo el id del usuario que realizó la peticion en base al mail ingresado
                 var account = from a in db.Usuario
                               where receptor == a.UsuarioEmail
                               select a.UsuarioID;
 
                 //genero el registro en la tabla NuevaContraseña
-
                 NuevaContraseña nc = new NuevaContraseña {
-                    IDUsuario = account.FirstOrDefault(),
+                    IDUsuario = account.First(),
                     Creacion = DateTime.Now
                 };
 
@@ -91,68 +99,67 @@ namespace Classes {
 
             }
 
-            MailMessage msg = new MailMessage();    //CREO EL OBJETO PARA GENERAR EL CORREO
-            msg.To.Add(receptor);                   //AGREGO EL MAIL DEL RECEPTOR
-            msg.Subject = "Correo de verificacion"; //AGREGO UN ASUNTO (TE LO PIDE A LA FUERZA)
-            msg.SubjectEncoding = Encoding.UTF8;    //AGREGO UNA CODIFICACION MEDIANTE UTF8
+            MailMessage msg = new MailMessage();    
+            msg.To.Add(receptor);                   
+            msg.Subject = "Correo de verificacion"; 
+            msg.SubjectEncoding = Encoding.UTF8;    
 
             if(bit) {
                 //agrego el id del nuevo registro de la tabla NuevaContraseña para crear links temporales unicos
                 string newUrl = makeUrl();
-                msg.Body = "Ha solicitado un cambio de contraseña. Por favor, haga click en el siguiente link para crear una nueva contraseña: " + newUrl + " - El link se vencerá pasada una hora.";
+                msg.Body = "Ha solicitado un cambio de contraseña. Por favor, " + 
+                           "haga click en el siguiente link para crear una nueva contraseña: " + 
+                           newUrl + " - El link se vencerá pasada una hora.";
             }
             else {
-                msg.Body = "Su codigo de verificacion es '" + nro + "'.\nPor favor, ingrese este numero en la casilla designada en la aplicacion.";
+                msg.Body = "Su codigo de verificacion es '" + nro + 
+                           "'.\nPor favor, ingrese este numero en la casilla designada en " + 
+                           "la aplicacion.";
             }
 
             msg.BodyEncoding = Encoding.UTF8;
-            msg.IsBodyHtml = true;                  //PARA QUE PUEDA SER ENTENDIDO USAMOS EL FORMATO HTML
-            msg.From = new MailAddress(emisor);     //EL QUE ENVIA EL MSJ ES EL EMISOR
+            msg.IsBodyHtml = true;
+            msg.From = new MailAddress(emisor);
 
-            SmtpClient cliente = new SmtpClient();  //PROTOCOLO PARA EL ENVIO DEL MSJ
-            cliente.Credentials = new NetworkCredential(emisor, password);  //C# USARÁ NUESTRO CORREO PARA EL ENVIO, POR LO QUE LE PASAMOS NUESTRO MAIL Y CONTRASEÑA
-            cliente.Port = 587;                     //DEFINIMOS EL PUERTO DONDE SE ESTABLECERÁ LA CONEXION Y EL ENVÍO
-            cliente.EnableSsl = true;               //CIFRA LA CONEXION
+            SmtpClient cliente = new SmtpClient();
+            //usaremos nuestro correo como emisor del correo
+            cliente.Credentials = new NetworkCredential(emisor, password); 
+            cliente.Port = 587;               
+            cliente.EnableSsl = true;
             cliente.Host = "smtp.gmail.com";
 
             try {
-                cliente.Send(msg);                  //ENVIO EL MSJ
+                cliente.Send(msg);                  
             }
-            catch(Exception)                       //SI EL CORREO FALLA ENTONCES...
-            {
-                /*
-                if(bit == false)
-                {
-                    MessageBox.Show("No se pudo enviar el correo. Por favor, reintente.");
-                }
-                else
-                {
-                    ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('No se ha podido enviar el correo. Por favor, reintente.')", true);
-                }
-                */
-
+            catch(Exception){
                 nro = 0;
             }
-            finally                 //LIBERAMOS LOS RECURSOS
-            {
+            finally{
+                //liberamos los recursos
                 msg.Dispose();
                 cliente.Dispose();
             }
             return nro;
         }
 
+        /// <returns>La URL que va a permitir realizar el cambio de contraseña.</returns>
         public static string makeUrl() {
             TablesDataContext db = new TablesDataContext();
-
             var getId = from g in db.NuevaContraseña
                         orderby g.ID descending
                         select g.ID;
 
-            string url = "https://localhost:44332/ChangePass.aspx" + "?var=" + getId.FirstOrDefault();
-
-            return url;
+            return "https://localhost:44332/ChangePass.aspx" + "?var=" + getId.First();
         }
 
+        /// <summary>
+        ///     Avisa al paciente que un turno suyo con un médico en específico fue dado de baja
+        ///     por motivos de cambios de disponibilidad del mismo en la sucursal del turno.
+        /// </summary>
+        /// <param name="patient">paciente en cuestión</param>
+        /// <param name="fecha">fecha del turno dado de baja</param>
+        /// <param name="hora">hora del turno dado de baja</param>
+        /// <param name="motivo">motivo del turno dado de baja</param>
         public void advicePatient(Usuario patient, DateTime fecha, TimeSpan hora, Motivo motivo) {
             Afiliado patientAsAfiliado = (from af in db.Afiliado
                                           where af.AfiliadoID == patient.IDAfiliado
@@ -191,11 +198,16 @@ namespace Classes {
             }
             catch(Exception){}
             finally{
+                //liberamos los recursos
                 msg.Dispose();
                 cliente.Dispose();
             }
         }
 
+        /// <summary>
+        ///     Constantes utilizadas para describir el motivo de la baja del turno del 
+        ///     paciente por parte del médico.
+        /// </summary>
         public enum Motivo {
             HICHANGED,HFCHANGED,DAY,SUCURSAL
         }

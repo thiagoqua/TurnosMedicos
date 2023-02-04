@@ -9,9 +9,12 @@ namespace Classes {
         static void Main(string[] args) {
             
         }
+    }
 
-        public static TablesDataContext makeConeccion() {
-            return new TablesDataContext();
-        }
+    /// <summary>
+    ///     Contiene la URL base del proyecto para así poder redireccionar en la parte web.
+    /// </summary>
+    public static class BaseUrl {
+        public const string url = "https://localhost:44332/";
     }
 }

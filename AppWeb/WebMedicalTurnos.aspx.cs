@@ -14,11 +14,12 @@ namespace AppWeb {
         private Medico whoAmIAsMedico;
         private TablesDataContext db;
 
+        //almacena los TextBoxes que hay en la interfaz
         private List<TextBox> boxes;
+        //almacena los turnos que los pacientes tienen con el médico
         private string[,] descripcionTurno;
 
         protected void Page_Load(object sender, EventArgs e) {
-            //al usuario lo tomo del componente WebHome
             whoAmI = (Usuario)Session["user"];
             signOutButton.ServerClick += new EventHandler(signOutButton_Click);
             boxes = new List<TextBox>();
@@ -30,16 +31,25 @@ namespace AppWeb {
                 whoAmIAsMedico = (Medico)Session["medico"];
             }
             else {
-                //ESTA PARTE VENDRÍA A REEMPLAZAR EL CONSTRUCTOR
-                fecha.Attributes["min"] = DateTime.Now.ToString("dd-MM-yyyy");
-                fecha.Attributes["max"] = DateTime.Now.AddYears(1).ToString("dd-MM-yyyy");
                 db = new TablesDataContext();
+                /*
+                  si whoAmI es null y no fue PostBack, significa que el WebMedicalHome no guardó 
+                  en la sesión al usuario, por lo que tengo que ir a buscarlo a la cookie 
+                  ya que se trata de un reinicio del navegador
+                */
+                if(whoAmI == null) {
+                    int UsuarioId = Convert.ToInt32(Request.Cookies["userID"].Value);
+                    whoAmI = (from user in db.Usuario
+                              where user.UsuarioID == UsuarioId
+                              select user).First();
+                    Session["user"] = whoAmI;
+                }
                 whoAmIAsAfiliado = (from af in db.Afiliado
                                     where af.AfiliadoID == whoAmI.IDAfiliado
-                                    select af).FirstOrDefault();
+                                    select af).First();
                 whoAmIAsMedico = (from me in db.Medico
                                   where me.IDUsuario == whoAmI.UsuarioID
-                                  select me).FirstOrDefault();
+                                  select me).First();
 
                 Session["database"] = db;
                 Session["afiliado"] = whoAmIAsAfiliado;
@@ -47,6 +57,11 @@ namespace AppWeb {
             }
         }
 
+        /// <summary>
+        ///     Crea una cierta cantidad de TextBoxes con los parámetros necesarios, invisibles 
+        ///     y los agrega a la lista boxes.
+        /// </summary>
+        /// <param name="cant">cantidad de TextBoxes que hay que crear</param>
         private void makeBoxes(int cant) {
             boxes.Clear();
             const int lineLength = 2;
@@ -118,6 +133,7 @@ namespace AppWeb {
                                        select turno).ToList();
             
             szQuery = queryTurnos.Count();
+            //elimino de la interfaz los TextBoxes si es que hay visibles
             for(i = 0; i < boxes.Count(); ++i) {
                 switch(i) {
                     case 0:
@@ -137,6 +153,7 @@ namespace AppWeb {
             }
             makeBoxes(szQuery);
             descripcionTurno = new string[szQuery, 3];
+            //se arma el texto donde se detalla cada turno
             for(i = 0; i < szQuery; ++i) {
                 tempTurno = queryTurnos[i];
                 descripcionTurno[i, 0] = "Turno sacado por: ";
@@ -144,33 +161,33 @@ namespace AppWeb {
                                      join user in db.Usuario
                                         on af.AfiliadoID equals user.IDAfiliado
                                      where user.UsuarioID == tempTurno.IDUsuario
-                                     select af).FirstOrDefault();
+                                     select af).First();
                 descripcionTurno[i, 0] += afiliado.Nombre.Trim() + " " + afiliado.Apellido.Trim();
 
                 var querySucursal = from suc in db.Sucursal
                                     where suc.SucursalId == tempTurno.IDSucursal
                                     select suc;
                 descripcionTurno[i, 1] = "En sucursal: " +
-                        querySucursal.FirstOrDefault().SucursalDescripcion;
+                        querySucursal.First().SucursalDescripcion;
 
                 var queryProvincia = from prov in db.Provincia
                                      where prov.ProvinciaId == tempTurno.IDProvincia
                                      select prov;
                 descripcionTurno[i, 1] += ", " +
-                        queryProvincia.FirstOrDefault().ProvinciaDescripcion;
+                        queryProvincia.First().ProvinciaDescripcion;
 
                 var queryLocalidad = from loc in db.Localidad
                                      where loc.LocalidadId == tempTurno.IDLocalidad
                                      select loc;
                 descripcionTurno[i, 1] += ", " +
-                        queryLocalidad.FirstOrDefault().LocalidadDescripcion.Trim();
+                        queryLocalidad.First().LocalidadDescripcion.Trim();
 
                 descripcionTurno[i, 2] = "Horario: ";
                 TimeSpan horario = (from h in db.Horario
                                     join ft in db.FechaTurno
                                         on h.HorarioID equals ft.IDHorario
                                     where tempTurno.IDFechaTurno == ft.FechaTurnoID
-                                    select h.Hora).FirstOrDefault();
+                                    select h.Hora).First();
                 descripcionTurno[i, 2] += horario.ToString();
             }
 

@@ -12,47 +12,32 @@ namespace AppWeb {
         TablesDataContext db = new TablesDataContext();
 
         protected void Page_Load(object sender, EventArgs e) {
-
             if(Session["requestChangePass"] == null) {
                 Response.Redirect("login.aspx", true);
-                //ScriptManager.RegisterClientScriptBlock(this, GetType(), "alertMessage", "alert('Es null.')", true);
-
             }
             else if((bool)Session["requestChangePass"] == false) {
                 Response.Redirect("login.aspx", true);
-                //ScriptManager.RegisterClientScriptBlock(this, GetType(), "alertMessage", "alert('Es false.')", true);
-
             }
-            else  //chequear que la hora esté dentro del rango
-            {
-
+            else{
                 //obtengo el id del usuario mediante el email
                 var getId = from id in db.Usuario
                             where Session["email"].ToString() == id.UsuarioEmail
                             select id.UsuarioID;
 
                 //obtengo la fecha donde se pidio el cambio de contraseña a partir del id
-
                 if(getId.Count() > 0) {
+                    TimeSpan span;
                     var fechaConsulta = from fc in db.NuevaContraseña
-                                        where getId.FirstOrDefault() == fc.ID
+                                        where getId.First() == fc.ID
                                         select fc.Creacion;
 
-                    TimeSpan span = fechaConsulta.FirstOrDefault().Subtract(DateTime.Now);
-
-                    //lblMsg.Text = span.Hours.ToString();
-
-                    if(span.Hours > 1)  //si es mayor a cero es una fecha posterior (es decir, se venció el tiempo)
-                    {
-                        //Response.Redirect("login.aspx", true);
-                        ScriptManager.RegisterClientScriptBlock(this, GetType(), "alertMessage", "alert('La fecha se venció.')", true);
-                        //lblMsg.Text = span.Hours.ToString();
+                    span = fechaConsulta.First().Subtract(DateTime.Now);
+                    if(span.Hours > 1){
+                        ScriptManager.RegisterClientScriptBlock(this, GetType(), "alertMessage",
+                            "alert('La fecha se venció.')", true);
                     }
-
                 }
-
             }
-
         }
 
         protected void Button1_Click(object sender, EventArgs e) {
@@ -66,14 +51,14 @@ namespace AppWeb {
                 lblMsg.Text = "Las contraseñas deben coincidir";
             }
             else {
-                lblMsg.Text = Session["email"].ToString();      //guarda algo session ???
+                lblMsg.Text = Session["email"].ToString();      
                 ConsultasBdd.ActualizarUsuario(Session["email"].ToString(), TextBox2.Text);
                 Session["email"] = "";
                 Session["requestChangePass"] = false;
 
-                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", "alert('Su contraseña ha sido actualizada. Intente loguearse.')", true);
+                ScriptManager.RegisterClientScriptBlock(this, this.GetType(), "alertMessage", 
+                    "alert('Su contraseña ha sido actualizada. Intente loguearse.')", true);
                 Response.Redirect("login.aspx", true);
-
             }
 
         }

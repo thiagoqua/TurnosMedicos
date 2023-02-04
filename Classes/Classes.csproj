@@ -52,7 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constante.cs" />
     <Compile Include="ConsultasBdd.cs" />
     <Compile Include="Encriptar.cs" />
     <Compile Include="EnviarMail.cs" />

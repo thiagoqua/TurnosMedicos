@@ -17,6 +17,11 @@ namespace Classes {
             filename = nombreArchivo;
         }
 
+        /// <summary>
+        ///     Crea un documento PDF con la información de todos los turnos que posee un paciente.
+        /// </summary>
+        /// <param name="pacienteAsAfiliado">paciente en cuestión</param>
+        /// <param name="descripcionTurno">arreglo con todos los turnos del paciente</param>
         public void drawFromUser(Afiliado pacienteAsAfiliado,string[,] descripcionTurno) {
             PdfDocument document = new PdfDocument();
             PdfPage actualPage = document.AddPage();
@@ -27,13 +32,14 @@ namespace Classes {
             int deltaY, cantTurnos;
             const int MAX_TURNOS_PER_PAGE = 7;
             
-            deltaY = 80; cantTurnos = descripcionTurno.Length / 4;
+            deltaY = 80; 
+            cantTurnos = descripcionTurno.Length / 4;
             rect = new XRect(0, 0, actualPage.Width, actualPage.Height);
 
             titleFont = new XFont("Calibri", 40, XFontStyle.Bold);
             textFont = new XFont("Calibri", 12);
 
-            //Escribo el título
+            //escribo el título
             gfx.DrawString("Turnos para " + pacienteAsAfiliado.Nombre.Trim() + " "
                                           + pacienteAsAfiliado.Apellido.Trim(),
                                  titleFont,
@@ -44,6 +50,7 @@ namespace Classes {
 
             rect.X = 20;
             rect.Y = deltaY;
+            //escribo los datos de cada turno
             for(int i = 0; i < cantTurnos; ++i) {
                 deltaY += 80;
                 rect.Y = deltaY;
@@ -78,6 +85,7 @@ namespace Classes {
                                XStringFormats.TopLeft
                 );
 
+                //cuando lleno una página de turnos, agrego otra al documento
                 if(i % MAX_TURNOS_PER_PAGE == MAX_TURNOS_PER_PAGE - 1 &&
                    i != cantTurnos - 1) {
                     deltaY = 0;
@@ -89,6 +97,13 @@ namespace Classes {
             document.Save(filepath + filename);
         }
 
+        /// <summary>
+        ///     Crea un documento PDF con la información de todos los turnos que los pacientes tienen
+        ///     con el médico en cuestión en una fecha determinada.
+        /// </summary>
+        /// <param name="medicoAsAfiliado">medico en cuestión</param>
+        /// <param name="descripcionTurno">arreglo con todos los turnos de los pacientes</param>
+        /// <param name="fechaTurnos">fecha de los turnos</param>
         public void drawFromMedico(Afiliado medicoAsAfiliado,string [,] descripcionTurno,
                                    DateTime fechaTurnos) {
             PdfDocument document = new PdfDocument();
@@ -111,7 +126,7 @@ namespace Classes {
             headerFont = new XFont("Calibri", 16, XFontStyle.Underline);
             textFont = new XFont("Calibri", 12);
 
-            //Escribo el título
+            //escribo el título
             gfx.DrawString("Doctor " + medicoAsAfiliado.Nombre.Trim() + " "
                                      + medicoAsAfiliado.Apellido.Trim(),
                                  titleFont,
@@ -120,7 +135,7 @@ namespace Classes {
                                  XStringFormats.TopCenter
             );
 
-            //Escribo la fecha
+            //escribo la fecha
             rect.X = 20;
             rect.Y = deltaY;
             formatter.DrawString(header,
@@ -130,6 +145,7 @@ namespace Classes {
                                  XStringFormats.TopLeft
             );
 
+            //escribo los datos de cada turno
             for(int i = 0; i < cantTurnos; ++i) {
                 deltaY += 80;
                 rect.Y = deltaY;

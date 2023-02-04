@@ -13,18 +13,21 @@ namespace AppWeb {
             if(!IsPostBack) {
                 TablesDataContext db = new TablesDataContext();
                 Usuario logged = (Usuario)Session["user"];
-                //si se reinició el navegador y se guardó la sesió se va a ejecutar este código
+                /*
+                  si logged es null, significa que el Login no guardó en la sesión al usuario, por lo que
+                  tengo que ir a buscarlo a la cookie ya que se trata de un reinicio del navegador
+                */
                 if(logged == null) {
                     int UsuarioId = Convert.ToInt32(Request.Cookies["userID"].Value);
                     logged = (from user in db.Usuario
                               where user.UsuarioID == UsuarioId
-                              select user).FirstOrDefault();
+                              select user).First();
                     Session["user"] = logged;
                 }
 
                 Session["medico"] = (from medico in db.Medico
                                      where medico.IDUsuario == logged.UsuarioID
-                                     select medico).FirstOrDefault();
+                                     select medico).First();
             }
         }
 
