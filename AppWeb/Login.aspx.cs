@@ -13,6 +13,7 @@ namespace AppWeb{
             cmdLogin.ServerClick += new EventHandler(CmdLogin_ServerClick);     
         }
 
+        //Se validan los datos ingresados y los campos seleccionados
         private void CmdLogin_ServerClick(object sender, EventArgs e){
             Usuario trying = Validar.Validate(txtUserName.Value, txtUserPass.Value);
             if (trying != null){
@@ -20,8 +21,8 @@ namespace AppWeb{
                 Session["user"] = trying;
                 if(chkPersistCookie.Checked) {
                     /*
-                      usamos cookies persistentes para guardar la sesión (más específicamente
-                      el ID del usuario que tiene la sesión iniciada) aún si se corta la 
+                      Se usan cookies persistentes para guardar la sesión (más específicamente
+                      el ID del usuario que tiene la sesión iniciada), aún en los casos donde se corta la 
                       compilación o el usuario reinicia el navegador
                     */
                     Response.Cookies.Add(new HttpCookie("userID") {
@@ -40,7 +41,7 @@ namespace AppWeb{
         }
 
         private void CmdForgot_ServerClick(object sender, EventArgs e){
-            lblMsg.Text = "Se clickeó olvidé mi contrasela";
+
         }
 
     }

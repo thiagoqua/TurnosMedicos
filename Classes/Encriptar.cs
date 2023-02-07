@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 namespace Classes{
     public class Encriptar{
         /// <summary>
-        ///     Genera la encriptación de una contraseña usango el algoritmo de encriptación
-        ///     SHA256.
+        ///     Genera la encriptación de una contraseña usando el algoritmo de encriptación SHA256.
         /// </summary>
-        /// <param name="str">contraseña en texto plano</param>
-        /// <returns>La contraseña que se pasa como argumento encriptada.</returns>
+        /// <param name="str">Contraseña en texto plano</param>
+        /// <returns>Contraseña encriptada.</returns>
         public static string GetSHA256(string str){
             SHA256 sha256 = SHA256Managed.Create();
             ASCIIEncoding encoding = new ASCIIEncoding();

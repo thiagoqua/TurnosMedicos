@@ -19,14 +19,18 @@ namespace AppEscritorio{
         private void Form1_Load(object sender, EventArgs e){
         }
 
-        private void button1_Click(object sender, EventArgs e) {
+        private void Button1_Click(object sender, EventArgs e) {
+            
             TablesDataContext db = new TablesDataContext();
+            
+            //Se encripta la contraseña ingresada y se verifica que coincida con la contraseña encriptada que se guardó en la bdd
             string ePass = Encriptar.GetSHA256(ContraseñaTxt.Text);
             var checkUser = from user in db.Usuario
                             where user.UsuarioEmail == UsuarioTxt.Text &&
                                   user.UsuarioContraseña == ePass
                             select user;
 
+            //Si coinciden se muestra un mensaje de bienvenida y se redirige al usuario a Home
             if(checkUser.Count() == 1){
                 Usuario logged = checkUser.First();
                 Afiliado aLogged;
@@ -36,6 +40,8 @@ namespace AppEscritorio{
                 aLogged = queryAfiliado.First();
                 MessageBox.Show("Bienvenido al sistema " + aLogged.Nombre.Trim() + " " + 
                                                            aLogged.Apellido.Trim());
+                
+                //Si el usuario es médico o paciente, se redigirán al Home correspondiente
                 if(logged.isMedico) {
                     Medico mLogged = new Medico();
                     var getMLogged = from medico in db.Medico
@@ -43,15 +49,15 @@ namespace AppEscritorio{
                                      select medico;
                     mLogged = getMLogged.First();
                     MedicalHome mhome = new MedicalHome(mLogged);
-                    this.Hide();
+                    Hide();
                     mhome.Show();
                 }
                 else {
                     Home home = new Home(logged);
                     home.Show();
-                    this.Hide();
+                    Hide();
                 }
-                this.Close();
+                Close();
             }
             else{   
                 MessageBox.Show("Usuario o contraseña incorrectos, por favor intente de nuevo");
@@ -59,28 +65,29 @@ namespace AppEscritorio{
             }
         }
 
-        private void label2_Click(object sender, EventArgs e)
+        private void Label2_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void PictureBox1_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void btnMin_Click(object sender, EventArgs e)
+        private void BtnMin_Click(object sender, EventArgs e)
         {
-            this.WindowState = FormWindowState.Minimized;
+            WindowState = FormWindowState.Minimized;
         }
 
-        private void btnMax_Click(object sender, EventArgs e)
+        private void BtnMax_Click(object sender, EventArgs e)
         {
-            this.WindowState = FormWindowState.Maximized;
+            WindowState = FormWindowState.Maximized;
 
         }
 
-        private void btnCerrar_Click(object sender, EventArgs e)
+        //Si el usuario clickea la X, se cierra la aplicación
+        private void BtnCerrar_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
@@ -93,12 +100,13 @@ namespace AppEscritorio{
 
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        //Si el usuario olvidó la contraseña, se lo redirige al formulario para que modifique la contraseña
+        private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            this.Hide();
+            Hide();
             RecuperarContraseña rc = new RecuperarContraseña();
             rc.Show();
-            this.Close();
+            Close();
         }
     }
 }

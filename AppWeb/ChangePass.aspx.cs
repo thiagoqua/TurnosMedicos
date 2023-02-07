@@ -7,11 +7,14 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace AppWeb {
-    public partial class ChangePass : System.Web.UI.Page {
+    public partial class ChangePass : Page
+    {
         private static readonly int minLength = 7;
-        TablesDataContext db = new TablesDataContext();
+        readonly TablesDataContext db = new TablesDataContext();
 
         protected void Page_Load(object sender, EventArgs e) {
+            
+            //En las 2 primeras condiciones reviso si el usuario tiene autorizacion para estar en la pagina actual
             if(Session["requestChangePass"] == null) {
                 Response.Redirect("login.aspx", true);
             }
@@ -19,12 +22,12 @@ namespace AppWeb {
                 Response.Redirect("login.aspx", true);
             }
             else{
-                //obtengo el id del usuario mediante el email
+                //Se obtiene el id del usuario mediante el email
                 var getId = from id in db.Usuario
                             where Session["email"].ToString() == id.UsuarioEmail
                             select id.UsuarioID;
 
-                //obtengo la fecha donde se pidio el cambio de contraseña a partir del id
+                //Se obtiene la fecha donde se pidió el cambio de contraseña a partir del id
                 if(getId.Count() > 0) {
                     TimeSpan span;
                     var fechaConsulta = from fc in db.NuevaContraseña
@@ -40,6 +43,7 @@ namespace AppWeb {
             }
         }
 
+        //Se validan las contraseñas ingresadas
         protected void Button1_Click(object sender, EventArgs e) {
             if(TextBox1.Text.Trim() == "" || TextBox2.Text.Trim() == "") {
                 lblMsg.Text = "Complete los campos faltantes.";

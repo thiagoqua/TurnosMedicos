@@ -12,12 +12,14 @@ using Microsoft.VisualBasic;
 
 namespace AppEscritorio{
     public partial class VerificarEmail : Form{
+        
         private string emisor;
         private string pass;
-        private int IDAfiliado;
+        private readonly int IDAfiliado;
         private int nroVerif;
-        private TablesDataContext db;
+        private readonly TablesDataContext db;
 
+        //se inicializan algunos datos que servirán para la verificación
         public VerificarEmail(int id){
             InitializeComponent();
             IDAfiliado = id;
@@ -25,19 +27,20 @@ namespace AppEscritorio{
             db = new TablesDataContext();
         }
 
-        public int getIDAfiliado(){
+        public int GetIDAfiliado(){
             return IDAfiliado;
         }
 
-        public int getNroVerif(){
+        public int GetNroVerif(){
             return nroVerif;
         }
 
-        public void setNroVerif(int em){
+        public void SetNroVerif(int em){
             nroVerif = em;
         }
 
-        public bool isValidEmail(string email){
+        //Se valida si el formato del email es correcto
+        public bool IsValidEmail(string email){
             try{
                 var emailValido = new System.Net.Mail.MailAddress(email);
                 return emailValido.Address == email;
@@ -47,7 +50,8 @@ namespace AppEscritorio{
             }
         }
 
-        public bool checkEmail(string email){
+        //Se valida si el email se encuentra en la bdd
+        public bool CheckEmail(string email){
             var mail = from e in db.Usuario
                        where email == e.UsuarioEmail
                        select e;
@@ -55,12 +59,13 @@ namespace AppEscritorio{
             return mail.Count() >= 1;
         }
 
-        private void button1_Click(object sender, EventArgs e){
-            if (isValidEmail(textBox1.Text) == false){
+        //Se validan los datos ingresados para que el codigo pueda ser enviado al email correspondiente
+        private void Button1_Click(object sender, EventArgs e){
+            if (IsValidEmail(textBox1.Text) == false){
                 MessageBox.Show("Ingrese un mail válido.");
                 return;
             }
-            else if (checkEmail(textBox1.Text) == true){
+            else if (CheckEmail(textBox1.Text) == true){
                 MessageBox.Show("El mail ingresado ya se encuentra registrado. Pruebe con otro mail o proceda a loguearse.");
                 return;
             }
@@ -71,25 +76,25 @@ namespace AppEscritorio{
                 emisor = servidor.First().Mail;
                 pass = servidor.First().Pass;
 
-                setNroVerif(EnviarMail.Enviar(emisor, pass, textBox1.Text,false));
+                SetNroVerif(EnviarMail.Enviar(emisor, pass, textBox1.Text,false));
                 MessageBox.Show("Hemos enviado un mensaje a su correo. Siga las instrucciones.");
             }
         }
 
+        //Funcion auxiliar para la verificación del código ingresado
         public bool Verificacion(TextBox textBox2){
             DialogResult yesno = DialogResult.No;
             do{
                 if (yesno == DialogResult.Yes){
-                    setNroVerif(EnviarMail.Enviar(emisor, pass, textBox1.Text,false));
+                    SetNroVerif(EnviarMail.Enviar(emisor, pass, textBox1.Text,false));
                     MessageBox.Show("Hemos enviado un nuevo código a su correo.");
                 }
 
                 //se envió el correo
-                if(getNroVerif() != 0){
+                if(GetNroVerif() != 0){
                     //si el número es igual al verificado
                     if(nroVerif.ToString() == textBox2.Text){
                         MessageBox.Show("¡Verificacion exitosa!");
-                        yesno = DialogResult.No;
                         return true;
                     }
                     else{
@@ -104,7 +109,8 @@ namespace AppEscritorio{
             return false;
         }
 
-        private void button2_Click(object sender, EventArgs e){
+        //Verificación del código ingresado
+        private void Button2_Click(object sender, EventArgs e){
             if (textBox2.Text.Trim() == ""){
                 MessageBox.Show("Ingrese el codigo.");
                 return;
@@ -113,10 +119,10 @@ namespace AppEscritorio{
             bool verificacion = Verificacion(textBox2);
 
             if (verificacion == true){
-                this.Hide();
-                Registro reg = new Registro(textBox1.Text, getIDAfiliado());
+                Hide();
+                Registro reg = new Registro(textBox1.Text, GetIDAfiliado());
                 reg.Show();
-                this.Close();
+                Close();
             }
         }
 
@@ -124,18 +130,19 @@ namespace AppEscritorio{
 
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e){
+        private void TextBox2_TextChanged(object sender, EventArgs e){
 
         }
 
-        private void button3_Click(object sender, EventArgs e){
-            this.Hide();
+        //Funcion para retornar al formulario previo
+        private void Button3_Click(object sender, EventArgs e){
+            Hide();
             Verificacion verif = new Verificacion();
             verif.Show();
-            this.Close();
+            Close();
         }
 
-        private void label2_Click(object sender, EventArgs e){
+        private void Label2_Click(object sender, EventArgs e){
 
         }
     }
