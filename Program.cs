@@ -13,28 +13,7 @@ namespace AppEscritorio{
         static void Main(){
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new MedicalHome(initMedico()));
-            //Application.Run(new Home(init()));
             Application.Run(new Ingreso());
-        }
-
-        /*
-         estas funciones existen para testear directamente los componentes que se están
-         desarrollando sin pasar por el login cada vez.
-         cuando se finalice con el desarrollo, desaparecerían.
-         */
-        private static Classes.Usuario init() {
-            Classes.TablesDataContext db = new Classes.TablesDataContext();
-            return (from m in db.Usuario
-                    where m.UsuarioID == 22
-                    select m).First();
-        }
-
-        private static Classes.Medico initMedico() {
-            Classes.TablesDataContext db = new Classes.TablesDataContext();
-            return (from m in db.Medico
-                    where m.MedicoID == 15
-                    select m).First();
         }
     }
 }
