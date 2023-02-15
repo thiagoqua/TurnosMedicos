@@ -85,7 +85,7 @@ namespace AppEscritorio
             this.button1.TabIndex = 2;
             this.button1.Text = "Verificar";
             this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // label2
             // 
@@ -96,7 +96,7 @@ namespace AppEscritorio
             this.label2.Size = new System.Drawing.Size(326, 24);
             this.label2.TabIndex = 3;
             this.label2.Text = "Ingrese el código enviado a su correo:";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
+            this.label2.Click += new System.EventHandler(this.Label2_Click);
             // 
             // textBox2
             // 
@@ -105,7 +105,7 @@ namespace AppEscritorio
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(125, 32);
             this.textBox2.TabIndex = 4;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            this.textBox2.TextChanged += new System.EventHandler(this.TextBox2_TextChanged);
             // 
             // button2
             // 
@@ -120,7 +120,7 @@ namespace AppEscritorio
             this.button2.TabIndex = 5;
             this.button2.Text = "Confirmar";
             this.button2.UseVisualStyleBackColor = false;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // label3
             // 
@@ -149,7 +149,7 @@ namespace AppEscritorio
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(254, 32);
             this.textBox3.TabIndex = 8;
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
+            this.textBox3.TextChanged += new System.EventHandler(this.TextBox3_TextChanged);
             // 
             // textBox4
             // 
@@ -158,7 +158,7 @@ namespace AppEscritorio
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(254, 32);
             this.textBox4.TabIndex = 9;
-            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
+            this.textBox4.TextChanged += new System.EventHandler(this.TextBox4_TextChanged);
             // 
             // button3
             // 
@@ -173,7 +173,7 @@ namespace AppEscritorio
             this.button3.TabIndex = 10;
             this.button3.Text = "Modificar y Guardar";
             this.button3.UseVisualStyleBackColor = false;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.button3.Click += new System.EventHandler(this.Button3_Click);
             // 
             // pictureBox1
             // 
@@ -184,7 +184,7 @@ namespace AppEscritorio
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 12;
             this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
             // 
             // pictureBox2
             // 
@@ -195,7 +195,7 @@ namespace AppEscritorio
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox2.TabIndex = 16;
             this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            this.pictureBox2.Click += new System.EventHandler(this.PictureBox2_Click);
             // 
             // pictureBox3
             // 
@@ -206,7 +206,7 @@ namespace AppEscritorio
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox3.TabIndex = 19;
             this.pictureBox3.TabStop = false;
-            this.pictureBox3.Click += new System.EventHandler(this.pictureBox3_Click);
+            this.pictureBox3.Click += new System.EventHandler(this.PictureBox3_Click);
             // 
             // pictureBox4
             // 
@@ -217,7 +217,7 @@ namespace AppEscritorio
             this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox4.TabIndex = 20;
             this.pictureBox4.TabStop = false;
-            this.pictureBox4.Click += new System.EventHandler(this.pictureBox4_Click);
+            this.pictureBox4.Click += new System.EventHandler(this.PictureBox4_Click);
             // 
             // pictureBox5
             // 
@@ -228,7 +228,7 @@ namespace AppEscritorio
             this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox5.TabIndex = 21;
             this.pictureBox5.TabStop = false;
-            this.pictureBox5.Click += new System.EventHandler(this.pictureBox5_Click);
+            this.pictureBox5.Click += new System.EventHandler(this.PictureBox5_Click);
             // 
             // label5
             // 

@@ -14,18 +14,19 @@ namespace AppEscritorio{
             InitializeComponent();
         }
 
-        private void label1_Click(object sender, EventArgs e)   //texto bienvenida
-        {
+        private void Label1_Click(object sender, EventArgs e){
 
         }
 
-        private void button1_Click(object sender, EventArgs e){  //boton registro
-            this.Hide();
+        //Botón Registro
+        private void Button1_Click(object sender, EventArgs e){
+            Hide();
             new Verificacion().Show();
         }
 
-        private void button2_Click(object sender, EventArgs e){  //boton login
-            this.Hide();
+        //Botón Ingreso
+        private void Button2_Click(object sender, EventArgs e){
+            Hide();
             new Login().Show();
         }
     }

@@ -9,12 +9,14 @@ using Classes;
 namespace AppEscritorio
 {
     public partial class Registro : Form{
-        private TablesDataContext db;
-        private string email;
+        
+        private readonly TablesDataContext db;
+        private readonly string email;
         private static bool isMedico;
         private static int IDPerfil;
-        private int IDAfiliado;
+        private readonly int IDAfiliado;
 
+        //Se inicializan algunos datos que servirán para la modificacion del usuario en la bdd
         public Registro(string e,int id){
             InitializeComponent();
             db = new TablesDataContext();
@@ -24,15 +26,16 @@ namespace AppEscritorio
             isMedico = false;
         }
 
-        public string getEmail(){
+        public string GetEmail(){
             return email;
         }
 
-        public int getIDAfiliado(){
+        public int GetIDAfiliado(){
             return IDAfiliado;
         }
 
-        private void button1_Click(object sender, EventArgs e){
+        //Se chequea que los campos para la contraseña no estén vacíos y que ambos coincidan en el contenido
+        private void Button1_Click(object sender, EventArgs e){
             if (textBox1.Text.Trim() == "" || textBox2.Text.Trim() == ""){
                 MessageBox.Show("Complete los campos faltantes.");
                 return;
@@ -40,13 +43,14 @@ namespace AppEscritorio
             else if (textBox1.Text == textBox2.Text){
                 MessageBox.Show("¡Su registro ha sido completado! Proceda a ingresar a su cuenta.");
 
-                //ACTUALIZAR BDD INGRESANDO EL NVO USUARIO
-                insertarUsuario(email, textBox1.Text);
+                //Se actualiza la contraseña del usuario en la bdd
+                InsertarUsuario(email, textBox1.Text);
 
-                this.Hide();
+                //Se redirige al usuario a Login
+                Hide();
                 Login login = new Login();
                 login.Show();
-                this.Close();
+                Close();
             }
             else{
                 MessageBox.Show("Las contraseñas no coinciden. Vuelva a intentarlo.");
@@ -54,13 +58,16 @@ namespace AppEscritorio
             }
         }
 
-        private void insertarUsuario(string email, string pass){
-            Usuario user = new Usuario();
-            user.IDAfiliado = getIDAfiliado();
-            user.IDPerfil = IDPerfil;
-            user.isMedico = isMedico;
-            user.UsuarioEmail = email;
-            user.UsuarioContraseña = Encriptar.GetSHA256(pass);
+        //Se modifica al usuario en la bdd
+        private void InsertarUsuario(string email, string pass){
+            Usuario user = new Usuario
+            {
+                IDAfiliado = GetIDAfiliado(),
+                IDPerfil = IDPerfil,
+                isMedico = isMedico,
+                UsuarioEmail = email,
+                UsuarioContraseña = Encriptar.GetSHA256(pass)
+            };
 
             db.Usuario.InsertOnSubmit(user);
             try{
@@ -70,27 +77,28 @@ namespace AppEscritorio
             }
         }
 
+        //Las siguientes funciones son para los iconos que visibilizan o no la contraseña
         private void Registro_Load(object sender, EventArgs e){
             textBox1.PasswordChar = '*';
             textBox2.PasswordChar = '*';
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e){
+        private void PictureBox1_Click(object sender, EventArgs e){
             pictureBox2.BringToFront();
             textBox1.PasswordChar = '*';
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e){
+        private void PictureBox2_Click(object sender, EventArgs e){
             pictureBox1.BringToFront();
             textBox1.PasswordChar = '\0';
         }
 
-        private void pictureBox3_Click(object sender, EventArgs e){
+        private void PictureBox3_Click(object sender, EventArgs e){
             pictureBox4.BringToFront();
             textBox2.PasswordChar = '*';
         }
 
-        private void pictureBox4_Click(object sender, EventArgs e){
+        private void PictureBox4_Click(object sender, EventArgs e){
             pictureBox3.BringToFront();
             textBox2.PasswordChar = '\0';
         }

@@ -54,7 +54,7 @@
             this.LoginBtn.TabIndex = 0;
             this.LoginBtn.Text = "LOGIN";
             this.LoginBtn.UseVisualStyleBackColor = false;
-            this.LoginBtn.Click += new System.EventHandler(this.button1_Click);
+            this.LoginBtn.Click += new System.EventHandler(this.Button1_Click);
             // 
             // UsuarioTxt
             // 
@@ -95,7 +95,7 @@
             this.ContraseñaLbl.Size = new System.Drawing.Size(71, 13);
             this.ContraseñaLbl.TabIndex = 4;
             this.ContraseñaLbl.Text = "Contraseña";
-            this.ContraseñaLbl.Click += new System.EventHandler(this.label2_Click);
+            this.ContraseñaLbl.Click += new System.EventHandler(this.Label2_Click);
             // 
             // btnCerrar
             // 
@@ -106,7 +106,7 @@
             this.btnCerrar.Size = new System.Drawing.Size(25, 25);
             this.btnCerrar.TabIndex = 0;
             this.btnCerrar.TabStop = false;
-            this.btnCerrar.Click += new System.EventHandler(this.btnCerrar_Click);
+            this.btnCerrar.Click += new System.EventHandler(this.BtnCerrar_Click);
             // 
             // BarraTitulo
             // 
@@ -127,7 +127,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(300, 144);
             this.pictureBox1.TabIndex = 7;
             this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.pictureBox1.Click += new System.EventHandler(this.PictureBox1_Click);
             // 
             // linkLabel1
             // 
@@ -139,7 +139,7 @@
             this.linkLabel1.TabIndex = 9;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Olvidé mi contraseña";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
             // 
             // Login
             // 

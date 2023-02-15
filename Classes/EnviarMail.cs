@@ -99,6 +99,7 @@ namespace Classes {
 
             }
 
+            //Construyo un correo con los datos necesarios
             MailMessage msg = new MailMessage();    
             msg.To.Add(receptor);                   
             msg.Subject = "Correo de verificacion"; 

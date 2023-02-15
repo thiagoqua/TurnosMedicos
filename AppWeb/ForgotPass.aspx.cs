@@ -12,6 +12,7 @@ namespace AppWeb{
 
         }
 
+        //Se valida el email ingresado
         protected void Button1_Click(object sender, EventArgs e){
             if (Validar.IsValidEmail(TextBox1.Text)){
                 if(Validar.ExistingMail(TextBox1.Text)) {
@@ -26,7 +27,7 @@ namespace AppWeb{
                     EnviarMail.Enviar(emisor, pass, TextBox1.Text, true);
                     Session["requestChangePass"] = true;
 
-                    //recupero el mail ingresado para luego actualizar la base de datos en ChangePass
+                    //Se recupera el email ingresado para luego actualizar la base de datos en el form ChangePass
                     Session["email"] = TextBox1.Text;
                     Response.Redirect("login.aspx", true);
                 }

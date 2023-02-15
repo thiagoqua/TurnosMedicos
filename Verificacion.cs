@@ -11,13 +11,15 @@ using Classes;
 
 namespace AppEscritorio{
     public partial class Verificacion : Form{
-        private TablesDataContext db;
+        
+        private readonly TablesDataContext db;
 
         public Verificacion(){
             InitializeComponent();
             db = new TablesDataContext();
         }
 
+        //Se cargan de antemano los datos de la obra social
         private void Form1_Load(object sender, EventArgs e){
             var obraSocial = from obra in db.ObraSocial      
                              select obra;
@@ -27,7 +29,8 @@ namespace AppEscritorio{
             comboBox1.DataSource = obraSocial;
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e){
+        //De acuerdo a la obra social seleccionada, aparecen los planes relacionados a esa obra social
+        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e){
             var planlist = from plan in db.PlanObraSocial
                            where plan.IDObraSocial == (int)comboBox1.SelectedValue
                            select plan;
@@ -37,11 +40,12 @@ namespace AppEscritorio{
             comboBox2.DataSource = planlist;
         }
 
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e){
+        private void ComboBox2_SelectedIndexChanged(object sender, EventArgs e){
 
         }
 
-        private void button1_Click(object sender, EventArgs e){
+        //Verifico cada dato ingresado por el usuario con lo que hay almacenado en la bdd
+        private void Button1_Click(object sender, EventArgs e){
             if (textBox1.Text.Trim() == "" || textBox2.Text.Trim() == ""){
                 MessageBox.Show("Complete los campos faltantes.");
                 return;
@@ -63,27 +67,30 @@ namespace AppEscritorio{
 
                 if(checkPlanAndObra.Count() == 1){
                     MessageBox.Show("La verificacion fue exitosa. Cierre la ventana emergente y proceda a registrarse.");
-                    this.Hide();
+                    
+                    //Se redirige al usuario y se continúa con el proceso de registro
+                    Hide();
                     VerificarEmail ve = new VerificarEmail(IDAfiliado);
                     ve.Show();
-                    this.Close();
+                    Close();
                 }
                 else{
-                    MessageBox.Show("Los datos ingresados y/o seleccionados no son correctos.");
+                    MessageBox.Show("Los datos ingresados no son correctos.");
                     return;
                 }
             }
             else{
-                MessageBox.Show("Los datos ingresados y/o seleccionados no son correctos.");
+                MessageBox.Show("Los datos ingresados no son correctos.");
                 return;
             }
         }
 
-        private void button2_Click(object sender, EventArgs e){
-            this.Hide();
+        //Vuelvo al formulario Ingreso
+        private void Button2_Click(object sender, EventArgs e){
+            Hide();
             Ingreso ingreso = new Ingreso();
             ingreso.Show();
-            this.Close();
+            Close();
         }
     }
 }
