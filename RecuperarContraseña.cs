@@ -31,11 +31,11 @@ namespace AppEscritorio
 
         //Verificación del mail
         private void Button1_Click(object sender, EventArgs e){
-            if (!ve.isValidEmail(textBox1.Text)){
+            if (!ve.IsValidEmail(textBox1.Text)){
                 MessageBox.Show("Ingrese un mail válido.");
                 return;
             }
-            else if (!ve.checkEmail(textBox1.Text)){
+            else if (!ve.CheckEmail(textBox1.Text)){
                 MessageBox.Show("El mail no se encuentra en la base de datos. Pruebe con otro.");
                 return;
             }
@@ -46,7 +46,7 @@ namespace AppEscritorio
                 emisor = servidor.First().Mail;
                 pass = servidor.First().Pass;
 
-                ve.setNroVerif(EnviarMail.Enviar(emisor, pass, textBox1.Text, false));
+                ve.SetNroVerif(EnviarMail.Enviar(emisor, pass, textBox1.Text, false));
                 MessageBox.Show("Hemos enviado un mensaje a su correo. Siga las instrucciones.");
 
                 label2.Visible = button2.Visible = textBox2.Visible = true;

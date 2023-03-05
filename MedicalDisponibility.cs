@@ -30,20 +30,7 @@ namespace AppEscritorio {
         private void Reset() {
             tempDM = new DisponibilidadMedico();
             initSucursales();
-            abmDyS.Enabled = label12.Enabled = label2.Enabled = comboSucursales.Enabled = true;
-
-            label1.Visible = label3.Visible = label4.Visible = label5.Visible =
-            label6.Visible = label7.Visible = label8.Visible = label9.Visible =
-            label10.Visible = label11.Visible = label13.Visible = comboDias.Visible =
-            comboSucursalesRemove.Visible = comboProvincia.Visible = comboLocalidad.Visible =
-            comboSucursalesAñadir.Visible = comboSucModDias.Visible = comboDayToAdd.Visible =
-            comboDayToRm.Visible = abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible =
-            makeABM1.Visible = abmInicio.Visible = abmSuc.Visible = abmSuc1.Visible =
-            abmDay.Visible = abmDay1.Visible = RmSuc.Visible = AddSuc.Visible = AddRmDays.Visible =
-            addDay.Visible = rmDay.Visible = addDay.Checked = rmDay.Checked = RmSuc.Checked =
-            AddSuc.Checked = AddRmDays.Checked = false;
-
-            comboSucursalesRemove.Items.Clear();
+            changeVisibilityBy(Tools.RESETALL);
         }
 
         /// <summary>
@@ -83,19 +70,14 @@ namespace AppEscritorio {
             comboDias.DisplayMember = "NombreDia";
             comboDias.ValueMember = "DiaId";
             comboDias.DataSource = queryDias;
-
-            label3.Visible = comboDias.Visible = label3.Enabled = comboDias.Enabled = true;
-            label1.Visible = label4.Visible = label5.Visible = abmInicio.Visible =
-            abmFin.Visible = abmConsultorio.Visible = makeABM1.Visible = false;
+            changeVisibilityBy(Tools.SUCSELECTED);
         }
         private void comboDias_SelectedIndexChanged(object sender, EventArgs e) {
             tempDM = getDM();
             abmInicio.Text = tempDM.HorarioInicio.ToString();
             abmFin.Text = tempDM.HorarioFin.ToString();
             abmConsultorio.Text = tempDM.Consultorio.ToString();
-
-            abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible = label1.Visible =
-            label4.Visible = label5.Visible = true;
+            changeVisibilityBy(Tools.DIASELECTED);
         }
 
         /// <param name="size">
@@ -142,18 +124,15 @@ namespace AppEscritorio {
         }
 
         private void abmInicio_TextChanged(object sender, EventArgs e) {
-            if(!makeABM1.Visible)
-                makeABM1.Visible = true;
+            changeVisibilityBy(Tools.ABMsTXTCHANGED);
         }
 
         private void abmFin_TextChanged(object sender, EventArgs e) {
-            if(!makeABM1.Visible)
-                makeABM1.Visible = true;
+            changeVisibilityBy(Tools.ABMsTXTCHANGED);
         }
 
         private void abmConsultorio_TextChanged(object sender, EventArgs e) {
-            if(!makeABM1.Visible)
-                makeABM1.Visible = true;
+            changeVisibilityBy(Tools.ABMsTXTCHANGED);
         }
 
         private void makeABM1_Click(object sender, EventArgs e) {
@@ -192,9 +171,11 @@ namespace AppEscritorio {
 
             try {
                 stringTime = abmInicio.Text.Split(':');
+                if(stringTime.Length < 2)
+                    throw new FormatException();
                 hora = Convert.ToInt32(stringTime[0]);
                 minutos = Convert.ToInt32(stringTime[1]);
-                if(stringTime.Length < 3)
+                if(stringTime.Length == 2)
                     segundos = 0;
                 else
                     segundos = Convert.ToInt32(stringTime[2]);
@@ -215,7 +196,8 @@ namespace AppEscritorio {
                 string msg, caption;
                 caption = "Datos incorrectos";
                 msg = "Los datos ingresados son incorrectos. Al ingresar los horarios, ingreselos " +
-                      "con el formato HORA:MINUTOS u HORA:MINUTOS:SEGUNDOS. Por favor, intente nuevamente.";
+                      "con el formato HORA:MINUTOS u HORA:MINUTOS:SEGUNDOS. Al ingresar el consultorio, " +
+                      "verifique que haya únicamente valores numéricos. Por favor, intente nuevamente.";
                 MessageBox.Show(msg, caption, MessageBoxButtons.OK);
                 return false;
             }
@@ -426,18 +408,11 @@ namespace AppEscritorio {
 
         private void abmDyS_Click_1(object sender, EventArgs e) {
             if(AddSuc.Visible){
-                label2.Enabled = comboSucursales.Enabled = true;
-                RmSuc.Visible = AddSuc.Visible = AddRmDays.Visible = false;
+                changeVisibilityBy(Tools.ABMDYS_SUCVISIBLE);
             }
             else {
+                changeVisibilityBy(Tools.ABMDYS_SUCNOVISIBLE);
                 string[] localidesText;
-                abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible = label1.Visible =
-                label4.Visible = label5.Visible = makeABM1.Visible = label2.Enabled =
-                label3.Enabled = comboDias.Enabled = label3.Visible = comboDias.Visible = 
-                comboSucursales.Enabled = false;
-
-                RmSuc.Visible = AddSuc.Visible = AddRmDays.Visible = true;
-
                 localidesText = getLocalidadesComplex(workingSucursals.Count());
                 for(int i = 0; i < localidesText.Length; ++i) {
                     comboSucursalesRemove.Items.Add(workingSucursals[i].SucursalDescripcion +
@@ -448,19 +423,16 @@ namespace AppEscritorio {
 
         private void RmSuc_CheckedChanged(object sender, EventArgs e) {
             if(RmSuc.Checked) {
-                label6.Visible = comboSucursalesRemove.Visible = true;
-                AddSuc.Visible = abmDyS.Enabled = AddRmDays.Visible = false;
+                changeVisibilityBy(Tools.RMSUCCHK);
             }
             else {
-                label6.Visible = comboSucursalesRemove.Visible = abmSuc.Visible = false;
-                AddSuc.Visible = abmDyS.Enabled = AddRmDays.Visible = true;
+                changeVisibilityBy(Tools.RMSUCNOCHK);
             }
         }
 
         private void AddSuc_CheckedChanged(object sender, EventArgs e) {
             if(AddSuc.Checked) {
-                label7.Visible = comboProvincia.Visible = true;
-                RmSuc.Visible = abmDyS.Enabled = AddRmDays.Visible = false;
+                changeVisibilityBy(Tools.ADDSUCCHK);
                 var queryProvincia = from prov in db.Provincia
                                      select prov;
                 comboProvincia.DisplayMember = "ProvinciaDescripcion";
@@ -468,9 +440,7 @@ namespace AppEscritorio {
                 comboProvincia.DataSource = queryProvincia;
             }
             else {
-                label7.Visible = label8.Visible = label9.Visible = comboProvincia.Visible =
-                comboLocalidad.Visible = comboSucursalesAñadir.Visible = abmSuc1.Visible = false;
-                RmSuc.Visible = abmDyS.Enabled = AddRmDays.Visible = true;
+                changeVisibilityBy(Tools.ADDSUCNOCHK);
             }
         }
 
@@ -544,16 +514,15 @@ namespace AppEscritorio {
         }
 
         private void comboProvincia_SelectedIndexChanged(object sender, EventArgs e) {
-            int ProvinciaId = (int) comboProvincia.SelectedValue;
             comboLocalidad.ResetText(); comboSucursalesAñadir.ResetText();
+            int ProvinciaId = (int) comboProvincia.SelectedValue;
             var queryLocalidad = from loc in db.Localidad
                                  where loc.IDProvincia == ProvinciaId
                                  select loc;
             comboLocalidad.DisplayMember = "LocalidadDescripcion";
             comboLocalidad.ValueMember = "LocalidadId";
             comboLocalidad.DataSource = queryLocalidad;
-            comboLocalidad.Visible = label9.Visible =  true;
-            label8.Visible = comboSucursalesAñadir.Visible = abmSuc1.Visible = false;
+            changeVisibilityBy(Tools.PROVINCIASELECTED);
         }
 
         private void comboLocalidad_SelectedIndexChanged(object sender, EventArgs e) {
@@ -573,17 +542,15 @@ namespace AppEscritorio {
             comboSucursalesAñadir.DisplayMember = "SucursalDescripcion";
             comboSucursalesAñadir.ValueMember = "SucursalId";
             comboSucursalesAñadir.DataSource = querySucursal;
-            comboSucursalesAñadir.Visible = label8.Visible = true;
-            abmSuc1.Visible = false;
+            changeVisibilityBy(Tools.LOCALIDADSELECTED);
         }
         private void comboSucursalesAñadir_SelectedIndexChanged(object sender, EventArgs e) {
-            abmSuc1.Visible = true;
+            changeVisibilityBy(Tools.ADDSUCSELECTED);
         }
 
         private void AddRmDays_CheckedChanged(object sender, EventArgs e) {
             if(AddRmDays.Checked) {
-                label10.Visible = comboSucModDias.Visible = true;
-                RmSuc.Visible = abmDyS.Enabled = AddSuc.Visible = false;
+                changeVisibilityBy(Tools.ADDRMDAYSCHK);
                 var querySucursales = from suc in db.Sucursal
                                       join ms in db.MedicoSucursal on
                                         suc.SucursalId equals ms.IDSucursal
@@ -594,22 +561,18 @@ namespace AppEscritorio {
                 comboSucModDias.DataSource = querySucursales;
             }
             else {
-                label10.Visible = comboSucModDias.Visible = addDay.Visible =
-                rmDay.Visible = addDay.Checked = rmDay.Checked = label11.Visible = 
-                comboDayToAdd.Visible = false;
-                RmSuc.Visible = abmDyS.Enabled = AddSuc.Visible = true;
+                changeVisibilityBy(Tools.ADDRMDAYSNOCHK);
             }
         }
 
         private void comboSucModDias_SelectedIndexChanged(object sender, EventArgs e) {
-            addDay.Visible = rmDay.Visible = true;
-            addDay.Checked = rmDay.Checked = false;
+            changeVisibilityBy(Tools.SUCMODDIASELECTED);
         }
 
         private void addDay_CheckedChanged(object sender, EventArgs e) {
             if(addDay.Checked) {
                 int SucursalId = (int) comboSucModDias.SelectedValue;
-                rmDay.Visible = false;
+                changeVisibilityBy(Tools.ADDDAYCHK);
                 var queryExceptionalDays = from dia in db.Dia
                                            join dm in db.DisponibilidadMedico on
                                                 dia.DiaID equals dm.IDDia
@@ -630,16 +593,13 @@ namespace AppEscritorio {
                 label11.Visible = comboDayToAdd.Visible = true;
             }
             else {
-                rmDay.Visible = true;
-                label11.Visible = comboDayToAdd.Visible = abmDay.Visible = false;
+                changeVisibilityBy(Tools.ADDDAYNOCHK);
             }
         }
 
         private void rmDay_CheckedChanged(object sender, EventArgs e) {
             if(rmDay.Checked) {
-                addDay.Visible = abmDay.Visible = label11.Visible = comboDayToAdd.Visible =
-                false;
-                
+                changeVisibilityBy(Tools.RMDAYCHK);
                 int SucursalId = (int)comboSucModDias.SelectedValue;
                 var queryDias = from dia in db.Dia
                                 join dm in db.DisponibilidadMedico on
@@ -650,16 +610,14 @@ namespace AppEscritorio {
                 comboDayToRm.DisplayMember = "NombreDia";
                 comboDayToRm.ValueMember = "DiaID";
                 comboDayToRm.DataSource = queryDias;
-                label13.Visible = comboDayToRm.Visible = true;
             }
             else {
-                addDay.Visible = true;
-                label13.Visible = comboDayToRm.Visible = abmDay1.Visible = false;
+                changeVisibilityBy(Tools.RMDAYNOCHK);
             }
         }
 
         private void dayToAdd_SelectedIndexChanged(object sender, EventArgs e) {
-            abmDay.Visible = true;
+            changeVisibilityBy(Tools.DAYADDSELECTED);
         }
 
         private void abmDay_Click(object sender, EventArgs e) {
@@ -694,7 +652,7 @@ namespace AppEscritorio {
         }
 
         private void comboDayToRm_SelectedIndexChanged(object sender, EventArgs e) {
-            abmDay1.Visible = true;
+            changeVisibilityBy(Tools.DAYTORMSELECTED);
         }
 
         private void abmDay1_Click(object sender, EventArgs e) {
@@ -733,7 +691,152 @@ namespace AppEscritorio {
             previousState.Show();
             this.Close();
         }
+        /// <summary>
+        ///     Cambia la visibilidad de todos los componentes dependiendo de que ocurra
+        ///     en el programa
+        /// </summary>
+        /// <param name="which">
+        ///     cuál es el evento que produjo el cambio en la visibilidad
+        /// </param>
+        private void changeVisibilityBy(Tools which) {
+            switch(which) {
+                case Tools.RESETALL:
+                    abmDyS.Enabled = label12.Enabled = label2.Enabled = comboSucursales.Enabled = true;
+
+                    label1.Visible = label3.Visible = label4.Visible = label5.Visible =
+                    label6.Visible = label7.Visible = label8.Visible = label9.Visible =
+                    label10.Visible = label11.Visible = label13.Visible = comboDias.Visible =
+                    comboSucursalesRemove.Visible = comboProvincia.Visible = comboLocalidad.Visible =
+                    comboSucursalesAñadir.Visible = comboSucModDias.Visible = comboDayToAdd.Visible =
+                    comboDayToRm.Visible = abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible =
+                    makeABM1.Visible = abmInicio.Visible = abmSuc.Visible = abmSuc1.Visible =
+                    abmDay.Visible = abmDay1.Visible = RmSuc.Visible = AddSuc.Visible = AddRmDays.Visible =
+                    addDay.Visible = rmDay.Visible = addDay.Checked = rmDay.Checked = RmSuc.Checked =
+                    AddSuc.Checked = AddRmDays.Checked = false;
+
+                    comboSucursalesRemove.Items.Clear();
+                    break;
+                case Tools.SUCSELECTED:
+                    label3.Visible = comboDias.Visible = label3.Enabled = comboDias.Enabled = true;
+                    label1.Visible = label4.Visible = label5.Visible = abmInicio.Visible =
+                    abmFin.Visible = abmConsultorio.Visible = makeABM1.Visible = false;
+                    break;
+                case Tools.DIASELECTED:
+                    abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible = label1.Visible =
+                    label4.Visible = label5.Visible = true;
+                    break;
+                case Tools.ABMsTXTCHANGED:
+                    if(!makeABM1.Visible)
+                        makeABM1.Visible = true;
+                    break;
+                case Tools.ABMDYS_SUCVISIBLE:
+                    label2.Enabled = comboSucursales.Enabled = true;
+                    RmSuc.Visible = AddSuc.Visible = AddRmDays.Visible = false;
+                    break;
+                case Tools.ABMDYS_SUCNOVISIBLE:
+                    abmInicio.Visible = abmFin.Visible = abmConsultorio.Visible = label1.Visible =
+                    label4.Visible = label5.Visible = makeABM1.Visible = label2.Enabled =
+                    label3.Enabled = comboDias.Enabled = label3.Visible = comboDias.Visible =
+                    comboSucursales.Enabled = false;
+                    RmSuc.Visible = AddSuc.Visible = AddRmDays.Visible = true;
+                    break;
+                case Tools.RMSUCCHK:
+                    label6.Visible = comboSucursalesRemove.Visible = true;
+                    AddSuc.Visible = abmDyS.Enabled = AddRmDays.Visible = false;
+                    break;
+                case Tools.RMSUCNOCHK:
+                    label6.Visible = comboSucursalesRemove.Visible = abmSuc.Visible = false;
+                    AddSuc.Visible = abmDyS.Enabled = AddRmDays.Visible = true;
+                    break;
+                case Tools.ADDSUCCHK:
+                    label7.Visible = comboProvincia.Visible = true;
+                    RmSuc.Visible = abmDyS.Enabled = AddRmDays.Visible = false;
+                    break;
+                case Tools.ADDSUCNOCHK:
+                    label7.Visible = label8.Visible = label9.Visible = comboProvincia.Visible =
+                    comboLocalidad.Visible = comboSucursalesAñadir.Visible = abmSuc1.Visible = false;
+                    RmSuc.Visible = abmDyS.Enabled = AddRmDays.Visible = true;
+                    break;
+                case Tools.PROVINCIASELECTED:
+                    comboLocalidad.Visible = label9.Visible = true;
+                    label8.Visible = comboSucursalesAñadir.Visible = abmSuc1.Visible = false;
+                    break;
+                case Tools.LOCALIDADSELECTED:
+                    comboSucursalesAñadir.Visible = label8.Visible = true;
+                    abmSuc1.Visible = false;
+                    break;
+                case Tools.ADDSUCSELECTED:
+                    abmSuc1.Visible = true;
+                    break;
+                case Tools.ADDRMDAYSCHK:
+                    label10.Visible = comboSucModDias.Visible = true;
+                    RmSuc.Visible = abmDyS.Enabled = AddSuc.Visible = false;
+                    break;
+                case Tools.ADDRMDAYSNOCHK:
+                    label10.Visible = comboSucModDias.Visible = addDay.Visible =
+                    rmDay.Visible = addDay.Checked = rmDay.Checked = label11.Visible =
+                    comboDayToAdd.Visible = false;
+                    RmSuc.Visible = abmDyS.Enabled = AddSuc.Visible = true;
+                    break;
+                case Tools.SUCMODDIASELECTED:
+                    addDay.Visible = rmDay.Visible = true;
+                    addDay.Checked = rmDay.Checked = false;
+                    break;
+                case Tools.ADDDAYCHK:
+                    rmDay.Visible = false;
+                    break;
+                case Tools.ADDDAYNOCHK:
+                    rmDay.Visible = true;
+                    label11.Visible = comboDayToAdd.Visible = abmDay.Visible = false;
+                    break;
+                case Tools.RMDAYCHK:
+                    addDay.Visible = abmDay.Visible = label11.Visible = comboDayToAdd.Visible = false;
+                    label13.Visible = comboDayToRm.Visible = true;
+                    break;
+                case Tools.RMDAYNOCHK:
+                    addDay.Visible = true;
+                    label13.Visible = comboDayToRm.Visible = abmDay1.Visible = false;
+                    break;
+                case Tools.DAYADDSELECTED:
+                    abmDay.Visible = true;
+                    break;
+                case Tools.DAYTORMSELECTED:
+                    abmDay1.Visible = true;
+                    break;
+            }
+        }
     }
+
+
+    /// <summary>
+    ///     Constantes utilizadas para describir un evento del programa, como un click
+    ///     o alguna notificación al usuario.
+    /// </summary>
+    enum Tools {
+        RESETALL,
+        SUCSELECTED,
+        DIASELECTED,
+        ABMsTXTCHANGED,
+        ABMDYS_SUCVISIBLE,
+        ABMDYS_SUCNOVISIBLE,
+        RMSUCCHK,
+        RMSUCNOCHK,
+        ADDSUCCHK,
+        ADDSUCNOCHK,
+        PROVINCIASELECTED,
+        LOCALIDADSELECTED,
+        ADDSUCSELECTED,
+        ADDRMDAYSCHK,
+        ADDRMDAYSNOCHK,
+        SUCMODDIASELECTED,
+        ADDDAYCHK,
+        ADDDAYNOCHK,
+        RMDAYCHK,
+        RMDAYNOCHK,
+        DAYADDSELECTED,
+        DAYTORMSELECTED
+    }
+
     class SucursalComparer : IEqualityComparer<Sucursal> {
         public bool Equals(Sucursal x,Sucursal y) {
             return x.SucursalId == y.SucursalId;

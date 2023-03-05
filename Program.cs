@@ -13,7 +13,10 @@ namespace AppEscritorio{
         static void Main(){
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Ingreso());
+            //Application.Run(new Ingreso());
+            Application.Run(new MedicalHome((from m in new Classes.TablesDataContext().Medico
+                                             where m.MedicoID == 15
+                                             select m).First()));
         }
     }
 }

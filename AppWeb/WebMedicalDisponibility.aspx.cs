@@ -215,7 +215,8 @@ namespace AppWeb {
                 stringTime = textboxHoraInicio.Text.Split(':'); 
                 if(stringTime.Length < 2) {
                     msg = "Los datos ingresados son incorrectos. Al ingresar los horarios, ingreselos " +
-                          "con el formato HORA:MINUTOS u HORA:MINUTOS:SEGUNDOS. Por favor, intente nuevamente.";
+                          "con el formato HORA:MINUTOS u HORA:MINUTOS:SEGUNDOS. Al ingresar el consultorio, " +
+                          "verifique que haya únicamente valores numéricos. Por favor, intente nuevamente."; 
                     ClientScript.RegisterStartupScript(this.GetType(),
                                 "alert", "alert('" + msg + "');", true);
                     return false;
@@ -231,7 +232,8 @@ namespace AppWeb {
                 stringTime = textboxHoraFin.Text.Split(':');
                 if(stringTime.Length < 2) {
                     msg = "Los datos ingresados son incorrectos. Al ingresar los horarios, ingreselos " +
-                          "con el formato HORA:MINUTOS u HORA:MINUTOS:SEGUNDOS. Por favor, intente nuevamente.";
+                          "con el formato HORA:MINUTOS u HORA:MINUTOS:SEGUNDOS. Al ingresar el consultorio, " +
+                          "verifique que haya únicamente valores numéricos. Por favor, intente nuevamente.";
                     ClientScript.RegisterStartupScript(this.GetType(),
                                 "alert", "alert('" + msg + "');", true);
                     return false;
@@ -248,7 +250,8 @@ namespace AppWeb {
             }
             catch(FormatException) {
                 msg = "Los datos ingresados son incorrectos. Al ingresar los horarios, ingreselos " +
-                      "con el formato HORA:MINUTOS u HORA:MINUTOS:SEGUNDOS. Por favor, intente nuevamente.";
+                      "con el formato HORA:MINUTOS u HORA:MINUTOS:SEGUNDOS. Al ingresar el consultorio, " +
+                      "verifique que haya únicamente valores numéricos. Por favor, intente nuevamente.";
                 ClientScript.RegisterStartupScript(this.GetType(),
                             "alert", "alert('" + msg + "');", true);
                 return false;
