@@ -1,5 +1,5 @@
 # Información a tener en cuenta
-## Creación de nuevos usuarios
+# Creación de nuevos usuarios
 1. Insertar manualmente un nuevo registro a la tabla *afiliados* de la base de datos.
 2. Realizar la creación del usuario dentro de la app, ingresando los datos recién insertados en la tabla.
 
