@@ -13,7 +13,6 @@ namespace AppWeb {
         readonly TablesDataContext db = new TablesDataContext();
 
         protected void Page_Load(object sender, EventArgs e) {
-            
             //En las 2 primeras condiciones reviso si el usuario tiene autorizacion para estar en la pagina actual
             if(Session["requestChangePass"] == null) {
                 Response.Redirect("login.aspx", true);

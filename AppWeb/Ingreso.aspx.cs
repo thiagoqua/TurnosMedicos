@@ -12,7 +12,13 @@ using static System.Net.WebRequestMethods;
 namespace AppWeb{
     public partial class Ingreso : System.Web.UI.Page{
         protected void Page_Load(object sender, EventArgs e){
-
+            Usuario trying = (Usuario)Session["user"];
+            if(trying != null) {
+                if(trying.isMedico)
+                    Response.Redirect("~/WebMedicalHome.aspx");
+                else
+                    Response.Redirect("~/WebHome.aspx");
+            }
         }
 
         protected void ingresar_btn_Click(object sender, EventArgs e){

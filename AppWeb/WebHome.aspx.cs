@@ -38,8 +38,17 @@ namespace AppWeb {
                     whoAmI = (from user in db.Usuario
                               where user.UsuarioID == UsuarioId
                               select user).First();
+
                     Session["user"] = whoAmI;
                 }
+
+                /*
+                    si un usuario médico cambia la url desde la barra de navegación y quiere
+                    acceder a éste componente, se lo impido redirigiéndolo hacia su componente
+                    home
+                */
+                if(whoAmI.isMedico)
+                    Response.Redirect("~/WebMedicalHome.aspx");
 
                 whoAmIAsAfiliado = (from af in db.Afiliado
                                     where af.AfiliadoID == whoAmI.IDAfiliado
@@ -222,6 +231,7 @@ namespace AppWeb {
         }
 
         protected void signOutButton_Click(object sender, EventArgs e) {
+            Session["user"] = Session["afiliado"] = null;
             FormsAuthentication.SignOut();
             Response.Redirect("login.aspx", true);
         }

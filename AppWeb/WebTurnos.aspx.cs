@@ -37,12 +37,22 @@ namespace AppWeb {
                     whoAmI = (from user in db.Usuario
                               where user.UsuarioID == UsuarioId
                               select user).First();
+
+
                     whoAmIAsAfiliado = (from af in db.Afiliado
                                         where af.AfiliadoID == whoAmI.IDAfiliado
                                         select af).First();
                     Session["afiliado"] = whoAmIAsAfiliado;
                     Session["user"] = whoAmI;
                 }
+                /*
+                    si un usuario médico cambia la url desde la barra de navegación y quiere
+                    acceder a éste componente, se lo impido redirigiéndolo hacia su componente
+                    home
+                */
+                if(whoAmI.isMedico)
+                    Response.Redirect("~/WebMedicalHome.aspx");
+
                 Session["myindex"] = indexShowed = -1;
                 Session["database"] = db;
             }

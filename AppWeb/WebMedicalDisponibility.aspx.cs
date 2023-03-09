@@ -20,6 +20,15 @@ namespace AppWeb {
             }
             else {
                 db = new TablesDataContext();
+
+                /*
+                  si un usuario paciente cambia la url desde la barra de navegación y quiere
+                  acceder a éste componente, se lo impido redirigiéndolo hacia su componente
+                  home
+                */
+                if(!((Usuario)Session["user"]).isMedico)
+                    Response.Redirect("~/WebHome.aspx");
+
                 /*
                   si whoAmI es null y no fue PostBack, significa que el WebMedicalHome no guardó 
                   en la sesión al usuario, por lo que tengo que ir a buscarlo a la cookie 
