@@ -19,6 +19,7 @@ namespace AppWeb {
         private string[,] descripcionTurno;
 
         protected void Page_Load(object sender, EventArgs e) {
+            Page.Title = "Home";
             boxes = new List<TextBox>();
             generatePDF.Visible = false;
             whoAmI = (Usuario) Session["user"];
@@ -35,6 +36,7 @@ namespace AppWeb {
                 */
                 if(whoAmI == null) {
                     int UsuarioId = Convert.ToInt32(Request.Cookies["userID"].Value);
+                    
                     whoAmI = (from user in db.Usuario
                               where user.UsuarioID == UsuarioId
                               select user).First();

@@ -9,6 +9,7 @@ using System.Web.Security;
 namespace AppWeb{
     public partial class Login : System.Web.UI.Page{
         protected void Page_Load(object sender, EventArgs e){
+            Page.Title = "Log In";
             /*
              si un usuario, médico o paciente, cambia la url desde la barra de navegación y 
              quiere acceder a éste componente, se lo impido redirigiéndolo hacia su componente

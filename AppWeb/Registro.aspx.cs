@@ -17,6 +17,22 @@ namespace AppWeb{
         private int IDAfiliado = 0;
 
         protected void Page_Load(object sender, EventArgs e) {
+            /*
+             si un usuario, médico o paciente, cambia la url desde la barra de navegación y 
+             quiere acceder a éste componente, se lo impido redirigiéndolo hacia su componente
+             home correspondiente.
+             el valor que corresponde a la key 'user' del session es distinto de null cada vez
+             que un usuario se loguea, por lo que si es null no hay usuarios logueados.
+            */
+            Usuario trying = (Usuario)Session["user"];
+            if(trying != null) {
+                if(trying.isMedico)
+                    Response.Redirect("~/WebMedicalHome.aspx");
+                else
+                    Response.Redirect("~/WebHome.aspx");
+            }
+
+            Page.Title = "Sign Up";
             if(!IsPostBack) {
                 db = new TablesDataContext();
                 Session["database"] = db;

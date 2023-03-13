@@ -18,6 +18,7 @@ namespace AppWeb {
         //almacena el índice del último turno mostrado de la lista de arriba 
         private int indexShowed;
         protected void Page_Load(object sender, EventArgs e) {
+            Page.Title = "Turnos";
             whoAmI = (Usuario)Session["user"]; 
             if(IsPostBack) {
                 db = (TablesDataContext)Session["database"];

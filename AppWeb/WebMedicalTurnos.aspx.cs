@@ -20,6 +20,7 @@ namespace AppWeb {
         private string[,] descripcionTurno;
 
         protected void Page_Load(object sender, EventArgs e) {
+            Page.Title = "Turnos";
             whoAmI = (Usuario)Session["user"];
             signOutButton.ServerClick += new EventHandler(signOutButton_Click);
             boxes = new List<TextBox>();

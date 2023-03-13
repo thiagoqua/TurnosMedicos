@@ -12,6 +12,7 @@ using static System.Net.WebRequestMethods;
 namespace AppWeb{
     public partial class Ingreso : System.Web.UI.Page{
         protected void Page_Load(object sender, EventArgs e){
+            Page.Title = "Ingresar";
             Usuario trying = (Usuario)Session["user"];
             if(trying != null) {
                 if(trying.isMedico)

@@ -10,6 +10,7 @@ using Classes;
 namespace AppWeb {
     public partial class WebMedicalHome : System.Web.UI.Page {
         protected void Page_Load(object sender, EventArgs e) {
+            Page.Title = "Home";
             if(!IsPostBack) {
                 TablesDataContext db = new TablesDataContext();
                 Usuario logged = (Usuario)Session["user"];

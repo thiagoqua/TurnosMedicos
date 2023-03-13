@@ -13,6 +13,22 @@ namespace AppWeb{
         TablesDataContext db;
 
         protected void Page_Load(object sender, EventArgs e){
+            /*
+             si un usuario, médico o paciente, cambia la url desde la barra de navegación y 
+             quiere acceder a éste componente, se lo impido redirigiéndolo hacia su componente
+             home correspondiente.
+             el valor que corresponde a la key 'user' del session es distinto de null cada vez
+             que un usuario se loguea, por lo que si es null no hay usuarios logueados.
+            */
+            Usuario trying = (Usuario)Session["user"];
+            if(trying != null) {
+                if(trying.isMedico)
+                    Response.Redirect("~/WebMedicalHome.aspx");
+                else
+                    Response.Redirect("~/WebHome.aspx");
+            }
+
+            Page.Title = "Verificación";
             if(!IsPostBack){
                 db = new TablesDataContext();
                 var obraSocial = from obra in db.ObraSocial          
@@ -62,9 +78,9 @@ namespace AppWeb{
             }
             int dni_int, IDAfiliado, plan_id;
             string nroAfiliado_txt;
-            int.TryParse(dni.Text, out dni_int);
-
             dni_int = IDAfiliado = plan_id = 0;
+
+            int.TryParse(dni.Text, out dni_int);
 
             if (dni_int == 0){
                 Response.Write("<script>alert('Error.');</script>");

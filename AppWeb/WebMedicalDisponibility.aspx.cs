@@ -13,6 +13,7 @@ namespace AppWeb {
         private DisponibilidadMedico tempDM;
 
         protected void Page_Load(object sender, EventArgs e) {
+            Page.Title = "Disponibilidad";
             whoAmI = (Medico)Session["medico"];
             if(IsPostBack) {
                 db = Session["database"] as TablesDataContext;
