@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Windows.Forms;
 
 namespace AppWeb{
     public partial class ForgotPass : System.Web.UI.Page{
@@ -38,6 +39,7 @@ namespace AppWeb{
                     pass = servidor.First().Pass;
 
                     EnviarMail.Enviar(emisor, pass, TextBox1.Text, true);
+
                     Session["requestChangePass"] = true;
 
                     //Se recupera el email ingresado para luego actualizar la base de datos en el form ChangePass

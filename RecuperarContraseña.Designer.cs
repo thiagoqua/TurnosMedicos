@@ -66,7 +66,7 @@ namespace AppEscritorio
             // 
             // textBox1
             // 
-            this.textBox1.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.Location = new System.Drawing.Point(434, 79);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(273, 32);
@@ -100,7 +100,7 @@ namespace AppEscritorio
             // 
             // textBox2
             // 
-            this.textBox2.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox2.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox2.Location = new System.Drawing.Point(434, 184);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(125, 32);
@@ -144,7 +144,7 @@ namespace AppEscritorio
             // 
             // textBox3
             // 
-            this.textBox3.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox3.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox3.Location = new System.Drawing.Point(432, 251);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(254, 32);
@@ -153,7 +153,7 @@ namespace AppEscritorio
             // 
             // textBox4
             // 
-            this.textBox4.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox4.Font = new System.Drawing.Font("Calibri", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox4.Location = new System.Drawing.Point(432, 292);
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(254, 32);
@@ -263,7 +263,9 @@ namespace AppEscritorio
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "RecuperarContraseña";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "RecuperarContraseña";
             this.Load += new System.EventHandler(this.RecuperarContraseña_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

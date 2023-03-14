@@ -19,6 +19,9 @@
             <asp:Label ID="Label1" runat="server" Font-Bold="True" Font-Size="X-Large" Text="Cambiar contraseña" Font-Names="Calibri"></asp:Label>
             <br />
             <br />
+            <asp:Label runat="server" Font-Bold="True" Font-Names="Calibri" Font-Size="Large">Una vez envíe su mail, ingrese a su correo y siga las instrucciones.</asp:Label>
+            <br />
+            <br />
             &nbsp;<asp:Label ID="Label2" runat="server" Font-Names="Calibri" Font-Size="Large" Text="Ingrese su correo electrónico: "></asp:Label>
             <asp:TextBox ID="TextBox1" runat="server" Width="260px" Font-Names="Calibri" Font-Size="Large"></asp:TextBox>
             &nbsp;<br />

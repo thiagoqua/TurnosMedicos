@@ -174,7 +174,9 @@ namespace AppEscritorio {
             this.Controls.Add(this.fecha);
             this.Controls.Add(this.BarraTitulo);
             this.Controls.Add(this.PanelMenu);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MedicalTurnos";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MedicalTurnos";
             this.Load += new System.EventHandler(this.MedicalTurnos_Load);
             this.BarraTitulo.ResumeLayout(false);

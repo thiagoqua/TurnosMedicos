@@ -39,33 +39,13 @@ namespace AppEscritorio{
             nroVerif = em;
         }
 
-        //Se valida si el formato del email es correcto
-        public bool IsValidEmail(string email){
-            try{
-                var emailValido = new System.Net.Mail.MailAddress(email);
-                return emailValido.Address == email;
-            }
-            catch{
-                return false;
-            }
-        }
-
-        //Se valida si el email se encuentra en la bdd
-        public bool CheckEmail(string email){
-            var mail = from e in db.Usuario
-                       where email == e.UsuarioEmail
-                       select e;
-
-            return mail.Count() >= 1;
-        }
-
         //Se validan los datos ingresados para que el codigo pueda ser enviado al email correspondiente
         private void Button1_Click(object sender, EventArgs e){
-            if (IsValidEmail(textBox1.Text) == false){
+            if (Validar.IsValidEmail(textBox1.Text) == false){
                 MessageBox.Show("Ingrese un mail válido.");
                 return;
             }
-            else if (CheckEmail(textBox1.Text) == true){
+            else if (Validar.ExistingMail(textBox1.Text) == true){
                 MessageBox.Show("El mail ingresado ya se encuentra registrado. Pruebe con otro mail o proceda a loguearse.");
                 return;
             }

@@ -185,7 +185,9 @@ namespace AppEscritorio {
             this.Controls.Add(this.PanelMenu);
             this.Controls.Add(this.PanelContenedor);
             this.Controls.Add(this.BarraTitulo);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Home";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Home";
             this.PanelMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.logo)).EndInit();

@@ -31,11 +31,11 @@ namespace AppEscritorio
 
         //Verificación del mail
         private void Button1_Click(object sender, EventArgs e){
-            if (!ve.IsValidEmail(textBox1.Text)){
+            if (!Validar.IsValidEmail(textBox1.Text)){
                 MessageBox.Show("Ingrese un mail válido.");
                 return;
             }
-            else if (!ve.CheckEmail(textBox1.Text)){
+            else if (!Validar.ExistingMail(textBox1.Text)){
                 MessageBox.Show("El mail no se encuentra en la base de datos. Pruebe con otro.");
                 return;
             }

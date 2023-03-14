@@ -30,7 +30,7 @@ namespace AppWeb {
                 if(getId.Count() > 0) {
                     TimeSpan span;
                     var fechaConsulta = from fc in db.NuevaContraseña
-                                        where getId.First() == fc.ID
+                                        where getId.First() == fc.IDUsuario
                                         select fc.Creacion;
 
                     span = fechaConsulta.First().Subtract(DateTime.Now);

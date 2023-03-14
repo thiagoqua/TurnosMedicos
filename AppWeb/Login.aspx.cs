@@ -55,9 +55,5 @@ namespace AppWeb{
                 lblMsg.Text = "Mail y/o contraseña incorrectos.";
         }
 
-        private void CmdForgot_ServerClick(object sender, EventArgs e){
-
-        }
-
     }
 }

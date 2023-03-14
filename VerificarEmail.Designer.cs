@@ -136,7 +136,9 @@ namespace AppEscritorio
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "VerificarEmail";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "VerificarEmail";
             this.Load += new System.EventHandler(this.VerificarEmail_Load);
             this.ResumeLayout(false);

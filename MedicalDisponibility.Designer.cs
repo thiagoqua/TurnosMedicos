@@ -565,7 +565,9 @@ namespace AppEscritorio {
             this.Controls.Add(this.comboSucursales);
             this.Controls.Add(this.BarraTitulo);
             this.Controls.Add(this.PanelMenu);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MedicalDisponibility";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MedicalDisponibility";
             this.BarraTitulo.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.btnCerrar)).EndInit();

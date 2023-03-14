@@ -622,7 +622,9 @@ namespace AppEscritorio {
             this.Controls.Add(this.BarraTitulo);
             this.Controls.Add(this.PanelMenu);
             this.Controls.Add(this.PanelContenedor);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Turnos";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Turnos";
             this.BarraTitulo.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.btnCerrar)).EndInit();
