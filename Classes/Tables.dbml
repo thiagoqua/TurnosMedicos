@@ -1,0 +1,197 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="AplicacionWeb" Class="TablesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=SUNDAY\SQLEXPRESS;Initial Catalog=AplicacionWeb;Integrated Security=True" SettingsObjectName="Classes.Properties.Settings" SettingsPropertyName="AplicacionWebConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Afiliado" Member="Afiliado">
+    <Type Name="Afiliado">
+      <Column Name="AfiliadoID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="nroDNI" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Nombre" Type="System.String" DbType="NChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Apellido" Type="System.String" DbType="NChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="IDLocalidad" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDPlan" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="NroAfiliado" Type="System.String" DbType="NChar(20)" CanBeNull="true" />
+      <Association Name="Afiliado_Usuario" Member="Usuario" ThisKey="AfiliadoID" OtherKey="IDAfiliado" Type="Usuario" />
+      <Association Name="Localidad_Afiliado" Member="Localidad" ThisKey="IDLocalidad" OtherKey="LocalidadId" Type="Localidad" IsForeignKey="true" />
+      <Association Name="PlanObraSocial_Afiliado" Member="PlanObraSocial" ThisKey="IDPlan" OtherKey="PlanId" Type="PlanObraSocial" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Usuario" Member="Usuario">
+    <Type Name="Usuario">
+      <Column Name="UsuarioID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="IDAfiliado" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="UsuarioContraseña" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
+      <Column Name="UsuarioEmail" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="IDPerfil" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="isMedico" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Association Name="Usuario_Medico" Member="Medico" ThisKey="UsuarioID" OtherKey="IDUsuario" Type="Medico" />
+      <Association Name="Usuario_Turno" Member="Turno" ThisKey="UsuarioID" OtherKey="IDMedico" Type="Turno" />
+      <Association Name="Usuario_Turno1" Member="Turno1" ThisKey="UsuarioID" OtherKey="IDUsuario" Type="Turno" />
+      <Association Name="Afiliado_Usuario" Member="Afiliado" ThisKey="IDAfiliado" OtherKey="AfiliadoID" Type="Afiliado" IsForeignKey="true" />
+      <Association Name="Perfil_Usuario" Member="Perfil" ThisKey="IDPerfil" OtherKey="PerfilId" Type="Perfil" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Año" Member="Año">
+    <Type Name="Año">
+      <Column Name="AñoID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="NombreAño" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Dia" Member="Dia">
+    <Type Name="Dia">
+      <Column Name="DiaID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="NombreDia" Type="System.String" DbType="Char(10) NOT NULL" CanBeNull="false" />
+      <Association Name="Dia_DisponibilidadMedico" Member="DisponibilidadMedico" ThisKey="DiaID" OtherKey="IDDia" Type="DisponibilidadMedico" />
+      <Association Name="Dia_FechaTurno" Member="FechaTurno" ThisKey="DiaID" OtherKey="IDDia" Type="FechaTurno" />
+    </Type>
+  </Table>
+  <Table Name="dbo.DisponibilidadMedico" Member="DisponibilidadMedico">
+    <Type Name="DisponibilidadMedico">
+      <Column Name="DisponibilidadID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="IDMedico" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDDia" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Consultorio" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="HorarioInicio" Type="System.TimeSpan" DbType="Time NOT NULL" CanBeNull="false" />
+      <Column Name="HorarioFin" Type="System.TimeSpan" DbType="Time NOT NULL" CanBeNull="false" />
+      <Column Name="IDSucursal" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Dia_DisponibilidadMedico" Member="Dia" ThisKey="IDDia" OtherKey="DiaID" Type="Dia" IsForeignKey="true" />
+      <Association Name="Medico_DisponibilidadMedico" Member="Medico" ThisKey="IDMedico" OtherKey="MedicoID" Type="Medico" IsForeignKey="true" />
+      <Association Name="Sucursal_DisponibilidadMedico" Member="Sucursal" ThisKey="IDSucursal" OtherKey="SucursalId" Type="Sucursal" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Especialidad" Member="Especialidad">
+    <Type Name="Especialidad">
+      <Column Name="EspecialidadId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="EspecialidadDescripcion" Type="System.String" DbType="NChar(50)" CanBeNull="true" />
+      <Association Name="Especialidad_Medico" Member="Medico" ThisKey="EspecialidadId" OtherKey="IDEspecialidad" Type="Medico" />
+    </Type>
+  </Table>
+  <Table Name="dbo.FechaTurno" Member="FechaTurno">
+    <Type Name="FechaTurno">
+      <Column Name="FechaTurnoID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="IDDia" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDHorario" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Fecha" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Association Name="FechaTurno_Turno" Member="Turno" ThisKey="FechaTurnoID" OtherKey="IDFechaTurno" Type="Turno" />
+      <Association Name="Dia_FechaTurno" Member="Dia" ThisKey="IDDia" OtherKey="DiaID" Type="Dia" IsForeignKey="true" />
+      <Association Name="Horario_FechaTurno" Member="Horario" ThisKey="IDHorario" OtherKey="HorarioID" Type="Horario" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Horario" Member="Horario">
+    <Type Name="Horario">
+      <Column Name="HorarioID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Hora" Type="System.TimeSpan" DbType="Time NOT NULL" CanBeNull="false" />
+      <Association Name="Horario_FechaTurno" Member="FechaTurno" ThisKey="HorarioID" OtherKey="IDHorario" Type="FechaTurno" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Localidad" Member="Localidad">
+    <Type Name="Localidad">
+      <Column Name="LocalidadId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="LocalidadDescripcion" Type="System.String" DbType="NChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="IDProvincia" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Localidad_Afiliado" Member="Afiliado" ThisKey="LocalidadId" OtherKey="IDLocalidad" Type="Afiliado" />
+      <Association Name="Localidad_Sucursal" Member="Sucursal" ThisKey="LocalidadId" OtherKey="IDLocalidad" Type="Sucursal" />
+      <Association Name="Localidad_Turno" Member="Turno" ThisKey="LocalidadId" OtherKey="IDLocalidad" Type="Turno" />
+      <Association Name="Provincia_Localidad" Member="Provincia" ThisKey="IDProvincia" OtherKey="ProvinciaId" Type="Provincia" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Medico" Member="Medico">
+    <Type Name="Medico">
+      <Column Name="MedicoID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="IDEspecialidad" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDUsuario" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Medico_DisponibilidadMedico" Member="DisponibilidadMedico" ThisKey="MedicoID" OtherKey="IDMedico" Type="DisponibilidadMedico" />
+      <Association Name="Medico_MedicoSucursal" Member="MedicoSucursal" ThisKey="MedicoID" OtherKey="IDMedico" Type="MedicoSucursal" />
+      <Association Name="Especialidad_Medico" Member="Especialidad" ThisKey="IDEspecialidad" OtherKey="EspecialidadId" Type="Especialidad" IsForeignKey="true" />
+      <Association Name="Usuario_Medico" Member="Usuario" ThisKey="IDUsuario" OtherKey="UsuarioID" Type="Usuario" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.MedicoSucursal" Member="MedicoSucursal">
+    <Type Name="MedicoSucursal">
+      <Column Name="IDMedicoSucursal" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="IDMedico" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDSucursal" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Medico_MedicoSucursal" Member="Medico" ThisKey="IDMedico" OtherKey="MedicoID" Type="Medico" IsForeignKey="true" />
+      <Association Name="Sucursal_MedicoSucursal" Member="Sucursal" ThisKey="IDSucursal" OtherKey="SucursalId" Type="Sucursal" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Mes" Member="Mes">
+    <Type Name="Mes">
+      <Column Name="MesID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="NombreMes" Type="System.String" DbType="NChar(10) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.NuevaContraseña" Member="NuevaContraseña">
+    <Type Name="NuevaContraseña">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="IDUsuario" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Creacion" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ObraSocial" Member="ObraSocial">
+    <Type Name="ObraSocial">
+      <Column Name="ObraSocialId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ObraSocialDescripcion" Type="System.String" DbType="NChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="ObraSocial_PlanObraSocial" Member="PlanObraSocial" ThisKey="ObraSocialId" OtherKey="IDObraSocial" Type="PlanObraSocial" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Perfil" Member="Perfil">
+    <Type Name="Perfil">
+      <Column Name="PerfilId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PerfilDescripcion" Type="System.String" DbType="NChar(10)" CanBeNull="true" />
+      <Column Name="PerfilHabilitado" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="Perfil_Usuario" Member="Usuario" ThisKey="PerfilId" OtherKey="IDPerfil" Type="Usuario" />
+    </Type>
+  </Table>
+  <Table Name="dbo.PlanObraSocial" Member="PlanObraSocial">
+    <Type Name="PlanObraSocial">
+      <Column Name="PlanId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="PlanDescripcion" Type="System.String" DbType="NChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="IDObraSocial" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="PlanObraSocial_Afiliado" Member="Afiliado" ThisKey="PlanId" OtherKey="IDPlan" Type="Afiliado" />
+      <Association Name="ObraSocial_PlanObraSocial" Member="ObraSocial" ThisKey="IDObraSocial" OtherKey="ObraSocialId" Type="ObraSocial" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Provincia" Member="Provincia">
+    <Type Name="Provincia">
+      <Column Name="ProvinciaId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="ProvinciaDescripcion" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Association Name="Provincia_Localidad" Member="Localidad" ThisKey="ProvinciaId" OtherKey="IDProvincia" Type="Localidad" />
+      <Association Name="Provincia_Turno" Member="Turno" ThisKey="ProvinciaId" OtherKey="IDProvincia" Type="Turno" />
+    </Type>
+  </Table>
+  <Table Name="dbo.ServidorMail" Member="ServidorMail">
+    <Type Name="ServidorMail">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Mail" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Pass" Type="System.String" DbType="VarChar(200) NOT NULL" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Sucursal" Member="Sucursal">
+    <Type Name="Sucursal">
+      <Column Name="SucursalId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="SucursalDescripcion" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="IDLocalidad" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="Sucursal_DisponibilidadMedico" Member="DisponibilidadMedico" ThisKey="SucursalId" OtherKey="IDSucursal" Type="DisponibilidadMedico" />
+      <Association Name="Sucursal_MedicoSucursal" Member="MedicoSucursal" ThisKey="SucursalId" OtherKey="IDSucursal" Type="MedicoSucursal" />
+      <Association Name="Sucursal_Turno" Member="Turno" ThisKey="SucursalId" OtherKey="IDSucursal" Type="Turno" />
+      <Association Name="Localidad_Sucursal" Member="Localidad" ThisKey="IDLocalidad" OtherKey="LocalidadId" Type="Localidad" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Turno" Member="Turno">
+    <Type Name="Turno">
+      <Column Name="TurnoId" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="IDFechaTurno" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDMedico" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDEspecialidad" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDProvincia" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDLocalidad" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDSucursal" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="IDUsuario" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="FechaTurno_Turno" Member="FechaTurno" ThisKey="IDFechaTurno" OtherKey="FechaTurnoID" Type="FechaTurno" IsForeignKey="true" />
+      <Association Name="Localidad_Turno" Member="Localidad" ThisKey="IDLocalidad" OtherKey="LocalidadId" Type="Localidad" IsForeignKey="true" />
+      <Association Name="Usuario_Turno" Member="Usuario" ThisKey="IDMedico" OtherKey="UsuarioID" Type="Usuario" IsForeignKey="true" />
+      <Association Name="Provincia_Turno" Member="Provincia" ThisKey="IDProvincia" OtherKey="ProvinciaId" Type="Provincia" IsForeignKey="true" />
+      <Association Name="Sucursal_Turno" Member="Sucursal" ThisKey="IDSucursal" OtherKey="SucursalId" Type="Sucursal" IsForeignKey="true" />
+      <Association Name="Usuario_Turno1" Member="Usuario1" ThisKey="IDUsuario" OtherKey="UsuarioID" Type="Usuario" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

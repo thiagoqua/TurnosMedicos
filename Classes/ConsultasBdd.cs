@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace Classes{
     public class ConsultasBdd{
-        
-        //Funcion para modificar usuarios ya ingresados previamente en la bdd
-        //El dato que se modifica es la contraseña
+        /// <summary>
+        /// Modificar usuarios ya ingresados previamente en la bdd. 
+        /// </summary>
+        /// <param name="mailUser">Mail del usuario</param>
+        /// <param name="newPass">Nueva contraseña a asignar</param>
         public static void ActualizarUsuario(string mailUser, string newPass){
             TablesDataContext db = new TablesDataContext();
             Usuario user;
